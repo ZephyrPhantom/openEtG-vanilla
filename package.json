@@ -1,0 +1,23 @@
+{
+  "name": "openEtG",
+  "description": "openEtG",
+  "readme": "readme.txt",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/serprex/openEtG.git"
+  },
+  "dependencies": {
+    "socket.io": "",
+    "connect": "",
+    "compression": "",
+    "serve-static": "",
+    "redis": ""
+  },
+  "devDependencies": {
+    "qunitjs": "",
+    "urllib": "^0.5.17"
+  },
+  "scripts": {
+    "test": "npm start;firefox 127.0.0.1:13602/test.htm"
+  }
+}
