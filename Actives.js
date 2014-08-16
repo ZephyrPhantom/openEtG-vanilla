@@ -148,11 +148,7 @@ cpower:function(c,t){
 	t.atk += c.owner.uptoceil(5);
 },
 cseed:function(c,t){
-	if (t.card.isOf(Cards.Elf)){
-		t.transform(Cards.FallenElf.asUpped(t.card.upped));
-	}else{
-		Actives[["drainlife", "firebolt", "freeze", "gpullspell", "icebolt", "infect", "lightning", "lobotomize", "parallel", "rewind", "snipe", "swave"][c.owner.upto(12)]](c, t);
-	}
+	Actives[["drainlife", "firebolt", "freeze", "gpullspell", "icebolt", "infect", "lightning", "lobotomize", "parallel", "rewind", "snipe", "swave"][c.owner.upto(12)]](c, t);
 },
 dagger:function(c,t){
 	return c.owner.mark == etg.Darkness||c.owner.mark == etg.Death ? 1 : 0;
@@ -173,6 +169,12 @@ decrsteam:function(c){
 deja:function(c,t){
 	delete c.active.cast;
 	Actives.parallel(c, c);
+},
+dessication:function(c,t){
+	function dryeffect(c,t){
+		c.spend(etg.Water, -t.dmg(2));
+	}
+	c.owner.foe.masscc(c.owner, dryeffect);
 },
 destroy:function(c,t, dontsalvage, donttalk){
 	if (!donttalk){
@@ -685,7 +687,7 @@ photosynthesis:function(c,t){
 	}
 },
 plague:function(c,t){
-	t.masscc(c, Actives.infect);
+	c.owner.foe.masscc(c, Actives.infect);
 },
 platearmor:function(c,t){
 	var buff = c.card.upped?6:4;
@@ -904,10 +906,10 @@ stoneform:function(c,t){
 	delete c.active.cast;
 },
 storm2:function(c,t){
-	t.masscc(c, function(c,x){x.dmg(2)});
+	c.owner.foe.masscc(c, function(c,x){x.dmg(2)});
 },
 storm3:function(c,t){
-	t.masscc(c, Actives.snipe);
+	c.owner.foe.masscc(c, Actives.snipe);
 },
 swarm:function(c,t){
 	var hp = 0;
