@@ -227,7 +227,7 @@ divinity:function(c,t){
 	c.owner.buffhp(16);
 },
 drainlife:function(c,t){
-	c.owner.dmg(-t.spelldmg(2+Math.floor(c.owner.quanta[etg.Darkness]/5)));
+	c.owner.dmg(-t.spelldmg(2+Math.floor(c.owner.quanta[etg.Darkness]/10)*2));
 },
 dryspell:function(c,t){
 	function dryeffect(c,t){
@@ -260,10 +260,6 @@ empathy:function(c,t){
 	var healsum = c.owner.countcreatures();
 	Effect.mkText("+"+healsum, c);
 	c.owner.dmg(-healsum);
-	if (!c.owner.spend(etg.Life, Math.floor(healsum/8))){
-		c.owner.quanta[etg.Life] = 0;
-		c.die();
-	}
 },
 enchant:function(c,t){
 	Effect.mkText("Enchant", t);
@@ -271,22 +267,10 @@ enchant:function(c,t){
 },
 endow:function(c,t){
 	Effect.mkText("Endow", t);
-	for (key in t.status) {
-		if (typeof t.status[key] == "boolean")
-			c.status[key] = c.status[key] || t.status[key]
-		else if (typeof t.status[key] == "number")
-			c.status[key] = t.status[key] + (c.status[key] ? c.status[key] : 0);
-		else
-			c.status[key] = t.status[key];
-	}
- 	if (c.status.adrenaline > 1)
-		c.status.adrenaline = 1;
+	if (t.status.momentum) c.status.momentum = true;
 	c.active = etg.clone(t.active);
 	c.cast = t.cast;
 	c.castele = t.castele;
-	if (c.active.cast && c.active.cast.activename == "endow") {
-		delete c.active.cast;
-	}
 	c.atk += t.trueatk();
 	if (t.active.buff){
 		c.atk -= t.active.buff(t);
@@ -305,7 +289,7 @@ fire:function(c,t){
 	c.owner.spend(etg.Fire, -1);
 },
 firebolt:function(c,t){
-	t.spelldmg(3+Math.floor(c.owner.quanta[etg.Fire]/4));
+	t.spelldmg(3+3*Math.floor(c.owner.quanta[etg.Fire]/10));
 },
 flyingweapon: function(c, t) {
 	var wp = c.owner.weapon;
@@ -348,7 +332,7 @@ gpullspell:function(c,t){
 },
 gratitude:function(c,t){
 	Effect.mkText("+4", c);
-	c.owner.dmg(-4);
+	c.owner.dmg(c.owner.mark == etg.Life ? -5 : -3);
 },
 growth: function (c, t) {
     Effect.mkText("2|2", c)
@@ -397,9 +381,9 @@ hope:function(c,t){
 	return dr;
 },
 icebolt:function(c,t){
-	var bolts = Math.floor(c.owner.quanta[etg.Water]/5);
-	t.spelldmg(2+bolts);
-	if (c.owner.rng() < .35+bolts/20){
+	var bolts = Math.floor(c.owner.quanta[etg.Water]/10);
+	t.spelldmg(2+bolts*2);
+	if (c.owner.rng() < .35+bolts/10){
 		t.freeze(c.card.upped?4:3);
 	}
 },
@@ -571,10 +555,10 @@ mitosis:function(c,t){
 	new etg.Creature(c.card, c.owner).place();
 },
 mitosisspell:function(c,t){
+	lobo(t);
 	t.active.cast = Actives.mitosis;
 	t.castele = t.card.element;
 	t.cast = t.card.cost;
-	t.buffhp(1);
 },
 momentum:function(c,t){
 	Effect.mkText("Momentum", t);
@@ -603,7 +587,7 @@ neuro:function(c,t){
 nightmare:function(c,t){
 	if (!c.owner.foe.sanctuary){
 		Effect.mkText("Nightmare", t);
-		c.owner.dmg(-c.owner.foe.spelldmg(16-c.owner.foe.hand.length*2));
+		c.owner.dmg(-c.owner.foe.dmg(16-c.owner.foe.hand.length*2));
 		for(var i = c.owner.foe.hand.length; i<8; i++){
 			c.owner.foe.hand[i] = new etg.CardInstance(t.card, c.owner.foe);
 		}
