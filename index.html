@@ -39,17 +39,9 @@
 	<div id="leftpane"></div>
 	<div id="rightpane">
         <a href="artcredit.htm" target="_blank">Art credits</a>&emsp;&emsp;<a href="http://github.com/Fippe94/openEtG" target="_blank">Git</a>&emsp;&emsp;<a href="http://oetg.boards.net" target="_blank">Forum</a><br><br>
-		<input id="username" type="text" placeholder="Username" onkeydown="maybeLogin(event)" tabindex=1 />
-		<input id="login" type="submit" value="Login" onclick="loginClick()" /><br>
-		<input id="password" type="password" placeholder="Insecure Password" onkeydown="maybeLogin(event)" tabindex=2 />
-		<input id="change" type="submit" value="Change" onclick="changeClick()" /><br><br>
 		<input id="foename" type="text" placeholder="Challenge" onkeydown="maybeChallenge(event)" /> <input id="pvphp" type="text" placeholder="HP" style="width: 30px"/>
 		<input id="pvpmark" type="text" placeholder="Mark" style="width: 30px" /><input id="pvpdeck" type="text" placeholder="Deck" style="width: 30px" /><input id="pvpdraw" type="text" placeholder="Draw" style="width:30px" /><br>
 		<input id="challenge" type="submit" value="PvP" onclick="challengeClick()" />
-		<input id="trade" type="submit" value="Trade" onclick="tradeClick()" />
-		<input id="reward" type="submit" value="Reward" onclick="rewardClick()" />
-		<input id="library" type="submit" value="Library" onclick="libraryClick()" /><br>
-		<input id="aideck" type="text" placeholder="AI Deck" /><br><br>
 		<div id="chatBox" style="width:350px;height:400px;overflow-y:scroll;overflow-x:hidden;background-color:white"></div>
 		<textarea id="chatinput" placeholder="Chat" style="width:350px;height:40px;resize:none" onkeydown="maybeSendChat(event)"></textarea>
 	</div>
