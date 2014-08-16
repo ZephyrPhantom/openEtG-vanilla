@@ -646,10 +646,7 @@ overdrivespell:function(c,t){
 	t.active.auto = Actives.overdrive;
 },
 pandemonium:function(c,t){
-	c.owner.foe.masscc(c, Actives.cseed, true);
-},
-pandemonium2:function(c,t){
-	t.masscc(c, Actives.cseed);
+	c.owner.foe.masscc(c, Actives.cseed, c.card.upped);
 },
 paradox:function(c,t){
 	Effect.mkText("Paradox", t);
