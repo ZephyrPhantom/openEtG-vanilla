@@ -485,19 +485,14 @@ Player.prototype.info = function(){
 	return info;
 }
 Player.prototype.randomquanta = function() {
-	var nonzero = 0;
+	var candidates = [];
 	for(var i=1; i<13; i++){
-		nonzero += this.quanta[i];
+		if (this.quanta[i]) candidates.push(i);
 	}
-	if (nonzero == 0){
+	if (candidates.length == 0){
 		return -1;
 	}
-	nonzero = this.uptoceil(nonzero);
-	for(var i=1; i<13; i++){
-		if ((nonzero -= this.quanta[i])<=0){
-			return i;
-		}
-	}
+	return candidates[this.upto(candidates.length)];
 }
 Player.prototype.canspend = function(qtype, x) {
 	if (x <= 0)return true;
