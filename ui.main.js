@@ -310,10 +310,10 @@ function victoryScreen(game) {
 // Asset Loading
 var nopic = PIXI.Texture.fromImage("");
 var goldtex, buttex;
-var backgrounds = ["assets/bg_default.png", "assets/bg_lobby.png", "assets/bg_shop.png", "assets/bg_quest.png", "assets/bg_game.png", "assets/bg_questmap.png"];
-var questIcons = [], eicons = [], ricons = [], cardBacks = [], cardBorders = [], boosters = [], popups = [], sicons = [], ticons = [], sborders = [];
-var preLoader = new PIXI.AssetLoader(["assets/gold.png", "assets/button.png", "assets/questIcons.png", "assets/esheet.png", "assets/backsheet.png",
-	"assets/cardborders.png", "assets/popup_booster.png", "assets/statussheet.png", "assets/statusborders.png", "assets/typesheet.png"].concat(backgrounds));
+var backgrounds = ["assets/bg_default.png", "assets/bg_game.png"];
+var questIcons = [], eicons = [], ricons = [], cardBacks = [], cardBorders = [], popups = [], sicons = [], ticons = [], sborders = [];
+var preLoader = new PIXI.AssetLoader(["assets/button.png", "assets/esheet.png", "assets/backsheet.png",
+	"assets/cardborders.png", "assets/statussheet.png", "assets/statusborders.png", "assets/typesheet.png"].concat(backgrounds));
 var loadingBarProgress = 0, loadingBarGraphic = new PIXI.Graphics();
 preLoader.onProgress = function() {
 	loadingBarGraphic.clear();
@@ -323,15 +323,8 @@ preLoader.onProgress = function() {
 }
 preLoader.onComplete = function() {
 	// Start loading assets we don't require to be loaded before starting
-	var tex = PIXI.BaseTexture.fromImage("assets/boosters.png");
-	for (var i = 0;i < 4;i++) boosters.push(new PIXI.Texture(tex, new PIXI.Rectangle(i * 100, 0, 100, 150)));
 	// Load assets we preloaded
-	goldtex = PIXI.Texture.fromFrame("assets/gold.png");
 	buttex = PIXI.Texture.fromFrame("assets/button.png");
-	var tex = PIXI.Texture.fromFrame("assets/questIcons.png");
-	for (var i = 0;i < 2;i++) {
-		questIcons.push(new PIXI.Texture(tex, new PIXI.Rectangle(i * 32, 0, 32, 32)));
-	}
 	for (var i = 0;i < backgrounds.length;i++){
 		backgrounds[i] = PIXI.Texture.fromFrame(backgrounds[i]);
 	}
@@ -341,7 +334,6 @@ preLoader.onComplete = function() {
 	for (var i = 0;i < 26;i++) cardBacks.push(new PIXI.Texture(tex, new PIXI.Rectangle(i * 132, 0, 132, 256)));
 	var tex = PIXI.Texture.fromFrame("assets/cardborders.png");
 	for (var i = 0;i < 26;i++) cardBorders.push(new PIXI.Texture(tex, new PIXI.Rectangle(i * 128, 0, 128, 162)));
-	popups.push(PIXI.Texture.fromFrame("assets/popup_booster.png"));
 	var tex = PIXI.Texture.fromFrame("assets/statussheet.png");
 	for (var i = 0;i < 7;i++) sicons.push(new PIXI.Texture(tex, new PIXI.Rectangle(13 * i, 0, 13, 13)));
 	var tex = PIXI.Texture.fromFrame("assets/statusborders.png");
@@ -657,7 +649,7 @@ function startMatch(game, foeDeck) {
 	winnername.position.set(800, 500);
 	gameui.addChild(winnername);
 	var endturn = makeButton(800, 540, "Accept Hand");
-	var cancel = makeButton(800, 500, "Mulligan");
+	var cancel = makeButton(800, 500, " ");
 	var resign = makeButton(8, 24, "Resign");
 	gameui.addChild(endturn);
 	gameui.addChild(cancel);
@@ -684,6 +676,7 @@ function startMatch(game, foeDeck) {
 				discarding = true;
 			} else {
 				discarding = false;
+				socket.emit("endturn", discard);
 				game.player1.endturn(discard);
 				delete game.targetingMode;
 				if (foeplays.children.length)
@@ -696,10 +689,7 @@ function startMatch(game, foeDeck) {
 			resign.setText("Resign");
 			resigning = false;
 		} else if (game.turn == game.player1) {
-			if (game.phase <= etg.MulliganPhase2 && game.player1.hand.length > 0) {
-				game.player1.drawhand(game.player1.hand.length - 1);
-				socket.emit("mulligan");
-			} else if (game.targetingMode) {
+			if (game.targetingMode) {
 				delete game.targetingMode;
 			} else if (discarding) {
 				discarding = false;
@@ -1323,7 +1313,6 @@ function challengeClick() {
 	if (Cards.loaded) {
 		var deck = getDeck();
 		if (deck.length < 31){
-			startEditor();
 			return;
 		}
 		var gameData = {};
