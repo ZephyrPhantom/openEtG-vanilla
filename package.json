@@ -10,7 +10,7 @@
     "socket.io": "",
     "connect": "",
     "compression": "",
-    "serve-static": "",
+    "serve-static": ""
   },
   "devDependencies": {
     "qunitjs": "",

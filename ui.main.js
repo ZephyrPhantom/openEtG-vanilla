@@ -296,24 +296,14 @@ function victoryScreen(game) {
 
 	victoryui.addChild(makeText(10, 290, "Plies: " + game.ply + "\nTime: " + (game.time/1000).toFixed(1) + " seconds"));
 	if (winner){
-		var victoryText = game.quest ? game.wintext : "You won!";
-		var tinfo = makeText(450, game.cardreward ? 130 : 250, victoryText,true,500);
+		var tinfo = makeText(450, game.cardreward ? 130 : 250, "You won!", true, 500);
 		tinfo.anchor.x = 0.5;
 		tinfo.anchor.y = 1;
 		victoryui.addChild(tinfo);
 	}
 
 	var bexit = makeButton(412, 430, "Exit");
-	setClick(bexit, function() {
-		if (game.quest) {
-			if (winner && game.choicerewards)
-				startRewardWindow(game.choicerewards, game.rewardamount, true);
-			else
-				startQuestArea(game.area);
-		}
-		else
-			startMenu();
-	});
+	setClick(bexit, startEditor);
 	victoryui.addChild(bexit);
 	refreshRenderer(victoryui);
 }
@@ -358,7 +348,7 @@ preLoader.onComplete = function() {
 	for (var i = 0;i < 3;i++) sborders.push(new PIXI.Texture(tex, new PIXI.Rectangle(64 * i, 0, 64, 81)));
 	var tex = PIXI.Texture.fromFrame("assets/typesheet.png");
 	for (var i = 0;i < 6;i++) ticons.push(new PIXI.Texture(tex, new PIXI.Rectangle(25 * i, 0, 25, 25)));
-	startMenu();
+	startEditor();
 }
 refreshRenderer(loadingBarGraphic);
 preLoader.load();
@@ -474,7 +464,7 @@ function makeCardSelector(cardmouseover, cardclick){
 			columns[i] = etg.filtercards(i > 2,
 				function(x) { return x.element == elefilter &&
 					((i % 3 == 0 && x.type == etg.CreatureEnum) || (i % 3 == 1 && x.type <= etg.PermanentEnum) || (i % 3 == 2 && x.type == etg.SpellEnum));
-				}, editorCardCmp, prevshowshiny);
+				}, editorCardCmp);
 		}
 	}
 	makeColumns();
@@ -492,23 +482,140 @@ function makeCardSelector(cardmouseover, cardclick){
 	};
 	return cardsel;
 }
-function startMenu() {
-	var menuui = new PIXI.DisplayObjectContainer();
-	menuui.interactive = true;
-	var buttonList = [];
-	var mouseroverButton;
-	var clickedButton;
-	//lobby background
-	var bglobby = new PIXI.Sprite(backgrounds[1]);
-	menuui.addChild(bglobby);
-
-	var bedit = makeButton(50, 300, "Editor", function() {
-		tinfo.setText("Here you can edit your deck, as well as submit an arena deck.");
+function startEditor() {
+	if (!Cards.loaded) return;
+	function sumCardMinus(cardminus, code){
+		var sum = 0;
+		for (var i=0; i<2; i++){
+			for (var j=0; j<2; j++){
+				sum += cardminus[etgutil.asShiny(etgutil.asUpped(code, i==0), j==0)] || 0;
+			}
+		}
+		return sum;
+	}
+	function processDeck() {
+		for (var i = editordeck.length - 1;i >= 0;i--) {
+			if (!(editordeck[i] in Cards.Codes)) {
+				var index = etg.fromTrueMark(editordeck[i]);
+				if (~index) {
+					editormark = index;
+				}
+				editordeck.splice(i, 1);
+			}
+		}
+		editormarksprite.setTexture(eicons[editormark]);
+		editordeck.sort(editorCardCmp);
+	}
+	var cardminus = {};
+	chatArea.value = "Build a 30-60 card deck";
+	var editorui = new PIXI.DisplayObjectContainer();
+	editorui.interactive = true;
+	var bg = new PIXI.Sprite(backgrounds[0]);
+	bg.mouseover = function() {
+		cardArt.visible = false;
+	}
+	bg.interactive = true;
+	editorui.addChild(bg);
+	var bclear = makeButton(8, 32, "Clear");
+	var bsave = makeButton(8, 56, "Save");
+	setClick(bclear, function() {
+		cardminus = {};
+		editordeck.length = 0;
 	});
-	setClick(bedit, startEditor);
-	menuui.addChild(bedit);
-
-	refreshRenderer(menuui);
+	editorui.addChild(bclear);
+	editorui.addChild(bsave);
+	setClick(bsave, function() {
+		deckimport.value = etgutil.encodedeck(editordeck) + "01" + etg.toTrueMark(editormark);
+	});
+	var bimport = makeButton(8, 80, "Import");
+	setClick(bimport, function() {
+		var dvalue = deckimport.value;
+		editordeck = ~dvalue.indexOf(" ") ? dvalue.split(" ") : etgutil.decodedeck(dvalue);
+		if (editordeck.length > 60){
+			editordeck.length = 60;
+		}
+		processDeck();
+	});
+	editorui.addChild(bimport);
+	var bconvert = makeButton(5, 554, "Convert Code");
+	setClick(bconvert, function() {
+		deckimport.value = editordeck.join(" ") + " " + etg.toTrueMark(editormark);
+	});
+	editorui.addChild(bconvert);
+	var editordecksprites = [];
+	var editordeck = getDeck(true);
+	var editormarksprite = new PIXI.Sprite(nopic);
+	editormarksprite.position.set(100, 234);
+	editorui.addChild(editormarksprite);
+	var editormark = 0;
+	processDeck();
+	for (var i = 0;i < 13;i++) {
+		var sprite = makeButton(200 + i * 32, 234, eicons[i]);
+		sprite.interactive = true;
+		(function(_i) {
+			setClick(sprite, function() {
+				editormark = _i;
+				editormarksprite.setTexture(eicons[_i]);
+			});
+		})(i);
+		editorui.addChild(sprite);
+	}
+	for (var i = 0;i < 60;i++) {
+		var sprite = new PIXI.Sprite(nopic);
+		sprite.position.set(100 + Math.floor(i / 10) * 100, 32 + (i % 10) * 20);
+		(function(_i) {
+			setClick(sprite, function() {
+				var code = editordeck[_i], card = Cards.Codes[code];
+				if (card.type != etg.PillarEnum) {
+					adjust(cardminus, code, -1);
+				}
+				editordeck.splice(_i, 1);
+			});
+			sprite.mouseover = function() {
+				cardArt.setTexture(getArt(editordeck[_i]));
+				cardArt.visible = true;
+			}
+		})(i);
+		sprite.interactive = true;
+		editorui.addChild(sprite);
+		editordecksprites.push(sprite);
+	}
+	setInteractive.apply(null, editordecksprites);
+	var cardsel = makeCardSelector(
+		function(code){
+			cardArt.setTexture(getArt(code));
+			cardArt.visible = true;
+		},
+		function(code){
+			if (editordeck.length < 60) {
+				var card = Cards.Codes[code];
+				if (card.type != etg.PillarEnum) {
+					if (Cards.Codes[code].type != etg.PillarEnum && sumCardMinus(cardminus, code) >= 6) {
+						return;
+					}
+					adjust(cardminus, code, 1);
+				}
+				for (var i = 0;i < editordeck.length;i++) {
+					var cmp = editorCardCmp(editordeck[i], code);
+					if (cmp >= 0) break;
+				}
+				editordeck.splice(i, 0, code);
+			}
+		});
+	editorui.addChild(cardsel);
+	var cardArt = new PIXI.Sprite(nopic);
+	cardArt.position.set(734, 8);
+	editorui.addChild(cardArt);
+	refreshRenderer(editorui, function() {
+		cardsel.next(cardminus);
+		for (var i = 0;i < editordeck.length;i++) {
+			editordecksprites[i].visible = true;
+			editordecksprites[i].setTexture(getCardImage(editordeck[i]));
+		}
+		for (;i < 60;i++) {
+			editordecksprites[i].visible = false;
+		}
+	});
 }
 function startMatch(game, foeDeck) {
 	function drawBorder(obj, spr) {
