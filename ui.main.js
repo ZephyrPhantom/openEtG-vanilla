@@ -639,7 +639,7 @@ function startMatch(game, foeDeck) {
 	}
 	var gameui = new PIXI.DisplayObjectContainer();
 	gameui.interactive = true;
-	gameui.addChild(new PIXI.Sprite(backgrounds[4]));
+	gameui.addChild(new PIXI.Sprite(backgrounds[1]));
 	var cloakgfx = new PIXI.Graphics();
 	cloakgfx.beginFill(0);
 	cloakgfx.drawRect(130, 20, 660, 280);
@@ -667,9 +667,7 @@ function startMatch(game, foeDeck) {
 		return data;
 	}
 	setClick(endturn, function(e, discard) {
-		if (game.turn == game.player1 && game.phase <= etg.MulliganPhase2){
-			game.progressMulligan();
-		}else if (game.winner) {
+		if (game.winner) {
 			victoryScreen(game);
 		} else if (game.turn == game.player1) {
 			if (discard == undefined && game.player1.hand.length == 8) {
@@ -919,14 +917,7 @@ function startMatch(game, foeDeck) {
 		},
 		foeleft: function(){
 			game.setWinner(game.player1);
-		},
-		mulligan: function(data){
-			if (data === true) {
-				game.progressMulligan();
-			} else {
-				game.player2.drawhand(game.player2.hand.length - 1);
-			}
-		},
+		}
 	};
 	for (var cmd in cmds){
 		socket.on(cmd, cmds[cmd]);
@@ -992,7 +983,7 @@ function startMatch(game, foeDeck) {
 		if (game.phase != etg.EndPhase) {
 			if (game.turn == game.player1){
 				endturn.setText(game.phase == etg.PlayPhase ? "End Turn" : "Accept Hand");
-				cancel.setText(game.phase != etg.PlayPhase ? "Mulligan" : game.targetingMode || discarding || resigning ? "Cancel" : null);
+				cancel.setText(game.targetingMode || discarding || resigning ? "Cancel" : null);
 			}else cancel.visible = endturn.visible = false;
 		}else{
 			winnername.setText(game.winner == game.player1 ? "Won" : "Lost");

@@ -56,6 +56,7 @@ io.on("connection", function(socket) {
 	socket.on("reconnect_failed", dropsock);
 	function foeEcho(event){
 		socket.on(event, function(data){
+			console.log(event);
 			var foe = sockinfo[this.id].foe;
 			if (foe){
 				foe.emit(event, data);
