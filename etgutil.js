@@ -8,10 +8,6 @@ exports.asUpped = function(code, upped){
 	var intCode = parseInt(code, 32), isUpped = (intCode&0x3FFF) > 6999;
 	return isUpped == upped ? code : (intCode+(isUpped?-2000:2000)).toString(32);
 }
-exports.asShiny = function(code, shiny){
-	var intCode = parseInt(code, 32);
-	return (shiny ? (intCode|0x4000) : (intCode&0x3FFF)).toString(32);
-}
 exports.iterdeck = function(deck, func){
 	var len = 0;
 	for(var i=0; i<deck.length; i+=5){

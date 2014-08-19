@@ -487,9 +487,7 @@ function startEditor() {
 	function sumCardMinus(cardminus, code){
 		var sum = 0;
 		for (var i=0; i<2; i++){
-			for (var j=0; j<2; j++){
-				sum += cardminus[etgutil.asShiny(etgutil.asUpped(code, i==0), j==0)] || 0;
-			}
+			sum += cardminus[etgutil.asUpped(code, i==0)] || 0;
 		}
 		return sum;
 	}
