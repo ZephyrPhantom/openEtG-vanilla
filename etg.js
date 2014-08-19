@@ -7,7 +7,7 @@ var etgutil = require("./etgutil");
 var Cards = require("./Cards");
 function Game(first, seed){
 	this.rng = new MersenneTwister(seed);
-	this.phase = MulliganPhase1;
+	this.phase = PlayPhase;
 	this.ply = 0;
 	this.player1 = new Player(this);
 	this.player2 = new Player(this);
@@ -184,10 +184,8 @@ var ShieldEnum = 2;
 var PermanentEnum = 3;
 var SpellEnum = 4;
 var CreatureEnum = 5;
-var MulliganPhase1 = 0;
-var MulliganPhase2 = 1;
-var PlayPhase = 2;
-var EndPhase = 3;
+var PlayPhase = 0;
+var EndPhase = 1;
 var passives = { airborne: true, nocturnal: true, voodoo: true, swarm: true, ranged: true, additive: true, stackable: true, salvage: true, token: true, poisonous: true, singularity: true, decrsteam: true, siphon: true };
 var PlayerRng = Object.create(Player.prototype);
 PlayerRng.rng = Math.random;
@@ -214,17 +212,6 @@ Game.prototype.setWinner = function(play){
 		this.phase = EndPhase;
 		if (this.time) this.time = Date.now() - this.time;
 	}
-}
-Game.prototype.progressMulligan = function(){
-	if (this.phase == MulliganPhase1){
-		this.phase = MulliganPhase2;
-	}else if(this.phase == MulliganPhase2){
-		this.phase = PlayPhase;
-	}else{
-		console.log("Not mulligan phase: " + game.phase);
-		return;
-	}
-	this.turn = this.turn.foe;
 }
 Game.prototype.updateExpectedDamage = function(){
 	if (this.expectedDamage){
@@ -657,14 +644,22 @@ Player.prototype.drawcard = function() {
 		}else this.game.setWinner(this.foe);
 	}
 }
-Player.prototype.drawhand = function(x) {
+Player.prototype.drawhand = function(x,secondtry) {
 	if (x >= 0){
 		while (this.hand.length > 0){
 			this.deck.push(this.hand.pop().card);
 		}
 		this.shuffle(this.deck);
-		for(var i=0; i<x; i++){
-			this.hand.push(new CardInstance(this.deck.pop(), this));
+		var haszerocost = false;
+		for (var i = 0;i < x;i++) {
+			var cardInst = new CardInstance(this.deck.pop(), this);
+			this.hand.push(cardInst);
+			if (!cardInst.card.cost)
+				haszerocost = true;
+		}
+		if (!haszerocost && !secondtry) {
+			console.log("mulligan activated")
+			this.drawhand(x, true);
 		}
 	}
 }
@@ -1194,10 +1189,8 @@ exports.ShieldEnum = 2;
 exports.PermanentEnum = 3;
 exports.SpellEnum = 4;
 exports.CreatureEnum = 5;
-exports.MulliganPhase1 = 0;
-exports.MulliganPhase2 = 1;
-exports.PlayPhase = 2;
-exports.EndPhase = 3;
+exports.PlayPhase = 0;
+exports.EndPhase = 1;
 exports.NymphList = [undefined, "500", "534", "568", "59c", "5cg", "5fk", "5io", "5ls", "5p0", "5s4", "5v8", "62c"];
 exports.AlchemyList = [undefined, "4vn", "52s", "55v", "595", "5c7", "5fb", "5ig", "5lj", "5om", "5rr", "5uu", "621"];
 exports.ShardList = [undefined, "50a", "53e", "56i", "59m", "5cq", "5fu", "5j2", "5m6", "5pa", "5se", "5vi", "62m"];
