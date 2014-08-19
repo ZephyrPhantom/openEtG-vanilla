@@ -1,6 +1,6 @@
 "use strict";
 (function() {
-var htmlElements = ["leftpane", "chatArea", "chatinput", "deckimport", "foename", "challenge", "chatBox", "bottompane"];
+var htmlElements = ["leftpane", "chatArea", "chatinput", "deckimport", "foename", "challenge", "chatBox", "bottompane", "username"];
 htmlElements.forEach(function(name){
 	window[name] = document.getElementById(name);
 });
@@ -1269,8 +1269,8 @@ function maybeSendChat(e) {
 		}else if (msg.substr(0, 8) == "/unmute "){
 			delete muteset[msg.substring(8)];
 		}else {
-			var name = guestname || (guestname = (10000 + Math.floor(Math.random() * 89999)) + "");
-			socket.emit("guestchat", { msg: msg, u: name });
+			var name = username.value || guestname || (guestname = (10000 + Math.floor(Math.random() * 89999)) + "");
+			socket.emit("chat", { msg: msg, u: name });
 		}
 		e.preventDefault();
 	}

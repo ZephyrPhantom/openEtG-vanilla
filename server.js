@@ -43,13 +43,6 @@ function dropsock(){
 		delete sockinfo[this.id];
 	}
 }
-function genericChat(socket, data){
-	if (data.msg == "/who") {
-		var usersonline = activeUsers().join(", ");
-		socket.emit("chat", { mode: "info", msg: usersonline ? "Users online: " + usersonline + "." : "There are no users online :(" })
-	}
-	else io.emit("chat", data)
-}
 io.on("connection", function(socket) {
 	sockinfo[socket.id] = {};
 	socket.on("disconnect", dropsock);
@@ -67,10 +60,8 @@ io.on("connection", function(socket) {
 	foeEcho("cast");
 	foeEcho("foeleft");
 	foeEcho("mulligan");
-	socket.on("guestchat", function (data) {
-		data.mode = "guest";
-		data.u = "Guest" + (data.u ? "_" + data.u : "");
-		genericChat(socket, data);
+	socket.on("chat", function (data) {
+		io.emit("chat", data)
 	});
 	socket.on("pvpwant", function(data) {
 		var pendinggame=rooms[data.room];
