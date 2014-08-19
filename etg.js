@@ -644,14 +644,22 @@ Player.prototype.drawcard = function() {
 		}else this.game.setWinner(this.foe);
 	}
 }
-Player.prototype.drawhand = function(x) {
+Player.prototype.drawhand = function(x,secondtry) {
 	if (x >= 0){
 		while (this.hand.length > 0){
 			this.deck.push(this.hand.pop().card);
 		}
 		this.shuffle(this.deck);
-		for(var i=0; i<x; i++){
-			this.hand.push(new CardInstance(this.deck.pop(), this));
+		var haszerocost = false;
+		for (var i = 0;i < x;i++) {
+			var cardInst = new CardInstance(this.deck.pop(), this);
+			this.hand.push(cardInst);
+			if (!cardInst.card.cost)
+				haszerocost = true;
+		}
+		if (!haszerocost && !secondtry) {
+			console.log("mulligan activated")
+			this.drawhand(x, true);
 		}
 	}
 }
