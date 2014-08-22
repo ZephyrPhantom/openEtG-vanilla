@@ -989,7 +989,7 @@ firewall:function(c,t){
 skull:function(c,t){
 	if (t instanceof etg.Creature && !t.card.isOf(Cards.Skeleton)) {
 		var thp = t.truehp();
-		if (thp <= 0 || c.owner.rng() < .5/thp){
+		if (thp == 0 || (thp>0 && c.owner.rng() < .5/thp)){
 			var index = t.getIndex();
 			t.die();
 			if (!t.owner.creatures[index] || t.owner.creatures[index].card != Cards.MalignantCell){
