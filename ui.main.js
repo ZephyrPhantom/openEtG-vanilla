@@ -6,7 +6,9 @@ htmlElements.forEach(function(name){
 });
 })();
 (function(){
-require("./etg.client").loadcards();
+require("./etg.client").loadcards(function(){
+	if (gfxloaded) startEditor();
+});
 PIXI.AUTO_PREVENT_DEFAULT = false;
 var discarding, guestname, muteset = {};
 var etgutil = require("./etgutil");
@@ -309,7 +311,7 @@ function victoryScreen(game) {
 }
 // Asset Loading
 var nopic = PIXI.Texture.fromImage("");
-var buttex;
+var buttex, gfxloaded;
 var backgrounds = ["assets/bg_default.png", "assets/bg_game.png"];
 var questIcons = [], eicons = [], ricons = [], cardBacks = [], cardBorders = [], popups = [], sicons = [], ticons = [], sborders = [];
 var preLoader = new PIXI.AssetLoader(["assets/button.png", "assets/esheet.png", "assets/backsheet.png",
@@ -341,7 +343,8 @@ preLoader.onComplete = function() {
 	var tex = PIXI.Texture.fromFrame("assets/typesheet.png");
 	for (var i = 0;i < 6;i++) ticons.push(new PIXI.Texture(tex, new PIXI.Rectangle(25 * i, 0, 25, 25)));
 	deckimport.value = "0u4sa018pi";
-	startEditor();
+	gfxloaded = true;
+	if (Cards.loaded) startEditor();
 }
 refreshRenderer(loadingBarGraphic);
 preLoader.load();
