@@ -100,9 +100,9 @@ function makeArt(card, art, oldrend) {
 }
 function getArtImage(code, cb){
 	if (!(code in artimagecache)){
-		var loader = new PIXI.ImageLoader("Cards/" + code + ".png");
+		var loader = new PIXI.ImageLoader("../Cards/" + code + ".png");
 		loader.addEventListener("loaded", function() {
-			return cb(artimagecache[code] = PIXI.Texture.fromFrame("Cards/" + code + ".png"));
+			return cb(artimagecache[code] = PIXI.Texture.fromFrame("../Cards/" + code + ".png"));
 		});
 		loader.load();
 	}
