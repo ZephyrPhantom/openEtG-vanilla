@@ -12,7 +12,7 @@ function cardRedirect(req, res, next){
 		if (code > "6qn"){
 			fs.exists(__dirname + req.url, function(exists){
 				if (!exists){
-					res.writeHead("302", {Location: "http://" + req.headers.host + "/Cards/" + etgutil.asShiny(etgutil.asUpped(code, false), false) + ".png"});
+					res.writeHead("302", {Location: "http://" + req.headers.host + "/Cards/" + etgutil.asUpped(code, false) + ".png"});
 					res.end();
 				}else next();
 			});

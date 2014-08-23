@@ -436,11 +436,8 @@ Card.prototype.toString = function(){ return this.code; }
 Card.prototype.asUpped = function(upped){
 	return this.upped == upped ? this : Cards.Codes[etgutil.asUpped(this.code, upped)];
 }
-Card.prototype.asShiny = function(shiny){
-	return !this.shiny == !shiny ? this : Cards.Codes[etgutil.asShiny(this.code, shiny)];
-}
 Card.prototype.isOf = function(card){
-	return card.code == etgutil.asShiny(etgutil.asUpped(this.code, false), false);
+	return card.code == etgutil.asUpped(this.code, false);
 }
 Player.prototype.rng = function(){
 	return this.game.rng.real();
@@ -727,9 +724,8 @@ Creature.prototype.place = function(fromhand){
 }
 Permanent.prototype.place = function(fromhand){
 	if (this.status.additive){
-		var dullcode = etgutil.asShiny(this.card.code, false);
 		for(var i=0; i<16; i++){
-			if (this.owner.permanents[i] && etgutil.asShiny(this.owner.permanents[i].card.code, false) == dullcode){
+			if (this.owner.permanents[i] && this.card.code == this.owner.permanents[i].card.code){
 				this.owner.permanents[i].status.charges += this.status.charges;
 				Thing.prototype.place.call(this.owner.permanents[i], fromhand);
 				return;
