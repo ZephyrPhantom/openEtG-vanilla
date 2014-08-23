@@ -104,13 +104,6 @@ require("./etg.client").loadcards(function() {
 		equal(player2.quanta[etg.Light], 0, "Light");
 		equal(player1.quanta[etg.Darkness], 1, "Darkness");
 	});
-	gameTest("Disarm", function() {
-		new etg.Creature(Cards.Monk, player1).place();
-		new etg.Weapon(Cards.Dagger, player2).place();
-		player1.endturn();
-		ok(!player2.weapon, "Disarmed");
-		equal(player2.hand[0].card, Cards.Dagger, "In hand");
-	});
 	gameTest("Earthquake", function() {
 		initHand(player1, Cards.AmethystPillar, Cards.AmethystPillar, Cards.AmethystPillar, Cards.AmethystPillar, Cards.AmethystPillar, Cards.AmethystPillar, Cards.AmethystPillar, Cards.AmethystPillar);
 		for(var i=0; i<5; i++){
@@ -160,18 +153,20 @@ require("./etg.client").loadcards(function() {
 		}
 		player1.endturn();
 		equal(player1.shield.truedr(), 3, "DR");
-		equal(player1.quanta[etg.Light], 4, "RoL");
+		equal(player1.quanta[etg.Light], 3, "RoL");
 	});
 	gameTest("Lobotomize", function() {
 		var dev = new etg.Creature(Cards.Devourer, player1);
-		ok(!etg.isEmpty(dev.active), "Actives");
+		ok(dev.active.auto, "Siphon");
+		ok(dev.active.cast, "Burrow");
 		Actives.lobotomize(player1, dev);
-		ok(etg.isEmpty(dev.active), "No actives");
+		ok(dev.active.auto, "Siphon");
+		ok(!dev.active.cast, "No Burrow");
 	});
 	gameTest("Obsession", function() {
 		initHand(player1, Cards.GhostofthePast, Cards.GhostofthePast, Cards.GhostofthePast, Cards.GhostofthePast, Cards.GhostofthePast, Cards.GhostofthePast, Cards.GhostofthePast, Cards.GhostofthePast);
 		player1.endturn(0);
-		equal(player1.hp, 92, "Damage");
+		equal(player1.hp, 90, "Damage");
 		equal(player1.hand.length, 7, "Discarded");
 	});
 	gameTest("Parallel", function() {

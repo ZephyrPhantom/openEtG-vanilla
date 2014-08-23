@@ -618,7 +618,7 @@ nymph:function(c,t){
 	new etg.Creature(Cards.Codes[etg.NymphList[e]].asUpped(t.card.upped), t.owner).place();
 },
 obsession:function(c,t){
-	t.dmg(c.card.upped?10:8);
+	t.dmg(c.card.upped?13:10);
 },
 overdrive:function(c,t){
 	Effect.mkText("3|-1", c);
