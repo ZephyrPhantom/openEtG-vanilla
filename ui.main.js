@@ -309,7 +309,7 @@ function victoryScreen(game) {
 }
 // Asset Loading
 var nopic = PIXI.Texture.fromImage("");
-var goldtex, buttex;
+var buttex;
 var backgrounds = ["assets/bg_default.png", "assets/bg_game.png"];
 var questIcons = [], eicons = [], ricons = [], cardBacks = [], cardBorders = [], popups = [], sicons = [], ticons = [], sborders = [];
 var preLoader = new PIXI.AssetLoader(["assets/button.png", "assets/esheet.png", "assets/backsheet.png",
@@ -1193,10 +1193,6 @@ function getTextImage(text, font, bgcolor, width) {
 			w = Math.max(w, x);
 			x = 0;
 			y += h;
-		}else if (piece == "$"){
-			var spr = new PIXI.Sprite(goldtex);
-			spr.scale.set(size/16, size/16);
-			pushChild(spr);
 		}else if (/^\d\d?:\d\d?$/.test(piece)) {
 			var parse = piece.split(":");
 			var num = parseInt(parse[0]);
