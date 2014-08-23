@@ -547,9 +547,8 @@ miracle:function(c,t){
 	c.owner.quanta[etg.Light] = 0;
 	if (c.owner.sosa){
 		c.owner.hp = 1;
-	}else if (c.owner.hp<c.owner.maxhp){
-		c.owner.hp = c.owner.maxhp-1;
 	}
+	c.owner.hp = c.owner.maxhp-1;
 },
 mitosis:function(c,t){
 	new etg.Creature(c.card, c.owner).place();
