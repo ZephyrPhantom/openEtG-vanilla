@@ -1257,8 +1257,7 @@ socket.on("chat", function(data) {
 });
 function maybeSendChat(e) {
 	e.cancelBubble = true;
-	if (e.keyCode != 13) return;
-	if (chatinput.value) {
+	if (e.keyCode == 13 && chatinput.value) {
 		var msg = chatinput.value;
 		chatinput.value = "";
 		if (msg.substr(0, 6) == "/mute "){
@@ -1266,8 +1265,8 @@ function maybeSendChat(e) {
 		}else if (msg.substr(0, 8) == "/unmute "){
 			delete muteset[msg.substring(8)];
 		}else {
-			var name = username.value || guestname || (guestname = (10000 + Math.floor(Math.random() * 89999)) + "");
-			socket.emit("chat", { msg: msg, u: name });
+			var name = username.value || guestname || (guestname = (10000 + Math.floor(Math.random() * 89999)) + "V");
+			socket.emit("guestchat", { msg: msg, u: name });
 		}
 		e.preventDefault();
 	}
