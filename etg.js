@@ -796,14 +796,10 @@ Player.prototype.addpoison = function(x) {
 	this.status.poison += x;
 }
 Creature.prototype.addpoison = function(x) {
-	if (this.card.isOf(Cards.Cell)){
-		this.transform(Cards.MalignantCell);
-	}else{
-		this.defstatus("poison", 0);
-		this.status.poison += x;
-		if (this.status.voodoo){
-			this.owner.foe.addpoison(x);
-		}
+	this.defstatus("poison", 0);
+	this.status.poison += x;
+	if (this.status.voodoo){
+		this.owner.foe.addpoison(x);
 	}
 }
 Weapon.prototype.buffhp = function(){}
