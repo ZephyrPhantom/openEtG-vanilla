@@ -24,6 +24,13 @@ function lobo(t){
 		if (!(t.active[key].activename in etg.passives)) delete t.active[key];
 	}
 }
+function adrenathrottle(f){
+	return function(c){
+		if (!c.status || (c.status.adrenaline || 0)<3){
+			return f.apply(null, arguments);
+		}
+	}
+}
 var Actives = {
 noluci:function(){},
 ablaze:function(c,t){
@@ -60,18 +67,18 @@ aflatoxin:function(c,t){
 		t.status.aflatoxin = true;
 	}
 },
-air:function(c,t){
+air:adrenathrottle(function(c,t){
 	Effect.mkText("1:9", c);
 	c.owner.spend(etg.Air, -1);
-},
+}),
 antimatter:function(c,t){
 	Effect.mkText("Antimatter", t);
-	t.atk -= t.trueatk(0, true)*2;
+	t.atk -= t.trueatk(0)*2;
 },
 bblood:function(c,t){
 	Effect.mkText("0|20", t);
 	t.buffhp(20);
-	t.delay(6);
+	t.status.delay = 6;
 },
 blackhole:function(c,t){
 	if (!t.sanctuary){
@@ -243,10 +250,10 @@ duality:function(c,t){
 		new etg.CardInstance(c.owner.foe.deck[c.owner.foe.deck.length-1], c.owner).place();
 	}
 },
-earth:function(c,t){
+earth:adrenathrottle(function(c,t){
 	Effect.mkText("1:4", c);
 	c.owner.spend(etg.Earth, -1);
-},
+}),
 earthquake:function(c,t){
 	Effect.mkText("Earthquake", t);
 	if (t.status.charges>3){
@@ -284,10 +291,10 @@ evolve:function(c,t){
 fiery:function(c,t){
 	return Math.floor(c.owner.quanta[etg.Fire]/5);
 },
-fire:function(c,t){
+fire:adrenathrottle(function(c,t){
 	Effect.mkText("1:6", c);
 	c.owner.spend(etg.Fire, -1);
-},
+}),
 firebolt:function(c,t){
 	t.spelldmg(3+3*Math.floor(c.owner.quanta[etg.Fire]/10));
 },
@@ -331,7 +338,7 @@ gpullspell:function(c,t){
 	}else Actives.gpull(t);
 },
 gratitude:function(c,t){
-	Effect.mkText("+4", c);
+	Effect.mkText("G", c);
 	c.owner.dmg(c.owner.mark == etg.Life ? -5 : -3);
 },
 growth: function (c, t) {
@@ -360,7 +367,8 @@ hasten:function(c,t){
 },
 hatch:function(c,t){
 	Effect.mkText("Hatch", c);
-	c.transform(c.owner.randomcard(c.card.upped, function(x){return x.type == etg.CreatureEnum}));
+	var bans = [Cards.ShardofFocus, Cards.FateEgg, Cards.Immortal, Cards.Scarab, Cards.DevonianDragon, Cards.Chimera];
+	c.transform(c.owner.randomcard(c.card.upped, function(x){return x.type == etg.CreatureEnum && !bans.some(function(ban){return x.isOf(ban)})}));
 },
 heal:function(c,t){
 	t.dmg(-5);
@@ -372,13 +380,13 @@ holylight:function(c,t){
 	t.dmg(!(t instanceof etg.Player) && t.status.nocturnal?10:-10);
 },
 hope:function(c,t){
-	var dr=0;
+	var dr=c.card.upped?1:0;
 	for(var i=0; i<23; i++){
 		if(c.owner.creatures[i] && c.owner.creatures[i].hasactive("auto", "light")){
 			dr++;
 		}
 	}
-	return dr;
+	c.dr = dr;
 },
 icebolt:function(c,t){
 	var bolts = Math.floor(c.owner.quanta[etg.Water]/10);
@@ -500,10 +508,10 @@ integrity:function(c,t){
 	};
 	new etg.Creature(Cards.ShardGolem, c.owner).place();
 },
-light:function(c,t){
+light:adrenathrottle(function(c,t){
 	Effect.mkText("1:8", c);
 	c.owner.spend(etg.Light, -1);
-},
+}),
 lightning:function(c,t){
 	Effect.mkText("-5", t);
 	t.spelldmg(5);
@@ -577,12 +585,12 @@ mutation:function(c,t){
 		t.transform(Cards.Abomination);
 	}
 },
-neuro:function(c,t){
+neuro:adrenathrottle(function(c,t){
 	t.addpoison(1);
 	if (t instanceof etg.Player){
 		t.neuro = true;
 	}
-},
+}),
 nightmare:function(c,t){
 	if (!c.owner.foe.sanctuary){
 		Effect.mkText("Nightmare", t);
@@ -641,17 +649,6 @@ parallel:function(c,t){
 	copy.place();
 	if (copy.status.voodoo){
 		c.owner.foe.dmg(copy.maxhp-copy.hp);
-		if (copy.status.poison){
-			c.owner.foe.addpoison(copy.status.poison);
-		}
-		if (c.owner.foe.weapon){
-			if (copy.status.delayed){
-				c.owner.foe.delay(copy.status.delayed);
-			}
-			if (copy.status.frozen){
-				c.owner.foe.freeze(copy.status.frozen);
-			}
-		}
 	}
 },
 phoenix:function(c,t, index){
@@ -674,12 +671,12 @@ platearmor:function(c,t){
 	Effect.mkText("0|"+buff, t);
 	t.buffhp(buff);
 },
-poison:function(c,t){
+poison:adrenathrottle(function(c,t){
 	(t || c.owner.foe).addpoison(1);
-},
-poison2:function(c,t){
+}),
+poison2:adrenathrottle(function(c,t){
 	(t || c.owner.foe).addpoison(2);
-},
+}),
 poison3:function(c,t){
 	(t || c.owner.foe).addpoison(3);
 },
@@ -806,12 +803,12 @@ singularity:function(c,t){
 	}
 	c.dmg(c.trueatk(), true);
 },
-siphon: function(c, t) {
+siphon:adrenathrottle(function(c, t) {
 	if (!c.owner.foe.sanctuary && c.owner.foe.spend(etg.Other, 1)) {
 		Effect.mkText("1:11", c);
 		c.owner.spend(etg.Darkness, -1);
 	}
-},
+}),
 skyblitz:function(c,t){
 	c.owner.quanta[etg.Air] = 0;
 	for(var i=0; i<23; i++){
@@ -935,7 +932,7 @@ virusplague:function(c,t){
 	c.die();
 },
 void:function(c,t){
-	c.owner.foe.maxhp = Math.max(c.owner.foe.maxhp-3, 1);
+	c.owner.foe.maxhp = Math.max(c.owner.foe.maxhp-(c.owner.mark == etg.Darkness?3:2), 1);
 	if (c.owner.foe.hp > c.owner.foe.maxhp){
 		c.owner.foe.hp = c.owner.foe.maxhp;
 	}

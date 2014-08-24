@@ -593,7 +593,7 @@ Player.prototype.endturn = function(discard) {
 	}
 	if (this.shield){
 		this.shield.usedactive = false;
-		if(this.shield.active.auto)this.shield.active.auto(this.shield);
+		if (this.shield.active.auto) this.shield.active.auto(this.shield);
 	}
 	if (this.weapon)this.weapon.attack();
 	if (this.foe.sosa > 0){
@@ -701,7 +701,7 @@ Weapon.prototype.info = function(){
 	return info + this.activetext() + objinfo(this.status);
 }
 Shield.prototype.info = function(){
-	var info = this.truedr() + "DR" + this.activetext();
+	var info = this.dr + "DR" + this.activetext();
 	if (this.status.charges)info += " x"+this.status.charges + objinfo(this.status);
 	return info;
 }
@@ -934,13 +934,6 @@ Weapon.prototype.trueatk = Creature.prototype.trueatk = function(adrenaline, nob
 	}
 	return dmg;
 }
-Shield.prototype.truedr = function(){
-	var dr = this.dr;
-	if (this.active.buff){
-		dr += this.active.buff(this);
-	}
-	return dr;
-}
 Player.prototype.truehp = function(){ return this.hp; }
 Weapon.prototype.truehp = function(){ return this.card.health; }
 Creature.prototype.truehp = function(){
@@ -1038,14 +1031,11 @@ Weapon.prototype.attack = Creature.prototype.attack = function(stasis, freedomCh
 		}else if (target.gpull){
 			var gpull = target.gpull;
 			var dmg = gpull.dmg(trueatk);
-			if (this.active.hit && (!this.status.adrenaline || this.status.adrenaline < 3)){
-				this.active.hit(this, gpull, dmg);
-			}
 			if (target.gpull == gpull && gpull.active.shield){
 				gpull.active.shield(gpull, isCreature?this:this.owner, dmg);
 			}
 		}else{
-			var truedr = target.shield ? target.shield.truedr() : 0;
+			var truedr = target.shield ? target.shield.dr : 0;
 			var tryDmg = Math.max(trueatk - truedr, 0);
 			if (!target.shield || !target.shield.active.shield || !target.shield.active.shield(target.shield, this, tryDmg)){
 				if (tryDmg > 0){
