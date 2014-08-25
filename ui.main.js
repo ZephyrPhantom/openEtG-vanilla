@@ -254,11 +254,10 @@ function initGame(data) {
 			pl.deck = deckPower(pl.deck, 2);
 		}
 	}
-	var foeDeck = game.player2.deck.slice();
 	game.turn.drawhand(7);
 	game.turn.foe.drawhand(7);
 	if (data.foename) game.foename = data.foename;
-	startMatch(game, foeDeck);
+	startMatch(game);
 	return game;
 }
 function deckPower(deck, amount) {
@@ -609,7 +608,7 @@ function startEditor() {
 		}
 	});
 }
-function startMatch(game, foeDeck) {
+function startMatch(game) {
 	function drawBorder(obj, spr) {
 		if (obj) {
 			if (game.targetingMode) {
