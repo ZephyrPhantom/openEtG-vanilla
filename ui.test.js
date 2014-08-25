@@ -141,7 +141,7 @@ require("./etg.client").loadcards(function() {
 		player2.deck = [Cards.MassiveDragon];
 		player1.endturn();
 		equal(player2.gpull.hp, 29, "dmg redirected");
-		equal(player2.gpull.status.poison, 1, "psn redirected");
+		equal(player2.gpull.status.poison, undefined, "psn not redirected");
 		player2.gpull.die();
 		ok(!player2.gpull, "gpull death poof");
 	});
@@ -152,7 +152,7 @@ require("./etg.client").loadcards(function() {
 			new etg.Creature(Cards.RayofLight, player1).place();
 		}
 		player1.endturn();
-		equal(player1.shield.truedr(), 3, "DR");
+		equal(player1.shield.dr, 3, "DR");
 		equal(player1.quanta[etg.Light], 3, "RoL");
 	});
 	gameTest("Lobotomize", function() {
