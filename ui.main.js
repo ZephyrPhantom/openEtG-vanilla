@@ -1,6 +1,6 @@
 "use strict";
 (function() {
-var htmlElements = ["leftpane", "chatArea", "chatinput", "deckimport", "foename", "challenge", "chatBox", "bottompane", "username"];
+var htmlElements = ["leftpane", "chatinput", "deckimport", "foename", "challenge", "chatBox", "bottompane", "username"];
 htmlElements.forEach(function(name){
 	window[name] = document.getElementById(name);
 });
@@ -500,7 +500,6 @@ function startEditor() {
 		editordeck.sort(editorCardCmp);
 	}
 	var cardminus = {};
-	chatArea.value = "Build a 30-60 card deck";
 	var editorui = new PIXI.DisplayObjectContainer();
 	editorui.interactive = true;
 	var bg = new PIXI.Sprite(backgrounds[0]);

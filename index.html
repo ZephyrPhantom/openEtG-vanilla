@@ -19,7 +19,7 @@
 			top:0px;
 			position:absolute;
 		}
-		#bottompane {
+		#deckimport {
 			left:0px;
 			top:600px;
 			width:900px;
@@ -46,10 +46,7 @@
 		<div id="chatBox" style="width:350px;height:400px;overflow-y:scroll;overflow-x:hidden;background-color:white"></div>
 		<textarea id="chatinput" placeholder="Chat" style="width:350px;height:40px;resize:none" onkeydown="maybeSendChat(event)"></textarea>
 	</div>
-	<div id="bottompane">
-		<input id="deckimport" type="text" placeholder="Deck" style="width:890px" />
-		<br><input id="chatArea" type="text" placeholder="Info" style="width:890px" readonly tabIndex="-1" />
-	</div>
+	<input id="deckimport" type="text" placeholder="Deck" style="width:890px" />
     <script src="ui.main.js"></script>
 </body>
 </html>
