@@ -836,7 +836,7 @@ sosa:function(c,t){
 },
 soulcatch:function(c,t){
 	Effect.mkText("Soul", c);
-	c.owner.spend(etg.Death, -3);
+	c.owner.spend(etg.Death, c.card.upped?-3:-2);
 },
 sskin:function(c,t){
 	c.owner.buffhp(c.owner.quanta[etg.Earth]);
