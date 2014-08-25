@@ -1015,24 +1015,21 @@ Weapon.prototype.attack = Creature.prototype.attack = function(stasis, freedomCh
 	if (!(stasis || this.status.frozen || this.status.delayed) && (trueatk = this.trueatk()) != 0){
 		var momentum = this.status.momentum;
 		if (this.status.airborne && freedomChance && this.owner.rng() < freedomChance){
-			if (!momentum && !target.shield && !target.gpull && !this.status.psion){
-				trueatk = Math.ceil(trueatk * 1.5);
-			}else{
-				momentum = true;
-			}
+			momentum = true;
+			trueatk = Math.ceil(trueatk * 1.5);
 		}
 		if (this.status.psion){
 			target.spelldmg(trueatk);
 		}else if (momentum || trueatk < 0){
 			target.dmg(trueatk);
-			if (this.active.hit && (!this.status.adrenaline || this.status.adrenaline < 3)){
+			if (this.active.hit){
 				this.active.hit(this, target, trueatk);
 			}
 		}else if (target.gpull){
 			var gpull = target.gpull;
 			var dmg = gpull.dmg(trueatk);
-			if (target.gpull == gpull && gpull.active.shield){
-				gpull.active.shield(gpull, isCreature?this:this.owner, dmg);
+			if (this.hasactive("hit", "vampirism")){
+				this.owner.dmg(-dmg);
 			}
 		}else{
 			var truedr = target.shield ? target.shield.dr : 0;
@@ -1040,7 +1037,7 @@ Weapon.prototype.attack = Creature.prototype.attack = function(stasis, freedomCh
 			if (!target.shield || !target.shield.active.shield || !target.shield.active.shield(target.shield, this, tryDmg)){
 				if (tryDmg > 0){
 					var dmg = target.dmg(tryDmg);
-					if (this.active.hit && (!this.status.adrenaline || this.status.adrenaline < 3)){
+					if (this.active.hit){
 						this.active.hit(this, target, dmg);
 					}
 				}

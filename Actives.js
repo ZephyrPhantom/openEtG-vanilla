@@ -966,7 +966,7 @@ blockwithcharge:function(c,t){
 	return true;
 },
 cold:function(c,t){
-	if (c.owner.rng()<.3){
+	if (t instanceof etg.Creature && c.owner.rng()<.3){
 		t.freeze(3);
 	}
 },
@@ -980,7 +980,9 @@ evade50:function(c,t){
 	return c.owner.rng() < .5;
 },
 firewall:function(c,t){
-	t.dmg(1);
+	if (t instanceof etg.Creature){
+		t.dmg(1);
+	}
 },
 skull:function(c,t){
 	if (t instanceof etg.Creature && !t.card.isOf(Cards.Skeleton)) {
@@ -995,13 +997,15 @@ skull:function(c,t){
 	}
 },
 slow:function(c,t){
-	t.delay(2);
+	if (t instanceof etg.Creature){
+		t.delay(2);
+	}
 },
 solar:function(c,t){
 	c.owner.spend(etg.Light, -1);
 },
 thorn:function(c,t){
-	if (c.owner.rng() < .75){
+	if (t instanceof etg.Creature && c.owner.rng() < .75){
 		t.addpoison(1);
 	}
 },

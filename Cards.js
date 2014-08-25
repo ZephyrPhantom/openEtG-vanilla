@@ -91,9 +91,6 @@ var TargetFilters = {
 	paradox:function(c, t){
 		return t.isMaterialInstance(etg.Creature) && t.truehp()<t.trueatk();
 	},
-	airbornecrea:function(c, t){
-		return t.isMaterialInstance(etg.Creature) && t.status.airborne;
-	},
 	wisdom:function(c, t){
 		return (t instanceof etg.Creature || t instanceof etg.Weapon) && !t.status.burrowed;
 	}
