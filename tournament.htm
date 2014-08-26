@@ -1,21 +1,39 @@
-<script src="etgify.js"></script>
+<!DOCTYPE html>
+<head><script src="etgify.js"></script></head>
+<body>
 <input id="deckcode" type="text" placeholder="Deck" style="width:890px"/><br>
 <input id="legality" type="text" readonly style="width:400px" />
 <input id="test" type="submit" value="Test Deck" onclick="testDeck()" />
 <select id="rulesets">
+	<option value="quantacontrolreturns">Quanta Control Returns</option>
 	<option value="inception">Inception</option>
 	<option value="tamerandomness">Tame the Randomness</option>
 	<option value="shoecobbler">The Shoecobblers Dilemma</option>
 	<option value="powerless3">Powerless Three</option>
 </select>
 <script>
-	var deckcode = document.getElementById("deckcode");
-	var legality = document.getElementById("legality");
-	var rulesets = document.getElementById("rulesets");
 	var Cards = require("./Cards");
 	var etg = require("./etg");
 	require("./etg.client").loadcards();
 	var verifiers = {
+		quantacontrolreturns: function(deck){
+			function pushElement(ele){
+				if (!~elements.indexOf(ele)){
+					elements.push(ele);
+				}
+			}
+			var bannedCards = [Cards.Discord, Cards.Trident, Cards.ShardofSacrifice, Cards.ShardofFocus, Cards.Earthquake, Cards.ShardofPatience, Cards.ShardofFreedom, Cards.Fractal];
+			var elements = [];
+			for(var i=0; i<deck.length; i++){
+				if (bannedCards.some(function(ban){return deck[i].isOf(ban)}))return deck[i].name + " banned";
+				pushElement(deck[i].element);
+				if (deck[i].active.cast){
+					pushElement(deck[i].active.cast && deck[i].castele);
+				}
+			}
+			if (elements.length > 3)return "Illegal. Elements used: " + elements.map(function(x){return etg.eleNames[x]}).join(" ");
+			return "Legal if elements include " + elements.map(function(x){return etg.eleNames[x]}).join(" ");
+		},
 		powerless3: function(deck) {
 		    var elements = [], anyupped = false, disco = false;
 		    var bannedCards = ["593", "5ic", "77j", "7gs"];
@@ -74,7 +92,7 @@
 		        legs += addLegs(card.code);
 		    }
 		    if (legs != 30) return "You have " + legs + " legs. This is too " + (legs > 30 ? "many" : "few");
-            return "Legal"
+            return "Legal";
 		},
 		tamerandomness: function(deck) {
 			var bannedCards = [Cards.Blackhole, Cards.AmberNymph, Cards.ShardofFocus, Cards.Earthquake, Cards.Trident, Cards.Miracle, Cards.ShardofDivinity];
@@ -91,7 +109,7 @@
 			if (pillCount > 5)return "Too many non-quantum pillars";
 			var rngNeeded = Math.round(deck.length*.4);
 			if (rngCount < rngNeeded)return "Too few random cards: " + rngCount + " / " + rngNeeded;
-			return "Legal"
+			return "Legal";
 		},
 		inception: function(deck) {
 			var bannedCards = [Cards.Blackhole, Cards.AmberNymph, Cards.Earthquake, Cards.ShardofFocus, Cards.ShardofWisdom, Cards.Pandemonium, Cards.Miracle, Cards.NymphsTears, Cards.BlueNymph, Cards.NymphQueen];
@@ -116,6 +134,9 @@
 		}
 	};
 	function testDeck() {
+		var deckcode = document.getElementById("deckcode");
+		var legality = document.getElementById("legality");
+		var rulesets = document.getElementById("rulesets");
 		if (!Cards.loaded){
 			legality.value = "Card DB not yet downloaded";
 			return;
@@ -135,3 +156,4 @@
 		legality.value = deck.length > 60 ? "Your deck is too large" : deck.length < 30 ? "Your deck is too small" : verifiers[rulesets.options[rulesets.selectedIndex].value](deck, markele);
 	}
 </script>
+</body>

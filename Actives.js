@@ -99,7 +99,7 @@ boneyard:function(c,t){
 	}
 },
 bow:function(c,t){
-	return c.owner.mark == etg.Air || c.owner.mark == etg.Light?1:0;
+	return c.owner.mark == etg.Air?1:0;
 },
 bravery:function(c,t){
 	if (!c.owner.foe.sanctuary){
