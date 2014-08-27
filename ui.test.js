@@ -137,7 +137,7 @@ require("./etg.client").loadcards(function() {
 	gameTest("Gpull", function() {
 		new etg.Creature(Cards.MassiveDragon, player2).place();
 		player2.gpull = player2.creatures[0];
-		new etg.Creature(Cards.Scorpion, player1).place();
+		new etg.Creature(Cards.ForestScorpion, player1).place();
 		player2.deck = [Cards.MassiveDragon];
 		player1.endturn();
 		equal(player2.gpull.hp, 29, "dmg redirected");
