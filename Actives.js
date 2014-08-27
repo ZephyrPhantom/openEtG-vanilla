@@ -813,7 +813,7 @@ skyblitz:function(c,t){
 	c.owner.quanta[etg.Air] = 0;
 	for(var i=0; i<23; i++){
 		var cr = c.owner.creatures[i];
-		if (cr && cr.status.airborne){
+		if (cr && cr.status.airborne && cr.isMaterialInstance(etg.Creature)){
 			Effect.mkText("Dive", cr);
 			cr.defstatus("dive", 0);
 			cr.status.dive += cr.trueatk();
