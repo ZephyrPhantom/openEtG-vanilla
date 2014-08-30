@@ -1104,9 +1104,8 @@ function startMatch(game) {
 			var sh = pl.shield;
 			if (sh && !(j == 1 && cloakgfx.visible)) {
 				shiesprite[j].visible = true;
-				var dr = sh.truedr();
 				var child = shiesprite[j].getChildAt(0);
-				child.setTexture(getTextImage(sh.status.charges ? "x" + sh.status.charges: "" + sh.truedr() + "", ui.mkFont(12, sh.card.upped ? "black" : "white"), maybeLighten(sh.card)));
+				child.setTexture(getTextImage(sh.status.charges ? "x" + sh.status.charges: "" + sh.dr + "", ui.mkFont(12, sh.card.upped ? "black" : "white"), maybeLighten(sh.card)));
 				child.visible = true;
 				var child = shiesprite[j].getChildAt(1);
 				child.setTexture(getTextImage((sh.active.shield ? " " + sh.active.shield.activename : "") + (sh.active.buff ? " " + sh.active.buff.activename : "") + (sh.active.cast ? etg.casttext(sh.cast, sh.castele) + sh.active.cast.activename : ""), ui.mkFont(12, sh.card.upped ? "black" : "white")));
@@ -1249,8 +1248,8 @@ socket.on("chat", function(data) {
 	if (m < 10) m = "0"+m;
 	if (s < 10) s = "0"+s;
 	var msg = h + ":" + m + ":" + s + " " + (data.u ? "<b>" + sanitizeHtml(data.u) + ":</b> " : "") + sanitizeHtml(data.msg);
-	var color = data.mode == "pm" ? "blue" : data.mode == "info" ? "red" : "black";
-	addChatMessage(data.mode == "guest" ? "<font color=black><i>" + msg + "</i></font><br>" : "<font color=" + color + ">" + msg + "</font><br>");
+	var color = data.mode || "black";
+	addChatMessage("<font color=" + color + ">" + msg + "</font><br>");
 });
 function maybeSendChat(e) {
 	e.cancelBubble = true;

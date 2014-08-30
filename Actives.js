@@ -67,10 +67,10 @@ aflatoxin:function(c,t){
 		t.status.aflatoxin = true;
 	}
 },
-air:adrenathrottle(function(c,t){
+air:function(c,t){
 	Effect.mkText("1:9", c);
 	c.owner.spend(etg.Air, -1);
-}),
+},
 antimatter:function(c,t){
 	Effect.mkText("Antimatter", t);
 	t.atk -= t.trueatk(0)*2;
@@ -250,10 +250,10 @@ duality:function(c,t){
 		new etg.CardInstance(c.owner.foe.deck[c.owner.foe.deck.length-1], c.owner).place();
 	}
 },
-earth:adrenathrottle(function(c,t){
+earth:function(c,t){
 	Effect.mkText("1:4", c);
 	c.owner.spend(etg.Earth, -1);
-}),
+},
 earthquake:function(c,t){
 	Effect.mkText("Earthquake", t);
 	if (t.status.charges>3){
@@ -291,17 +291,17 @@ evolve:function(c,t){
 fiery:function(c,t){
 	return Math.floor(c.owner.quanta[etg.Fire]/5);
 },
-fire:adrenathrottle(function(c,t){
+fire:function(c,t){
 	Effect.mkText("1:6", c);
 	c.owner.spend(etg.Fire, -1);
-}),
+},
 firebolt:function(c,t){
 	t.spelldmg(3+3*Math.floor(c.owner.quanta[etg.Fire]/10));
 },
 flyingweapon: function(c, t) {
 	var wp = c.owner.weapon;
 	if (wp){
-		var cr = new etg.Creature(wp.card, t.owner);
+		var cr = new etg.Creature(wp.card, c.owner);
 		cr.atk = wp.atk;
 		cr.active = etg.clone(wp.active);
 		cr.cast = wp.cast;
@@ -508,10 +508,10 @@ integrity:function(c,t){
 	};
 	new etg.Creature(Cards.ShardGolem, c.owner).place();
 },
-light:adrenathrottle(function(c,t){
+light:function(c,t){
 	Effect.mkText("1:8", c);
 	c.owner.spend(etg.Light, -1);
-}),
+},
 lightning:function(c,t){
 	Effect.mkText("-5", t);
 	t.spelldmg(5);
@@ -762,7 +762,7 @@ serendipity:function(c,t){
 	var cards = [], num = Math.min(8-c.owner.hand.length, 3), anyentro = false;
 	for(var i=num-1; i>=0; i--){
 		// Don't accept Marks/Nymphs
-		cards[i] = c.owner.randomcard(c.card.upped, function(x){return x.type != etg.PillarEnum && (i>0 || anyentro || x.element == etg.Entropy)});
+		cards[i] = c.owner.randomcard(c.card.upped, function(x){return x.type != etg.PillarEnum && !etg.ShardList.some(function(shard){!shard || x.isOf(shard)}) && !etg.NymphList.some(function(nymph){!nymph || x.isOf(nymph)}) && (i>0 || anyentro || x.element == etg.Entropy)});
 		anyentro |= cards[i].element == etg.Entropy;
 	}
 	for(var i=0; i<num; i++){
