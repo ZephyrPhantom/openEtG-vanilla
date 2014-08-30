@@ -311,10 +311,10 @@ function victoryScreen(game) {
 // Asset Loading
 var nopic = PIXI.Texture.fromImage("");
 var buttex, gfxloaded;
-var backgrounds = ["assets/bg_default.png", "assets/bg_game.png"];
+var backgrounds = ["../assets/bg_default.png", "../assets/bg_game.png"];
 var questIcons = [], eicons = [], ricons = [], cardBacks = [], cardBorders = [], popups = [], sicons = [], ticons = [], sborders = [];
-var preLoader = new PIXI.AssetLoader(["assets/button.png", "assets/esheet.png", "assets/backsheet.png",
-	"assets/cardborders.png", "assets/statussheet.png", "assets/statusborders.png", "assets/typesheet.png"].concat(backgrounds));
+var preLoader = new PIXI.AssetLoader(["../assets/button.png", "../assets/esheet.png", "../assets/backsheet.png",
+	"../assets/cardborders.png", "../assets/statussheet.png", "../assets/statusborders.png", "../assets/typesheet.png"].concat(backgrounds));
 var loadingBarProgress = 0, loadingBarGraphic = new PIXI.Graphics();
 preLoader.onProgress = function() {
 	loadingBarGraphic.clear();
@@ -325,21 +325,21 @@ preLoader.onProgress = function() {
 preLoader.onComplete = function() {
 	// Start loading assets we don't require to be loaded before starting
 	// Load assets we preloaded
-	buttex = PIXI.Texture.fromFrame("assets/button.png");
+	buttex = PIXI.Texture.fromFrame("../assets/button.png");
 	for (var i = 0;i < backgrounds.length;i++){
 		backgrounds[i] = PIXI.Texture.fromFrame(backgrounds[i]);
 	}
-	var tex = PIXI.Texture.fromFrame("assets/esheet.png");
+	var tex = PIXI.Texture.fromFrame("../assets/esheet.png");
 	for (var i = 0;i < 14;i++) eicons.push(new PIXI.Texture(tex, new PIXI.Rectangle(i * 32, 0, 32, 32)));
-	var tex = PIXI.Texture.fromFrame("assets/backsheet.png");
+	var tex = PIXI.Texture.fromFrame("../assets/backsheet.png");
 	for (var i = 0;i < 26;i++) cardBacks.push(new PIXI.Texture(tex, new PIXI.Rectangle(i * 132, 0, 132, 256)));
-	var tex = PIXI.Texture.fromFrame("assets/cardborders.png");
+	var tex = PIXI.Texture.fromFrame("../assets/cardborders.png");
 	for (var i = 0;i < 26;i++) cardBorders.push(new PIXI.Texture(tex, new PIXI.Rectangle(i * 128, 0, 128, 162)));
-	var tex = PIXI.Texture.fromFrame("assets/statussheet.png");
+	var tex = PIXI.Texture.fromFrame("../assets/statussheet.png");
 	for (var i = 0;i < 7;i++) sicons.push(new PIXI.Texture(tex, new PIXI.Rectangle(13 * i, 0, 13, 13)));
-	var tex = PIXI.Texture.fromFrame("assets/statusborders.png");
+	var tex = PIXI.Texture.fromFrame("../assets/statusborders.png");
 	for (var i = 0;i < 3;i++) sborders.push(new PIXI.Texture(tex, new PIXI.Rectangle(64 * i, 0, 64, 81)));
-	var tex = PIXI.Texture.fromFrame("assets/typesheet.png");
+	var tex = PIXI.Texture.fromFrame("../assets/typesheet.png");
 	for (var i = 0;i < 6;i++) ticons.push(new PIXI.Texture(tex, new PIXI.Rectangle(25 * i, 0, 25, 25)));
 	gfxloaded = true;
 	if (Cards.loaded) startEditor();
@@ -459,11 +459,6 @@ function makeCardSelector(cardmouseover, cardclick){
 				function(x) { return x.element == elefilter &&
 					((i % 3 == 0 && x.type == etg.CreatureEnum) || (i % 3 == 1 && x.type <= etg.PermanentEnum) || (i % 3 == 2 && x.type == etg.SpellEnum));
 				}, editorCardCmp);
-		}
-	}
-	makeColumns();
-	cardsel.next = function() {
-		for (var i = 0;i < 6;i++) {
 			for (var j = 0;j < columns[i].length;j++) {
 				var spr = columnspr[i][j], code = columns[i][j], card = Cards.Codes[code];
 				spr.setTexture(getCardImage(code));
@@ -473,7 +468,8 @@ function makeCardSelector(cardmouseover, cardclick){
 				columnspr[i][j].visible = false;
 			}
 		}
-	};
+	}
+	makeColumns();
 	return cardsel;
 }
 function startEditor() {
@@ -497,6 +493,7 @@ function startEditor() {
 		}
 		editormarksprite.setTexture(eicons[editormark]);
 		editordeck.sort(editorCardCmp);
+		saveDeck();
 	}
 	var cardminus = {};
 	var editorui = new PIXI.DisplayObjectContainer();
@@ -508,16 +505,15 @@ function startEditor() {
 	bg.interactive = true;
 	editorui.addChild(bg);
 	var bclear = makeButton(8, 32, "Clear");
-	var bsave = makeButton(8, 56, "Save");
 	setClick(bclear, function() {
 		cardminus = {};
 		editordeck.length = 0;
+		saveDeck();
 	});
 	editorui.addChild(bclear);
-	editorui.addChild(bsave);
-	setClick(bsave, function() {
+	function saveDeck(){
 		deckimport.value = etgutil.encodedeck(editordeck) + "01" + etg.toTrueMark(editormark);
-	});
+	}
 	var bimport = makeButton(8, 80, "Import");
 	setClick(bimport, function() {
 		var dvalue = deckimport.value;
@@ -561,6 +557,7 @@ function startEditor() {
 					adjust(cardminus, code, -1);
 				}
 				editordeck.splice(_i, 1);
+				saveDeck();
 			});
 			sprite.mouseover = function() {
 				cardArt.setTexture(getArt(editordeck[_i]));
@@ -591,6 +588,7 @@ function startEditor() {
 					if (cmp >= 0) break;
 				}
 				editordeck.splice(i, 0, code);
+				saveDeck();
 			}
 		});
 	editorui.addChild(cardsel);
@@ -598,7 +596,6 @@ function startEditor() {
 	cardArt.position.set(734, 8);
 	editorui.addChild(cardArt);
 	refreshRenderer(editorui, function() {
-		cardsel.next(cardminus);
 		for (var i = 0;i < editordeck.length;i++) {
 			editordecksprites[i].visible = true;
 			editordecksprites[i].setTexture(getCardImage(editordeck[i]));
