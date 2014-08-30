@@ -230,8 +230,7 @@ dive:function(c,t){
 	c.status.dive += c.trueatk();
 },
 divinity:function(c,t){
-	c.owner.maxhp += 8;
-	c.owner.buffhp(16);
+	c.owner.buffhp(c.owner.mark == etg.Light ? 24 : 16);
 },
 drainlife:function(c,t){
 	c.owner.dmg(-t.spelldmg(2+Math.floor(c.owner.quanta[etg.Darkness]/10)*2));
@@ -762,7 +761,7 @@ serendipity:function(c,t){
 	var cards = [], num = Math.min(8-c.owner.hand.length, 3), anyentro = false;
 	for(var i=num-1; i>=0; i--){
 		// Don't accept Marks/Nymphs
-		cards[i] = c.owner.randomcard(c.card.upped, function(x){return x.type != etg.PillarEnum && !etg.ShardList.some(function(shard){!shard || x.isOf(shard)}) && !etg.NymphList.some(function(nymph){!nymph || x.isOf(nymph)}) && (i>0 || anyentro || x.element == etg.Entropy)});
+		cards[i] = c.owner.randomcard(c.card.upped, function(x){return (x.type != etg.PillarEnum || !x.name.match(/^Mark/)) && !etg.ShardList.some(function(shard){!shard || x.isOf(shard)}) && !etg.NymphList.some(function(nymph){!nymph || x.isOf(nymph)}) && (i>0 || anyentro || x.element == etg.Entropy)});
 		anyentro |= cards[i].element == etg.Entropy;
 	}
 	for(var i=0; i<num; i++){
