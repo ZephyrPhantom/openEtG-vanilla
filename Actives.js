@@ -705,7 +705,6 @@ rage:function(c,t){
 	Effect.mkText(dmg+"|-"+dmg, t);
 	t.atk += dmg;
 	t.dmg(dmg);
-	t.status.frozen = 0;
 },
 readiness:function(c,t){
 	Effect.mkText("Ready", t);
@@ -830,8 +829,7 @@ sosa:function(c,t){
 			c.owner.quanta[i] = 0;
 		}
 	}
-	var n = c.card.upped?40:48;
-	c.owner.dmg(Math.max(Math.ceil(c.owner.maxhp*n/100), n), true);
+	c.owner.dmg((c.card.upped?40:48), true);
 },
 soulcatch:function(c,t){
 	Effect.mkText("Soul", c);
@@ -941,8 +939,8 @@ web:function(c,t){
 	delete t.status.airborne;
 },
 wisdom:function(c,t){
-	Effect.mkText("3|0", t);
-	t.atk += 3;
+	Effect.mkText("4|0", t);
+	t.atk += 4;
 	if (t.status.immaterial){
 		t.status.psion = true;
 	}

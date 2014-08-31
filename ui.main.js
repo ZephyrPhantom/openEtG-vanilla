@@ -635,7 +635,10 @@ function startMatch(game) {
 	}
 	var gameui = new PIXI.DisplayObjectContainer();
 	gameui.interactive = true;
-	gameui.addChild(new PIXI.Sprite(backgrounds[1]));
+	gameui.addChild(new PIXI.Sprite(backgrounds[0]));
+	var redlines = new PIXI.Sprite(backgrounds[1]);
+	redlines.position.y = 12;
+	gameui.addChild(redlines);
 	var cloakgfx = new PIXI.Graphics();
 	cloakgfx.beginFill(0);
 	cloakgfx.drawRect(130, 20, 660, 280);
