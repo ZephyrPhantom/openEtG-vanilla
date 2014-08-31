@@ -209,6 +209,7 @@ die:function(c,t){
 	c.die();
 },
 disfield:function(c,t, dmg){
+	if (c.owner.sanctuary) return false;
 	if (!c.owner.spend(etg.Other, dmg)){
 		for(var i=1; i<13; i++){
 			c.owner.quanta[i] = 0;
@@ -218,6 +219,7 @@ disfield:function(c,t, dmg){
 	return true;
 },
 disshield:function(c,t, dmg){
+	if (c.owner.sanctuary) return false;
 	if (!c.owner.spend(etg.Entropy, Math.ceil(dmg/3))){
 		c.owner.quanta[etg.Entropy] = 0;
 		c.owner.shield = undefined;
@@ -999,7 +1001,7 @@ slow:function(c,t){
 	}
 },
 solar:function(c,t){
-	c.owner.spend(etg.Light, -1);
+	if (!c.owner.sanctuary) c.owner.spend(etg.Light, -1);
 },
 thorn:function(c,t){
 	if (t instanceof etg.Creature && c.owner.rng() < .75){
