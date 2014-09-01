@@ -214,7 +214,7 @@ Game.prototype.setWinner = function(play){
 	}
 }
 Game.prototype.updateExpectedDamage = function(){
-	if (this.expectedDamage){
+	if (this.expectedDamage && !this.winner){
 		Effect.disable = true;
 		this.expectedDamage[0] = this.expectedDamage[1] = 0;
 		for(var i = 0; i<3; i++){
