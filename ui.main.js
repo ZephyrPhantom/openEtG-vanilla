@@ -10,7 +10,7 @@ require("./etg.client").loadcards(function(){
 	if (gfxloaded) startEditor();
 });
 PIXI.AUTO_PREVENT_DEFAULT = false;
-var discarding, guestname, muteset = {};
+var guestname, muteset = {};
 var etgutil = require("./etgutil");
 var etg = require("./etg");
 var Actives = require("./Actives");
@@ -315,7 +315,7 @@ var backgrounds = ["../assets/bg_default.png", "../assets/bg_game.png"];
 var questIcons = [], eicons = [], ricons = [], cardBacks = [], cardBorders = [], popups = [], sicons = [], ticons = [], sborders = [];
 var preLoader = new PIXI.AssetLoader(["../assets/button.png", "../assets/esheet.png", "../assets/backsheet.png",
 	"../assets/cardborders.png", "../assets/statussheet.png", "../assets/statusborders.png", "../assets/typesheet.png"].concat(backgrounds));
-var loadingBarProgress = 0, loadingBarGraphic = new PIXI.Graphics();
+var loadingBarGraphic = new PIXI.Graphics();
 preLoader.onProgress = function() {
 	loadingBarGraphic.clear();
 	loadingBarGraphic.beginFill(0xFFFFFF);
@@ -473,7 +473,7 @@ function makeCardSelector(cardmouseover, cardclick){
 	return cardsel;
 }
 function startEditor() {
-	if (!Cards.loaded) return;
+	console.log("Calling log fixes timing bug");
 	function sumCardMinus(cardminus, code){
 		var sum = 0;
 		for (var i=0; i<2; i++){
@@ -633,7 +633,7 @@ function startMatch(game) {
 		spr.getChildAt(0).getChildAt(9).visible = obj.status.frozen;
 		spr.alpha = obj.status.immaterial || obj.status.burrowed ? .7 : 1;
 	}
-	var gameui = new PIXI.DisplayObjectContainer();
+	var gameui = new PIXI.DisplayObjectContainer(), discarding;
 	gameui.interactive = true;
 	gameui.addChild(new PIXI.Sprite(backgrounds[0]));
 	var redlines = new PIXI.Sprite(backgrounds[1]);
