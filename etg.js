@@ -569,9 +569,9 @@ Player.prototype.endturn = function(discard) {
 	for (var i=0; i<23; i++){
 		if ((cr = crs[i])){
 			if (patienceFlag){
-				var floodbuff = floodingFlag && i>4 && cr.card.element==Water;
-				cr.atk += floodbuff?5:cr.status.burrowed?4:2;
-				cr.buffhp(floodbuff?2:1);
+				var floodbuff = floodingFlag && i>4 && cr.card.element==Water ? 5 : 2;
+				cr.atk += floodbuff;
+				cr.buffhp(floodbuff);
 				cr.delay(1);
 			}
 			cr.attack(stasisFlag, Math.min(freedomChance, 1));
@@ -585,6 +585,7 @@ Player.prototype.endturn = function(discard) {
 			}
 			if (cr.active.cast == Actives.dshield){
 				delete cr.status.immaterial;
+				delete cr.status.psion;
 			}
 		}
 	}
@@ -911,16 +912,16 @@ Creature.prototype.calcEclipse = function(){
 	}
 	return bonus;
 }
-Weapon.prototype.trueatk = Creature.prototype.trueatk = function(adrenaline, nobuff){
+Weapon.prototype.trueatk = Creature.prototype.trueatk = function(adrenaline){
 	var dmg = this.atk;
 	if (this.status.dive)dmg += this.status.dive;
-	if (this.active.buff && !nobuff)dmg += this.active.buff(this);
+	if (this.active.buff)dmg += this.active.buff(this);
 	if (this instanceof Creature){
 		dmg += this.calcEclipse();
 	}
 	if (this.status.burrowed)dmg = Math.ceil(dmg/2);
-	var y=adrenaline || this.status.adrenaline;
-	if (!y || y<2)return dmg;
+	var y=adrenaline || this.status.adrenaline || 0;
+	if (y<2)return dmg;
 	var attackCoefficient = 4-countAdrenaline(dmg);
 	for(var i=1; i<y; i++){
 		dmg -= Math.ceil(attackCoefficient*dmg*i/3);

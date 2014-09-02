@@ -73,7 +73,7 @@ air:function(c,t){
 },
 antimatter:function(c,t){
 	Effect.mkText("Antimatter", t);
-	t.atk -= t.trueatk(0)*2;
+	t.atk -= t.trueatk()*2;
 },
 bblood:function(c,t){
 	Effect.mkText("0|20", t);
@@ -113,6 +113,7 @@ burrow:function(c,t){
 	c.status.burrowed = true;
 	c.active.cast = Actives.unburrow;
 	c.cast = 0;
+	c.atk = Math.floor(c.atk/2);
 },
 butterfly:function(c,t){
 	lobo(t);
@@ -912,6 +913,7 @@ unburrow:function(c,t){
 	c.status.burrowed = false;
 	c.active.cast = Actives.burrow;
 	c.cast = 1;
+	c.atk *= 2;
 },
 upkeep:function(c,t){
 	if (!c.owner.spend(c.card.element, 1)){
