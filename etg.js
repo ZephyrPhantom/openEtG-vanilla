@@ -889,7 +889,6 @@ Creature.prototype.transform = Weapon.prototype.transform = function(card, owner
 }
 Thing.prototype.evade = function(sender) { return false; }
 Creature.prototype.evade = function(sender) {
-	if (this.status.frozen)return false;
 	if (sender != this.owner && this.status.airborne){
 		var freedomChance = 0;
 		for(var i=0; i<16; i++){
