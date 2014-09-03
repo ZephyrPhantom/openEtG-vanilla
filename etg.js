@@ -731,7 +731,14 @@ Permanent.prototype.place = function(fromhand){
 		}
 	}
 	place(this.owner.permanents, this);
-	Thing.prototype.place.call(this);
+	Thing.prototype.place.call(this, fromhand);
+}
+Pillar.prototype.place = function(fromhand){
+	if (this.card.name.match(/^Mark/) && this.card.element == this.owner.mark && !this.card.upped){
+		this.owner.markpower++;
+		return;
+	}
+	Permanent.prototype.place.call(this, fromhand);
 }
 Weapon.prototype.place = function(fromhand){
 	this.owner.weapon = this;
