@@ -803,7 +803,7 @@ function startMatch(game) {
 			poisontext[j].anchor.set(.5, .5);
 			decktext[j].anchor.set(.5, .5);
 			damagetext[j].anchor.set(.5, .5);
-			marktext[j].position.set(768,470);
+			marktext[j].position.set(768, 470);
 			quantatext[j].position.set(j ? 792 : 0, j ? 100 : 308);
 			hptext[j].position.set(50, 550);
 			poisontext[j].position.set(50, 570);
@@ -1079,6 +1079,7 @@ function startMatch(game) {
 			marksprite[j].setTexture(gfx.eicons[pl.mark]);
 			if (pl.markpower != 1){
 				maybeSetText(marktext[j], "x" + pl.markpower);
+				marktext[j].visible = true;
 			}else marktext[j].visible = false;
 			for (var i = 1;i < 13;i++) {
 				maybeSetText(quantatext[j].getChildAt(i*2-2), pl.quanta[i].toString());
