@@ -415,6 +415,7 @@ improve:function(c,t){
 	t.transform(c.owner.randomcard(false, function(x){return x.type == etg.CreatureEnum}));
 	t.buffhp(c.owner.upto(5));
 	t.atk += c.owner.upto(5);
+	t.status.mutant = true;
 	if(mutantactive(t)){
 		t.cast = c.owner.uptoceil(2);
 		t.castele = t.card.element;
@@ -649,8 +650,17 @@ parallel:function(c,t){
 	Effect.mkText("Parallel", t);
 	var copy = t.clone(c.owner);
 	copy.place();
+	copy.status.airborne = copy.card.status.airborne;
+	if (copy.status.mutant){
+		t.buffhp(c.owner.upto(5));
+		t.atk += c.owner.upto(5);
+		if(mutantactive(t)){
+			t.cast = c.owner.uptoceil(2);
+			t.castele = t.card.element;
+		}
+	}
 	if (copy.status.voodoo){
-		c.owner.foe.dmg(copy.maxhp-copy.hp);
+		copy.owner.foe.dmg(copy.maxhp-copy.hp);
 	}
 },
 phoenix:function(c,t, index){
