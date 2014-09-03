@@ -892,7 +892,7 @@ Creature.prototype.evade = function(sender) {
 	if (sender != this.owner && this.status.airborne){
 		var freedomChance = 0;
 		for(var i=0; i<16; i++){
-			if (this.owner.permanents[i] && this.owner.permanents[i].freedom){
+			if (this.owner.permanents[i] && this.owner.permanents[i].status.freedom){
 				freedomChance += .25;
 			}
 		}
