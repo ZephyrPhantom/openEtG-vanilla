@@ -1185,7 +1185,7 @@ function challengeClick() {
 		socket.emit("pvpwant", gameData);
 	}
 }
-var expofuncs = [maybeChallenge, maybeSendChat, challengeClick, ui.getTextImage];
+var expofuncs = [maybeChallenge, maybeSendChat, challengeClick];
 for(var i=0; i<expofuncs.length; i++){
 	window[expofuncs[i].name] = expofuncs[i];
 }

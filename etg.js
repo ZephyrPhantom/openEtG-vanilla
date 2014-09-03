@@ -653,12 +653,12 @@ Player.prototype.drawhand = function(x,secondtry) {
 				haszerocost = true;
 		}
 		if (!haszerocost && !secondtry) {
-			console.log("mulligan activated")
+			console.log("Mulligan'd")
 			this.drawhand(x, true);
 		}
 	}
 }
-Player.prototype.masscc = function(caster, func, massmass){
+Player.prototype.masscc = function(caster, func, massmass, saveowncloak){
 	for(var i=0; i<16; i++){
 		var pr = this.permanents[i];
 		if (pr && pr.status.cloak){
@@ -666,7 +666,7 @@ Player.prototype.masscc = function(caster, func, massmass){
 		}
 		if (massmass){
 			pr = this.foe.permanents[i];
-			if (pr && pr.status.cloak){
+			if (pr && pr.status.cloak && !saveowncloak){
 				Actives.destroy(this, pr);
 			}
 		}

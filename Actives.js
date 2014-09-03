@@ -400,7 +400,7 @@ icebolt:function(c,t){
 ignite:function(c,t){
 	c.die();
 	c.owner.foe.spelldmg(20);
-	c.owner.foe.masscc(c, function(c,x){x.dmg(1)}, true);
+	c.owner.foe.masscc(c, function(c,x){x.dmg(1)}, true, true);
 },
 immolate:function(c,t){
 	t.die();
