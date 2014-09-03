@@ -457,6 +457,7 @@ function startEditor() {
 		return sum;
 	}
 	function processDeck() {
+		cardminus = {};
 		for (var i = editordeck.length - 1;i >= 0;i--) {
 			if (!(editordeck[i] in Cards.Codes)) {
 				var index = etg.fromTrueMark(editordeck[i]);
@@ -464,7 +465,10 @@ function startEditor() {
 					editormark = index;
 				}
 				editordeck.splice(i, 1);
-			}
+			}else adjust(cardminus, editordeck[i], 1);
+		}
+		if (editordeck.length > 60){
+			editordeck.length = 60;
 		}
 		editormarksprite.setTexture(gfx.eicons[editormark]);
 		editordeck.sort(editorCardCmp);
@@ -487,9 +491,6 @@ function startEditor() {
 	setClick(bimport, function() {
 		var dvalue = deckimport.value;
 		editordeck = ~dvalue.indexOf(" ") ? dvalue.split(" ") : etgutil.decodedeck(dvalue);
-		if (editordeck.length > 60){
-			editordeck.length = 60;
-		}
 		processDeck();
 	});
 	editorui.addChild(bimport);
