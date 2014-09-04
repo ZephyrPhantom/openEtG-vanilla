@@ -5,6 +5,7 @@
 <input id="legality" type="text" readonly style="width:400px" />
 <input id="test" type="submit" value="Test Deck" onclick="testDeck()" />
 <select id="rulesets">
+	<option value="wintercoming">Winter is Coming</option>
 	<option value="quantacontrolreturns">Quanta Control Returns</option>
 	<option value="inception">Inception</option>
 	<option value="tamerandomness">Tame the Randomness</option>
@@ -131,7 +132,32 @@
 			}
 			if (mindGateCount < 6) return "You have only " + mindGateCount + " Mind Gates. You need 6"
 			return "Legal";
-		}
+		},
+		wintercoming: function(deck) {
+			bannedCards = [Cards.ShardofFreedom, Cards.ShardofDivinity, Cards.Earthquake];
+			var summerElements = [etg.Fire, etg.Light, etg.Earth, etg.Life];
+			var winterElements = [etg.Water, etg.Darkness, etg.Air, etg.Death];
+			var side;
+			for (var i = 0;i < deck.length;i++) {
+				var card = deck[i];
+				if (card.upped) return "Upgraded cards are banned"
+				if (~bannedCards.indexOf(card)) return card.name + " is banned";
+				if (card.element) {
+					if (~summerElements.indexOf(card.element)) {
+						if (side == "Winter")
+							return "Illegal, you are using both Summer and Winter elements";
+						side = "Summer";
+					}
+					else if (~winterElements.indexOf(card.element)) {
+						if (side == "Summer")
+							return "Illegal, you are using both Summer and Winter elements";
+						side = "Winter";
+					}
+					else return etg.eleNames[card.element] + " is neither a Summer or Winter element"
+				}
+			}
+			return "Legal" + (side ? " if you are " + side : "");
+	}
 	};
 	function testDeck() {
 		var deckcode = document.getElementById("deckcode");
