@@ -745,7 +745,7 @@ rewind:function(c,t){
 	}
 },
 salvage:function(c, t){
-	if (!c.status.salvaged && !t.status.salvaged && c.owner.game.turn != c.owner){
+	if (c.owner == t.owner && !c.status.salvaged && !t.status.salvaged && c.owner.game.turn != c.owner){
 		Effect.mkText("Salvage", c);
 		c.status.salvaged = true;
 		t.status.salvaged = true;

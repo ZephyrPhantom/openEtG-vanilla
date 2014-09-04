@@ -700,8 +700,8 @@ Weapon.prototype.info = function(){
 }
 Shield.prototype.info = function(){
 	var info = this.dr + "DR" + this.activetext();
-	if (this.status.charges)info += " x"+this.status.charges + objinfo(this.status);
-	return info;
+	if (this.status.charges)info += " x"+this.status.charges;
+	return info + objinfo(this.status);
 }
 Pillar.prototype.info = function(){
 	return this.status.charges + " 1:" + (this.pendstate?this.owner.mark:this.card.element) + (this.status.immaterial?" immaterial":"");
