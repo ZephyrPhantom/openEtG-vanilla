@@ -412,7 +412,8 @@ immolate:function(c,t){
 },
 improve:function(c,t){
 	Effect.mkText("Improve", t);
-	t.transform(c.owner.randomcard(false, function(x){return x.type == etg.CreatureEnum}));
+	var bans = [Cards.ShardofFocus, Cards.FateEgg, Cards.Immortal, Cards.Scarab, Cards.DevonianDragon, Cards.Chimera];
+	t.transform(c.owner.randomcard(false, function(x){return x.type == etg.CreatureEnum && !~bans.indexOf(x)}));
 	t.buffhp(c.owner.upto(5));
 	t.atk += c.owner.upto(5);
 	t.status.mutant = true;
@@ -745,7 +746,7 @@ rewind:function(c,t){
 	}
 },
 salvage:function(c, t){
-	if (c.owner == t.owner && !c.status.salvaged && !t.status.salvaged && c.owner.game.turn != c.owner){
+	if (c.owner != t.owner && !c.status.salvaged && !t.status.salvaged && c.owner.game.turn != c.owner){
 		Effect.mkText("Salvage", c);
 		c.status.salvaged = true;
 		t.status.salvaged = true;
