@@ -1,0 +1,11 @@
+__pycache__/*
+node_modules/*
+googleinfo.txt
+pushserver.sh
+etgify.js
+tournify.js
+.ninja_log
+.ninja_deps
+dump.rdb
+*.csv
+*.gz
