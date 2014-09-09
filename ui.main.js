@@ -1154,7 +1154,7 @@ function maybeSendChat(e) {
 		var msg = chatinput.value;
 		chatinput.value = "";
 		if (msg == "/clear"){
-			chatBox.innerHTML = "";
+			while (chatBox.firstChild) chatBox.firstChild.remove();
 		}else if (msg.match(/^\/mute /)){
 			muteset[msg.substring(6)] = true;
 		}else if (msg.match(/^\/unmute /)){
