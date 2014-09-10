@@ -39,24 +39,20 @@ function setInteractive() {
 		arguments[i].interactive = true;
 	}
 }
+function sockEmit(x, data){
+	if (!data) data = {};
+	data.x = x;
+	console.log(data, JSON.stringify(data));
+	socket.send(JSON.stringify(data));
+}
 function refreshRenderer(stage, animCb) {
 	if (realStage.children.length > 1){
 		var oldstage = realStage.children[1];
-		if (oldstage.cmds){
-			for (var cmd in oldstage.cmds){
-				socket.removeListener(cmd, oldstage.cmds[cmd]);
-			}
-		}
 		if (oldstage.endnext) oldstage.endnext();
 		realStage.removeChildAt(1);
 	}
 	realStage.addChild(stage);
 	realStage.next = animCb;
-	if (stage.cmds){
-		for (var cmd in stage.cmds){
-			socket.on(cmd, stage.cmds[cmd]);
-		}
-	}
 }
 
 var renderer = new PIXI.autoDetectRenderer(900, 600);
@@ -642,7 +638,7 @@ function startMatch(game) {
 				discarding = true;
 			} else {
 				discarding = false;
-				socket.emit("endturn", discard);
+				sockEmit("endturn", {bits: discard});
 				game.player1.endturn(discard);
 				delete game.targetingMode;
 				if (foeplays.children.length)
@@ -665,6 +661,7 @@ function startMatch(game) {
 	var resigning;
 	setClick(resign, function() {
 		if (resigning){
+			sockEmit("foeleft");
 			game.setWinner(game.player2);
 			endturn.click();
 		}else{
@@ -714,11 +711,11 @@ function startMatch(game) {
 							} else if (!_j && cardinst.canactive()) {
 								if (cardinst.card.type != etg.SpellEnum) {
 									console.log("summoning " + _i);
-									socket.emit("cast", game.tgtToBits(cardinst));
+									sockEmit("cast", {bits: game.tgtToBits(cardinst)});
 									cardinst.useactive();
 								} else {
 									game.getTarget(cardinst, cardinst.card.active, function(tgt) {
-										socket.emit("cast", game.tgtToBits(cardinst) | game.tgtToBits(tgt) << 9);
+										sockEmit("cast", {bits: game.tgtToBits(cardinst) | game.tgtToBits(tgt) << 9});
 										cardinst.useactive(tgt);
 									});
 								}
@@ -766,7 +763,7 @@ function startMatch(game) {
 					} else if (_j == 0 && !game.targetingMode && inst.canactive()) {
 						game.getTarget(inst, inst.active.cast, function(tgt) {
 							delete game.targetingMode;
-							socket.emit("cast", game.tgtToBits(inst) | game.tgtToBits(tgt) << 9);
+							sockEmit("cast", {bits: game.tgtToBits(inst) | game.tgtToBits(tgt) << 9});
 							inst.useactive(tgt);
 						});
 					}
@@ -870,10 +867,10 @@ function startMatch(game) {
 	document.addEventListener("keydown", onkeydown);
 	gameui.cmds = {
 		endturn: function(data) {
-			game.player2.endturn(data);
+			game.player2.endturn(data.bits);
 		},
-		cast: function(bits) {
-			var c = game.bitsToTgt(bits & 511), t = game.bitsToTgt((bits >> 9) & 511);
+		cast: function(data) {
+			var bits = data.bits, c = game.bitsToTgt(bits & 511), t = game.bitsToTgt((bits >> 9) & 511);
 			console.log("cast: " + c + " " + (t || "-") + " " + bits);
 			if (c instanceof etg.CardInstance) {
 				var sprite = new PIXI.Sprite(gfx.nopic);
@@ -1111,35 +1108,60 @@ function startMatch(game) {
 		Effect.next(cloakgfx.visible);
 	});
 }
-
-function addChatMessage(message) {
+function addChatSpan(span) {
+	span.appendChild(document.createElement("br"));
 	var scroll = chatBox.scrollTop == (chatBox.scrollHeight - chatBox.offsetHeight);
-	chatBox.innerHTML += message;
+	chatBox.appendChild(span);
 	if (scroll) chatBox.scrollTop = chatBox.scrollHeight;
 }
-socket.on("pvpgive", initGame);
-socket.on("chat", function(data) {
-	if (data.u in muteset) return;
-	var now = new Date(), h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
-	if (h < 10) h = "0"+h;
-	if (m < 10) m = "0"+m;
-	if (s < 10) s = "0"+s;
-	var msg = h + ":" + m + ":" + s + " " + (data.u ? "<b>" + sanitizeHtml(data.u) + ":</b> " : "") + sanitizeHtml(data.msg);
-	var color = data.mode || "black";
-	addChatMessage("<font color=" + color + ">" + msg + "</font><br>");
+function chat(message, fontcolor, nodecklink) {
+	var span = document.createElement("span");
+	span.style.color = fontcolor || "red";
+	if (!nodecklink) message = message.replace(/\b(([01][0-9a-v]{4})+)\b/g, "<a href='../deck/$1' target='_blank'>$1</a>");
+	span.innerHTML = message;
+	addChatSpan(span);
+}
+;["connect", "disconnect", "reconnect", "reconnecting", "reconnect_attempt", "reconnect_error", "reconnect_failed"].forEach(function(event){
+	socket.on(event, chat.bind(null, event, "red"));
 });
+socket.on("error", function(err){
+	console.log(err);
+	chat("Connection error");
+});
+socket.on("message", function(data){
+	console.log(data);
+	data = JSON.parse(data);
+	var func = sockEvents[data.x] || (realStage.children.length > 1 && realStage.children[1].cmds && (func = realStage.children[1].cmds[data.x]));
+	if (func){
+		func.call(socket, data);
+	}
+});
+var sockEvents = {
+	pvpgive: initGame,
+	chat: function(data){
+		if (data.u in muteset) return;
+		var now = new Date(), h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+		if (h < 10) h = "0"+h;
+		if (m < 10) m = "0"+m;
+		if (s < 10) s = "0"+s;
+		var msg = h + ":" + m + ":" + s + " " + (data.u ? "<b>" + sanitizeHtml(data.u) + ":</b> " : "") + sanitizeHtml(data.msg);
+		chat(msg, data.mode || "black");
+	}
+};
 function maybeSendChat(e) {
 	e.cancelBubble = true;
 	if (e.keyCode == 13 && chatinput.value) {
 		var msg = chatinput.value;
 		chatinput.value = "";
-		if (msg.substr(0, 6) == "/mute "){
+		if (msg == "/clear"){
+			while (chatBox.firstChild) chatBox.firstChild.remove();
+		}else if (msg.match(/^\/mute /)){
 			muteset[msg.substring(6)] = true;
-		}else if (msg.substr(0, 8) == "/unmute "){
+		}else if (msg.match(/^\/unmute /)){
 			delete muteset[msg.substring(8)];
-		}else {
+		}else if (!msg.match(/^\s*$/)) {
 			var name = username.value || guestname || (guestname = (10000 + Math.floor(Math.random() * 89999)) + "V");
-			socket.emit("guestchat", { msg: msg, u: name });
+			sockEmit("guestchat", { msg: msg, u: name });
 		}
 		e.preventDefault();
 	}
@@ -1183,7 +1205,7 @@ function challengeClick() {
 		parseInput(gameData, "deck", pvpdeck.value);
 		gameData.deck = deck;
 		gameData.room = foename.value;
-		socket.emit("pvpwant", gameData);
+		sockEmit("pvpwant", gameData);
 	}
 }
 var expofuncs = [maybeChallenge, maybeSendChat, challengeClick];
