@@ -17,7 +17,7 @@ var Actives = require("./Actives");
 var Effect = require("./Effect");
 var ui = require("./uiutil");
 var Cards = require("./Cards");
-var socket = io(location.hostname + ":13602");
+var socket = eio(location.hostname + ":13602");
 function maybeSetText(obj, text) {
 	if (obj.text != text) obj.setText(text);
 }
@@ -42,7 +42,6 @@ function setInteractive() {
 function sockEmit(x, data){
 	if (!data) data = {};
 	data.x = x;
-	console.log(data, JSON.stringify(data));
 	socket.send(JSON.stringify(data));
 }
 function refreshRenderer(stage, animCb) {
@@ -444,7 +443,6 @@ function makeCardSelector(cardmouseover, cardclick){
 	return cardsel;
 }
 function startEditor() {
-	console.log("Calling log fixes timing bug");
 	function sumCardMinus(cardminus, code){
 		var sum = 0;
 		for (var i=0; i<2; i++){
@@ -710,7 +708,7 @@ function startMatch(game) {
 								}
 							} else if (!_j && cardinst.canactive()) {
 								if (cardinst.card.type != etg.SpellEnum) {
-									console.log("summoning " + _i);
+									console.log("summoning", _i);
 									sockEmit("cast", {bits: game.tgtToBits(cardinst)});
 									cardinst.useactive();
 								} else {
@@ -871,7 +869,7 @@ function startMatch(game) {
 		},
 		cast: function(data) {
 			var bits = data.bits, c = game.bitsToTgt(bits & 511), t = game.bitsToTgt((bits >> 9) & 511);
-			console.log("cast: " + c + " " + (t || "-") + " " + bits);
+			console.log("cast", c.toString(), (t || "-").toString(), bits);
 			if (c instanceof etg.CardInstance) {
 				var sprite = new PIXI.Sprite(gfx.nopic);
 				sprite.position.set((foeplays.children.length % 9) * 100, Math.floor(foeplays.children.length / 9) * 20);
@@ -1121,15 +1119,16 @@ function chat(message, fontcolor, nodecklink) {
 	span.innerHTML = message;
 	addChatSpan(span);
 }
-;["connect", "disconnect", "reconnect", "reconnecting", "reconnect_attempt", "reconnect_error", "reconnect_failed"].forEach(function(event){
-	socket.on(event, chat.bind(null, event, "red"));
+socket.on("open", function(){ chat.bind("Connected") });
+socket.on("close", function(){
+	chat("Reconnecting in 100ms");
+	setTimeout(function(){socket.open()}, 100);
 });
 socket.on("error", function(err){
 	console.log(err);
 	chat("Connection error");
 });
 socket.on("message", function(data){
-	console.log(data);
 	data = JSON.parse(data);
 	var func = sockEvents[data.x] || (realStage.children.length > 1 && realStage.children[1].cmds && (func = realStage.children[1].cmds[data.x]));
 	if (func){
