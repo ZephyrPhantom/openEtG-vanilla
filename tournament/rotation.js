@@ -12,7 +12,7 @@ module.exports = function(deck, mark){
 		var card = deck[i];
 		if (card.upped) return "Upgraded cards are banned"
 		if (~bannedCards.indexOf(card)) return card.name + " is banned";
-		if (card.element && !~elementCount.indexOf[card.element]) elementCount.push(card.element);
+		if (card.element && !~elementCount.indexOf(card.element)) elementCount.push(card.element);
 		if (card.element == mark) {
 			if (card.type == etg.PillarEnum) {
 				markPillars++;
