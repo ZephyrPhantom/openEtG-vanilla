@@ -219,7 +219,7 @@ function getWeaponShieldImage(code) {
 	}
 }
 function initGame(data) {
-	var game = new etg.Game(data.first, data.seed);
+	var game = new etg.Game(data.seed, data.flip);
 	if (data.p1hp) {
 		game.player1.maxhp = game.player1.hp = data.p1hp;
 	}
