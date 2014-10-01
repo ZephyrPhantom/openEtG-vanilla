@@ -17,7 +17,7 @@ var Actives = require("./Actives");
 var Effect = require("./Effect");
 var ui = require("./uiutil");
 var Cards = require("./Cards");
-var socket = eio(location.hostname + ":13602");
+var socket = eio({hostname: location.hostname, port: 13602});
 function maybeSetText(obj, text) {
 	if (obj.text != text) obj.setText(text);
 }
