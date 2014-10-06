@@ -734,6 +734,9 @@ regenerate:function(c,t){
 	Effect.mkText("+5", c);
 	c.owner.dmg(-5);
 },
+relic:function(c,t){
+	this.place();
+},
 rewind:function(c,t){
 	if (t.card.isOf(Cards.Skeleton)){
 		Actives.hatch(t);
@@ -750,7 +753,7 @@ salvage:function(c, t){
 		Effect.mkText("Salvage", c);
 		c.status.salvaged = true;
 		t.status.salvaged = true;
-		c.owner.hand.push(new etg.CardInstance(t.card, c.owner));
+		new etg.CardInstance(t.card, c.owner).place();
 	}
 },
 sanctuary:function(c,t){

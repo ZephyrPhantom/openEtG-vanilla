@@ -1,4 +1,5 @@
 "use strict";
+PIXI.AUTO_PREVENT_DEFAULT = false;
 (function() {
 var htmlElements = ["leftpane", "chatinput", "deckimport", "foename", "challenge", "chatBox", "bottompane", "username"];
 htmlElements.forEach(function(name){
@@ -9,8 +10,7 @@ htmlElements.forEach(function(name){
 require("./etg.client").loadcards(function(){
 	if (gfx.loaded) startEditor();
 });
-PIXI.AUTO_PREVENT_DEFAULT = false;
-var guestname, muteset = {};
+var guestname, muteset = {}, muteall;
 var etgutil = require("./etgutil");
 var etg = require("./etg");
 var Actives = require("./Actives");
@@ -1147,22 +1147,39 @@ var sockEvents = {
 		chat(msg, data.mode || "black");
 	}
 };
+function chatmute(){
+	var muted = [];
+	for(var name in muteset){
+		muted.push(name);
+	}
+	chat((muteall?"You have chat muted. ":"") + "Muted: " + muted.join(", "));
+}
 function maybeSendChat(e) {
 	e.cancelBubble = true;
 	if (e.keyCode == 13 && chatinput.value) {
+		e.preventDefault();
 		var msg = chatinput.value;
 		chatinput.value = "";
 		if (msg == "/clear"){
 			while (chatBox.firstChild) chatBox.firstChild.remove();
+		}else if (msg == "/who"){
+			sockEmit("who");
+		}else if (msg == "/mute"){
+			muteall = true;
+			chatmute();
+		}else if (msg == "/unmute"){
+			muteall = false;
+			chatmute();
 		}else if (msg.match(/^\/mute /)){
 			muteset[msg.substring(6)] = true;
+			chatmute();
 		}else if (msg.match(/^\/unmute /)){
 			delete muteset[msg.substring(8)];
-		}else if (!msg.match(/^\s*$/)) {
+			chatmute();
+		}else if (!msg.match(/^\/[^/]/)) {
 			var name = username.value || guestname || (guestname = (10000 + Math.floor(Math.random() * 89999)) + "V");
 			sockEmit("guestchat", { msg: msg, u: name });
-		}
-		e.preventDefault();
+		}else chat("Not a command: " + msg);
 	}
 }
 function sanitizeHtml(x) {
