@@ -785,12 +785,8 @@ serendipity:function(c,t){
 	}
 },
 silence:function(c,t){
-	if (t instanceof etg.Player){
-		if (!t.sanctuary){
-			t.silence = true;
-		}
-	}else{
-		t.usedactive = true;
+	if (!c.owner.foe.sanctuary){
+		c.owner.foe.silence = true;
 	}
 },
 singularity:function(c,t){
