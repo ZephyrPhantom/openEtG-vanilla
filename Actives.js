@@ -78,7 +78,7 @@ antimatter:function(c,t){
 bblood:function(c,t){
 	Effect.mkText("0|20", t);
 	t.buffhp(20);
-	t.status.delay = 6;
+	t.status.delayed = 6;
 },
 blackhole:function(c,t){
 	if (!t.sanctuary){
