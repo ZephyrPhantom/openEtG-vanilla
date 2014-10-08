@@ -442,7 +442,7 @@ integrity:function(c,t){
 		["ablaze", "ablaze", "fiery", "destroy", "destroy", "rage"],
 		["steam", "steam", "freeze", "freeze", "nymph", "nymph"],
 		["heal", "endow", "endow", "luciferin", "luciferin", "luciferin"],
-		["queen", "queen", "sniper", "dive", "gas", "gas"],
+		["queen", "queen", "snipe", "dive", "gas", "gas"],
 		["scarab", "scarab", "deja", "neuro", "precognition", "precognition"],
 		["siphon", "vampire", "vampire", "liquid", "liquid", "steal"],
 		["lobotomize", "lobotomize", "lobotomize", "quint", "quint", "quint"],
@@ -456,7 +456,7 @@ integrity:function(c,t){
 		ablaze: 1, fiery: -3, destroy: 3, rage: 2,
 		steam: 2, freeze: 2, nymph: 4,
 		heal: 1, endow: 2, luciferin: 4,
-		queen: 2, sniper: 2, dive: 2, gas: 2,
+		queen: 2, snipe: 2, dive: 2, gas: 2,
 		scarab: 2, deja: 4, neuro: -2, precognition: 2,
 		siphon: -1, vampire: -2, liquid: 2, steal: 3,
 		lobotomize: 2, quint: 2,
@@ -491,9 +491,6 @@ integrity:function(c,t){
 	}
 	if (shardTally[etg.Life]>0){
 		status.poisonous = true;
-	}
-	if (shardTally[etg.Gravity]>0){
-		status.salvage = true;
 	}
 	if (shardTally[etg.Aether]>1){
 		status.immaterial = true;
@@ -531,6 +528,7 @@ lobotomize:function(c,t){
 	lobo(t);
 	delete t.status.momentum;
 	delete t.status.psion;
+	delete t.status.mutant;
 },
 losecharge:function(c,t){
 	if(--c.status.charges<0){
@@ -582,7 +580,7 @@ mutation:function(c,t){
 	if (rnd<.1){
 		Effect.mkText("Death", t);
 		t.die();
-	}else if (rnd<(t.card.isOf(Cards.Abomination)?.9:.5)){
+	}else if (rnd<.5){
 		Actives.improve(c, t);
 	}else{
 		Effect.mkText("Abomination", t);
@@ -591,9 +589,7 @@ mutation:function(c,t){
 },
 neuro:adrenathrottle(function(c,t){
 	t.addpoison(1);
-	if (t instanceof etg.Player){
-		t.neuro = true;
-	}
+	t.neuro = true;
 }),
 nightmare:function(c,t){
 	if (!c.owner.foe.sanctuary){

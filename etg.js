@@ -186,7 +186,7 @@ var SpellEnum = 4;
 var CreatureEnum = 5;
 var PlayPhase = 0;
 var EndPhase = 1;
-var passives = { airborne: true, nocturnal: true, voodoo: true, swarm: true, ranged: true, additive: true, stackable: true, salvage: true, token: true, poisonous: true, singularity: true, decrsteam: true, siphon: true, mutant: true };
+var passives = { airborne: true, nocturnal: true, voodoo: true, swarm: true, ranged: true, additive: true, stackable: true, salvage: true, token: true, poisonous: true, singularity: true, siphon: true, mutant: true };
 var PlayerRng = Object.create(Player.prototype);
 PlayerRng.rng = Math.random;
 PlayerRng.upto = function(x){ return Math.floor(Math.random()*x); }
@@ -1006,7 +1006,7 @@ Weapon.prototype.attack = Creature.prototype.attack = function(stasis, freedomCh
 		this.dmg(this.status.poison, true);
 	}
 	var target = this.owner.foe;
-	if (this.active.auto && !this.status.frozen && (!this.status.adrenaline || this.status.adrenaline<3)){
+	if (this.active.auto && !this.status.frozen){
 		this.active.auto(this);
 	}
 	this.usedactive = false;
@@ -1049,7 +1049,7 @@ Weapon.prototype.attack = Creature.prototype.attack = function(stasis, freedomCh
 	if (this.status.delayed){
 		this.status.delayed--;
 	}
-	if (this.active.postauto && !this.status.frozen && (!this.status.adrenaline || this.status.adrenaline < 3)) {
+	if (this.active.postauto && !this.status.frozen) {
 		this.active.postauto(this);
 	}
 	delete this.status.dive;
