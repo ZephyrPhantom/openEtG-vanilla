@@ -500,8 +500,8 @@ Player.prototype.spend = function(qtype, x) {
 		}
 	}else this.quanta[qtype] -= x;
 	for (var i=1; i<13; i++){
-		if (this.quanta[i]>99){
-			this.quanta[i]=99;
+		if (this.quanta[i]>75){
+			this.quanta[i]=75;
 		}
 	}
 	return true;
