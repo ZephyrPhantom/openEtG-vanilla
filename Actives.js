@@ -81,10 +81,10 @@ bblood:function(c,t){
 	t.status.delayed = 6;
 },
 blackhole:function(c,t){
-	if (!t.sanctuary){
+	if (!c.owner.foe.sanctuary){
 		for (var q=1; q<13; q++){
-			c.owner.dmg(-Math.min(t.quanta[q],3));
-			t.quanta[q] = Math.max(t.quanta[q]-3,0);
+			c.owner.dmg(-Math.min(c.owner.foe.quanta[q],3));
+			c.owner.foe.quanta[q] = Math.max(c.owner.foe.quanta[q]-3,0);
 		}
 	}
 },
