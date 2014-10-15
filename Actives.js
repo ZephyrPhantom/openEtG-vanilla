@@ -2,28 +2,6 @@
 var Effect = require("./Effect");
 var etg = require("./etg");
 var Cards = require("./Cards");
-function mutantactive(t){
-	lobo(t);
-	var abilities = ["hatch","freeze","burrow","destroy","steal","dive","heal","paradox","lycanthropy","growth1","infect","gpull","devour","mutation","growth","ablaze","poison","deja","endow","guard","mitosis"];
-	var index = t.owner.upto(abilities.length+2)-2;
-	if (index<0){
-		t.status[["momentum","immaterial"][~index]] = true;
-	}else{
-		var active = Actives[abilities[index]];
-		if (active == Actives.growth1){
-			t.active.death = active;
-		}else{
-			t.active.cast = active;
-			return true;
-		}
-	}
-}
-function lobo(t){
-	// TODO deal with combined actives
-	for (var key in t.active){
-		if (!(t.active[key].activename in etg.passives)) delete t.active[key];
-	}
-}
 function adrenathrottle(f){
 	return function(c){
 		if (!c.status || (c.status.adrenaline || 0)<3){
@@ -43,7 +21,7 @@ acceleration:function(c,t){
 	c.dmg(1, true);
 },
 accelerationspell:function(c,t){
-	lobo(t);
+	t.lobo();
 	t.active.auto = Actives.acceleration;
 },
 accretion:function(c,t){
@@ -116,7 +94,7 @@ burrow:function(c,t){
 	c.atk = Math.floor(c.atk/2);
 },
 butterfly:function(c,t){
-	lobo(t);
+	t.lobo();
 	t.active.cast = Actives.destroy;
 	t.cast = 3;
 	t.castele = etg.Entropy;
@@ -152,8 +130,9 @@ chimera:function(c,t){
 	c.owner.gpull = chim;
 },
 cpower:function(c,t){
-	t.buffhp(c.owner.uptoceil(5));
-	t.atk += c.owner.uptoceil(5);
+	var buff = t.owner.upto(25);
+	t.buffhp(Math.floor(buff/5)+1);
+	t.atk += buff%5+1;
 },
 cseed:function(c,t){
 	Actives[["drainlife", "firebolt", "freeze", "gpullspell", "icebolt", "infect", "lightning", "lobotomize", "parallel", "rewind", "snipe", "swave"][c.owner.upto(12)]](c, t);
@@ -417,10 +396,7 @@ improve:function(c,t){
 	t.buffhp(c.owner.upto(5));
 	t.atk += c.owner.upto(5);
 	t.status.mutant = true;
-	if(mutantactive(t)){
-		t.cast = c.owner.uptoceil(2);
-		t.castele = t.card.element;
-	}
+	t.mutantactive();
 },
 infect:function(c,t){
 	Effect.mkText("Infect", t);
@@ -519,13 +495,13 @@ lightning:function(c,t){
 },
 liquid:function(c,t){
 	Effect.mkText("Liquid", t);
-	lobo(t);
+	t.lobo();
 	t.active.hit = Actives.vampire;
 	t.addpoison(1);
 },
 lobotomize:function(c,t){
 	Effect.mkText("Lobotomize", t);
-	lobo(t);
+	t.lobo();
 	delete t.status.momentum;
 	delete t.status.psion;
 	delete t.status.mutant;
@@ -564,7 +540,7 @@ mitosis:function(c,t){
 	new etg.Creature(c.card, c.owner).place();
 },
 mitosisspell:function(c,t){
-	lobo(t);
+	t.lobo();
 	t.active.cast = Actives.mitosis;
 	t.castele = t.card.element;
 	t.cast = t.card.cost;
@@ -631,7 +607,7 @@ overdrive:function(c,t){
 	c.dmg(1, true);
 },
 overdrivespell:function(c,t){
-	lobo(t);
+	t.lobo();
 	t.active.auto = Actives.overdrive;
 },
 pandemonium:function(c,t){
@@ -647,12 +623,10 @@ parallel:function(c,t){
 	copy.place();
 	copy.status.airborne = copy.card.status.airborne;
 	if (copy.status.mutant){
-		t.buffhp(c.owner.upto(5));
-		t.atk += c.owner.upto(5);
-		if(mutantactive(t)){
-			t.cast = c.owner.uptoceil(2);
-			t.castele = t.card.element;
-		}
+		var buff = t.owner.upto(25);
+		t.buffhp(Math.floor(buff/5));
+		t.atk += buff%5;
+		t.mutantactive();
 	}
 	if (copy.status.voodoo){
 		copy.owner.foe.dmg(copy.maxhp-copy.hp);

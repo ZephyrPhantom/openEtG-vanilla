@@ -888,6 +888,12 @@ Creature.prototype.transform = Weapon.prototype.transform = function(card, owner
 	this.cast = card.cast;
 	this.castele = card.castele;
 	Thing.call(this, card, owner || this.owner);
+	if (this.status.mutant){
+		var buff = this.owner.upto(25);
+		this.buffhp(Math.floor(buff/5));
+		this.atk += buff%5;
+		this.mutantactive();
+	}
 }
 Thing.prototype.evade = function(sender) { return false; }
 Creature.prototype.evade = function(sender) {
@@ -907,8 +913,8 @@ Creature.prototype.calcEclipse = function(){
 	}
 	var bonus = 0;
 	for (var j=0; j<2; j++){
+		var pl = j == 0 ? this.owner : this.owner.foe;
 		for (var i=0; i<16; i++){
-			var pl = j == 0 ? this.owner : this.owner.foe;
 			if (pl.permanents[i]){
 				if (pl.permanents[i].card == Cards.Nightfall){
 					bonus = 1;
@@ -919,6 +925,29 @@ Creature.prototype.calcEclipse = function(){
 		}
 	}
 	return bonus;
+}
+Thing.prototype.lobo = function(){
+	// TODO deal with combined actives
+	for (var key in this.active){
+		if (!(this.active[key].activename in passives)) delete this.active[key];
+	}
+}
+Thing.prototype.mutantactive = function(){
+	this.lobo();
+	var abilities = ["hatch","freeze","burrow","destroy","steal","dive","heal","paradox","lycanthropy","growth1","infect","gpull","devour","mutation","growth","ablaze","poison","deja","endow","guard","mitosis"];
+	var index = this.owner.upto(abilities.length+2)-2;
+	if (index<0){
+		this.status[["momentum","immaterial"][~index]] = true;
+	}else{
+		var active = Actives[abilities[index]];
+		if (active == Actives.growth1){
+			this.active.death = active;
+		}else{
+			this.active.cast = active;
+			this.cast = this.owner.uptoceil(2);
+			this.castele = this.card.element;
+		}
+	}
 }
 Weapon.prototype.trueatk = Creature.prototype.trueatk = function(adrenaline){
 	var dmg = this.atk;
