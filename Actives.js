@@ -604,8 +604,7 @@ nova:function(c,t){
 	for (var i=1; i<13; i++){
 		c.owner.spend(i, -1);
 	}
-	c.owner.nova += 2;
-	if (c.owner.nova >= 6){
+	if (++c.owner.nova > 2){
 		new etg.Creature(Cards.Singularity, c.owner).place();
 	}
 },
@@ -613,8 +612,7 @@ nova2:function(c,t){
 	for (var i=1; i<13; i++){
 		c.owner.spend(i, -2);
 	}
-	c.owner.nova += 3;
-	if (c.owner.nova >= 6){
+	if (++c.owner.nova2 > 1){
 		new etg.Creature(Cards.SingularityUp, c.owner).place();
 	}
 },
@@ -676,7 +674,7 @@ plague:function(c,t){
 	c.owner.foe.masscc(c, Actives.infect);
 },
 platearmor:function(c,t){
-	var buff = c.card.upped?6:4;
+	var buff = c.card.upped?6:3;
 	Effect.mkText("0|"+buff, t);
 	t.buffhp(buff);
 },
@@ -773,7 +771,7 @@ serendipity:function(c,t){
 	var cards = [], num = Math.min(8-c.owner.hand.length, 3), anyentro = false;
 	for(var i=num-1; i>=0; i--){
 		// Don't accept Marks/Nymphs
-		cards[i] = c.owner.randomcard(c.card.upped, function(x){return (x.type != etg.PillarEnum || !x.name.match(/^Mark/)) && !etg.ShardList.some(function(shard){!shard || x.isOf(shard)}) && !etg.NymphList.some(function(nymph){!nymph || x.isOf(nymph)}) && (i>0 || anyentro || x.element == etg.Entropy)});
+		cards[i] = c.owner.randomcard(c.card.upped, function(x){return (x.type != etg.PillarEnum || !x.name.match(/^Mark/)) && !x.isOf(Cards.Relic) && !etg.ShardList.some(function(shard){!shard || x.isOf(shard)}) && !etg.NymphList.some(function(nymph){!nymph || x.isOf(nymph)}) && (i>0 || anyentro || x.element == etg.Entropy)});
 		anyentro |= cards[i].element == etg.Entropy;
 	}
 	for(var i=0; i<num; i++){

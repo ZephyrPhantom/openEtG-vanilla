@@ -106,6 +106,7 @@ function Player(game){
 	this.precognition = false;
 	this.gpull = undefined;
 	this.nova = 0;
+	this.nova2 = 0;
 	this.maxhp = this.hp = 100;
 	this.hand = [];
 	this.deck = [];
@@ -459,6 +460,7 @@ Player.prototype.isCloaked = function(){
 Player.prototype.info = function(){
 	var info = this.hp + "/" + this.maxhp + " " + this.deck.length + "cards";
 	if (this.nova)info += " " + this.nova + "nova";
+	if (this.nova2)info += " " + this.nova + "nova2";
 	info += objinfo(this.status);
 	if (this.neuro)info += " neuro";
 	if (this.sosa)info += " " + this.sosa + "sosa";
@@ -597,7 +599,7 @@ Player.prototype.endturn = function(discard) {
 	if (this.foe.sosa > 0){
 		this.foe.sosa--;
 	}
-	this.nova = 0;
+	this.nova = this.nova2 = 0;
 	for (var i = this.foe.drawpower !== undefined ? this.foe.drawpower : 1; i > 0; i--) {
 		this.foe.drawcard();
 	}

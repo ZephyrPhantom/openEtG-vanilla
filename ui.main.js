@@ -1008,7 +1008,7 @@ function startMatch(game) {
 					fgfx.endFill();
 				}
 			}
-			if (pl.nova >= 3){
+			if (pl.nova > 1 || pl.nova2){
 				fgfx.beginFill(elecols[etg.Entropy], .3);
 				fgfx.drawRect(handsprite[j][0].position.x - 2, handsprite[j][0].position.y - 2, 124, 164);
 				fgfx.endFill();
