@@ -79,7 +79,6 @@ function Card(type, info){
 function Thing(card, owner){
 	this.owner = owner;
 	this.card = card;
-	this.usedactive = true;
 	if (this.status){
 		for (var key in this.status){
 			if (key in passives) delete this.status[key];
@@ -118,6 +117,7 @@ function Player(game){
 	this.shardgolem = undefined;
 }
 function Creature(card, owner){
+	this.usedactive = true;
 	if (card == Cards.ShardGolem){
 		this.card = card;
 		this.owner = owner;
@@ -127,10 +127,10 @@ function Creature(card, owner){
 		this.castele = Earth;
 		this.active = clone(golem.active);
 		this.status = clone(golem.status);
-		this.usedactive = true;
 	}else this.transform(card, owner);
 }
 function Permanent(card, owner){
+	this.usedactive = true;
 	this.cast = card.cast;
 	this.castele = card.castele;
 	Thing.apply(this, arguments);

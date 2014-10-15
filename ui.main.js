@@ -507,6 +507,7 @@ function startEditor() {
 			setClick(sprite, function() {
 				editormark = _i;
 				editormarksprite.setTexture(gfx.eicons[_i]);
+				saveDeck();
 			});
 		})(i);
 		editorui.addChild(sprite);
