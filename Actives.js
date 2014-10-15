@@ -817,7 +817,7 @@ soulcatch:function(c,t){
 	c.owner.spend(etg.Death, c.card.upped?-3:-2);
 },
 sskin:function(c,t){
-	c.owner.buffhp(c.owner.quanta[etg.Earth]);
+	c.owner.buffhp(c.owner.quanta[etg.Earth]-c.card.cost);
 },
 steal:function(c,t){
 	if (t.status.stackable){
