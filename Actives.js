@@ -703,7 +703,7 @@ regenerate:function(c,t){
 	c.owner.dmg(-5);
 },
 relic:function(c,t){
-	this.place();
+	c.place();
 },
 rewind:function(c,t){
 	if (t.card.isOf(Cards.Skeleton)){

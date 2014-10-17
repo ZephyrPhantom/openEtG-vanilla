@@ -645,9 +645,9 @@ Player.prototype.drawhand = function() {
 	this.shuffle(this.deck);
 	var haszerocost = false;
 	for (var i = 0;i < 7;i++) {
-		new CardInstance(this.deck.pop(), this).place();
-		if (!cardInst.card.cost)
-			haszerocost = true;
+		var card = this.deck.pop();
+		new CardInstance(card, this).place();
+		if (!card.cost) haszerocost = true;
 	}
 	console.log("Mulligan'd");
 	if (!haszerocost){

@@ -17,7 +17,14 @@ var Actives = require("./Actives");
 var Effect = require("./Effect");
 var ui = require("./uiutil");
 var Cards = require("./Cards");
-var socket = eio({hostname: location.hostname, port: 13602});
+var lastError = 0;
+window.onerror = function(){
+	var now = Date.now();
+	if (lastError+999<now){
+		chat(Array.apply(null, arguments).join(", "));
+		lastError = now;
+	}
+}
 function maybeSetText(obj, text) {
 	if (obj.text != text) obj.setText(text);
 }
@@ -1120,6 +1127,7 @@ function chat(message, fontcolor, nodecklink) {
 	span.innerHTML = message;
 	addChatSpan(span);
 }
+var socket = eio({hostname: location.hostname, port: 13602});
 socket.on("open", function(){ chat.bind("Connected") });
 socket.on("close", function(){
 	chat("Reconnecting in 100ms");
@@ -1138,7 +1146,7 @@ socket.on("message", function(data){
 });
 var sockEvents = {
 	pvpgive: initGame,
-	chat: function(data){
+	chat:function(data){
 		if (data.u in muteset) return;
 		var now = new Date(), h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
 		if (h < 10) h = "0"+h;
