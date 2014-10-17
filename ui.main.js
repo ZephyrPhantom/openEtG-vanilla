@@ -1173,6 +1173,16 @@ function maybeSendChat(e) {
 			while (chatBox.firstChild) chatBox.firstChild.remove();
 		}else if (msg == "/who"){
 			sockEmit("who");
+		else if (msg.match(/^\/roll( |$)\d*d?\d*$/)){
+			var data = {u:""}
+			var ndn = msg.slice(6).split("d");
+			if (!ndn[1]){
+				data.X = parseInt(ndn[0] || etgutil.MAX_INT);
+			}else{
+				data.A = parseInt(ndn[0]);
+				data.X = parseInt(ndn[1]);
+			}
+			sock.emit("roll", data);
 		}else if (msg == "/mute"){
 			muteall = true;
 			chatmute();
