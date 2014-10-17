@@ -389,7 +389,7 @@ function makeCardSelector(cardmouseover, cardclick){
 	var elefilter = 0, rarefilter = 0;
 	var columns = [[],[],[],[],[],[]], columnspr = [[],[],[],[],[],[]];
 	for (var i = 0;i < 13;i++) {
-		var sprite = makeButton((i>6?40:4), 300 + (i%7) * 32 + (i>6?32:0), gfx.eicons[i]);
+		var sprite = makeButton((!i || i&1?4:40), 316 + Math.floor((i-1)/2) * 32, gfx.eicons[i]);
 		sprite.interactive = true;
 		(function(_i) {
 			setClick(sprite, function() {
