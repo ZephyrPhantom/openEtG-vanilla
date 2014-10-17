@@ -1216,10 +1216,10 @@ function challengeClick() {
 			return;
 		}
 		var gameData = {};
-		parseInput(gameData, "hp", pvphp.value);
-		parseInput(gameData, "draw", pvpdraw.value);
-		parseInput(gameData, "mark", pvpmark.value);
-		parseInput(gameData, "deck", pvpdeck.value);
+		parseInput(gameData, "p1hp", pvphp.value);
+		parseInput(gameData, "p1draw", pvpdraw.value);
+		parseInput(gameData, "p1mark", pvpmark.value);
+		parseInput(gameData, "p1deck", pvpdeck.value);
 		gameData.deck = deck;
 		gameData.room = foename.value;
 		sockEmit("pvpwant", gameData);
