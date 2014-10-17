@@ -641,22 +641,19 @@ Player.prototype.drawcard = function() {
 		}else this.game.setWinner(this.foe);
 	}
 }
-Player.prototype.drawhand = function(x,secondtry) {
-	if (x >= 0){
-		while (this.hand.length > 0){
-			this.deck.push(this.hand.pop().card);
-		}
-		this.shuffle(this.deck);
-		var haszerocost = false;
-		for (var i = 0;i < x;i++) {
-			var cardInst = new CardInstance(this.deck.pop(), this);
-			this.hand.push(cardInst);
-			if (!cardInst.card.cost)
-				haszerocost = true;
-		}
-		if (!haszerocost && !secondtry) {
-			console.log("Mulligan'd")
-			this.drawhand(x, true);
+Player.prototype.drawhand = function() {
+	this.shuffle(this.deck);
+	var haszerocost = false;
+	for (var i = 0;i < 7;i++) {
+		new CardInstance(this.deck.pop(), this).place();
+		if (!cardInst.card.cost)
+			haszerocost = true;
+	}
+	console.log("Mulligan'd");
+	if (!haszerocost){
+		while(this.hand.length) this.deck.push(this.hand.pop().card);
+		for(var i=0; i<7; i++){
+			new CardInstance(this.deck.shift(), this).place();
 		}
 	}
 }

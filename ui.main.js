@@ -256,8 +256,8 @@ function initGame(data) {
 			pl.deck = deckPower(pl.deck, 2);
 		}
 	}
-	game.turn.drawhand(7);
-	game.turn.foe.drawhand(7);
+	game.turn.drawhand();
+	game.turn.foe.drawhand();
 	if (data.foename) game.foename = data.foename;
 	startMatch(game);
 	return game;
