@@ -1173,7 +1173,7 @@ function maybeSendChat(e) {
 			while (chatBox.firstChild) chatBox.firstChild.remove();
 		}else if (msg == "/who"){
 			sockEmit("who");
-		else if (msg.match(/^\/roll( |$)\d*d?\d*$/)){
+		}else if (msg.match(/^\/roll( |$)\d*d?\d*$/)){
 			var data = {u:""}
 			var ndn = msg.slice(6).split("d");
 			if (!ndn[1]){
