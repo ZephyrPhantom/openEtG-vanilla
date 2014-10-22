@@ -699,8 +699,10 @@ rebirth:function(c,t){
 	c.transform(Cards.Phoenix.asUpped(c.card.upped));
 },
 regenerate:function(c,t){
-	Effect.mkText("+5", c);
-	c.owner.dmg(-5);
+	if (!c.status.delayed){
+		Effect.mkText("+5", c);
+		c.owner.dmg(-5);
+	}
 },
 relic:function(c,t){
 	c.place();

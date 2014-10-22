@@ -1048,11 +1048,17 @@ Weapon.prototype.attack = Creature.prototype.attack = function(stasis, freedomCh
 		if (this.status.psion){
 			target.spelldmg(trueatk);
 		}else if (momentum || trueatk < 0){
-			target.dmg(trueatk);
-			if (this.active.hit){
-				this.active.hit(this, target, trueatk);
+			var stillblock = false, fsh, fhsa;
+			if (!momentum && (fsh = target.shield) && (fsha = fsh.active.shield) && (fsha == Actives.wings || fsha == Actives.weight)){
+				stillblock = fsha(fsh, this);
 			}
-		}else if (target.gpull){
+			if (!stillblock){
+				target.dmg(trueatk);
+				if (this.active.hit){
+					this.active.hit(this, target, trueatk);
+				}
+			}
+		}else if (target.gpull && trueatk > 0){
 			var gpull = target.gpull;
 			var dmg = gpull.dmg(trueatk);
 			if (this.hasactive("hit", "vampirism")){
