@@ -61,8 +61,8 @@ function refreshRenderer(stage, animCb) {
 	realStage.next = animCb;
 }
 
-var renderer = new PIXI.autoDetectRenderer(900, 600, leftpane, true);
-var realStage = new PIXI.Stage(0x336699, true);
+var renderer = new PIXI.autoDetectRenderer(900, 600, {view:leftpane, transparent:true});
+var realStage = new PIXI.Stage();
 renderer.view.addEventListener("click", function(){this.blur()});
 var caimgcache = {}, crimgcache = {}, wsimgcache = {}, artcache = {}, artimagecache = {};
 var elecols = [0xa99683, 0xaa5999, 0x777777, 0x996633, 0x5f4930, 0x50a005, 0xcc6611, 0x205080, 0xa9a9a9, 0x337ddd, 0xccaa22, 0x333333, 0x77bbdd];
@@ -1029,8 +1029,7 @@ function startMatch(game) {
 					var child = creasprite[j][i].getChildAt(1);
 					child.setTexture(ui.getTextImage(cr.trueatk() + "|" + cr.truehp() + (cr.status.charges ? " x" + cr.status.charges : ""), ui.mkFont(10, cr.card.upped ? "black" : "white"), maybeLighten(cr.card)));
 					var child2 = creasprite[j][i].getChildAt(2);
-					var activetext = cr.active.cast ? etg.casttext(cr.cast, cr.castele) + cr.active.cast.activename : (cr.active.hit ? cr.active.hit.activename : "");
-					child2.setTexture(ui.getTextImage(activetext, ui.mkFont(8, cr.card.upped ? "black" : "white")));
+					child2.setTexture(ui.getTextImage(cr.activetext1(), ui.mkFont(8, cr.card.upped ? "black" : "white")));
 					drawStatus(cr, creasprite[j][i]);
 				} else creasprite[j][i].visible = false;
 			}
@@ -1049,7 +1048,7 @@ function startMatch(game) {
 					}
 					else child.setTexture(ui.getTextImage(pr.status.charges !== undefined ? " " + pr.status.charges : "", ui.mkFont(10, pr.card.upped ? "black" : "white"), maybeLighten(pr.card)));
 					var child2 = permsprite[j][i].getChildAt(1);
-					child2.setTexture(pr instanceof etg.Pillar ? gfx.nopic : ui.getTextImage(pr.activetext().replace(" losecharge", ""), ui.mkFont(8, pr.card.upped ? "black" : "white")));
+					child2.setTexture(pr instanceof etg.Pillar ? gfx.nopic : ui.getTextImage(pr.activetext1(), ui.mkFont(8, pr.card.upped ? "black" : "white")));
 				} else permsprite[j][i].visible = false;
 			}
 			var wp = pl.weapon;
@@ -1059,7 +1058,7 @@ function startMatch(game) {
 				child.setTexture(ui.getTextImage(wp.trueatk() + (wp.status.charges ? " x" + wp.status.charges : ""), ui.mkFont(12, wp.card.upped ? "black" : "white"), maybeLighten(wp.card)));
 				child.visible = true;
 				var child = weapsprite[j].getChildAt(2);
-				child.setTexture(ui.getTextImage(wp.activetext(), ui.mkFont(12, wp.card.upped ? "black" : "white")));
+				child.setTexture(ui.getTextImage(wp.activetext1(), ui.mkFont(12, wp.card.upped ? "black" : "white")));
 				child.visible = true;
 				weapsprite[j].setTexture(getWeaponShieldImage(wp.card.code));
 				drawStatus(wp, weapsprite[j]);
@@ -1071,7 +1070,7 @@ function startMatch(game) {
 				child.setTexture(ui.getTextImage(sh.status.charges ? "x" + sh.status.charges: "" + sh.dr + "", ui.mkFont(12, sh.card.upped ? "black" : "white"), maybeLighten(sh.card)));
 				child.visible = true;
 				var child = shiesprite[j].getChildAt(1);
-				child.setTexture(ui.getTextImage((sh.active.shield ? " " + sh.active.shield.activename : "") + (sh.active.buff ? " " + sh.active.buff.activename : "") + (sh.active.cast ? etg.casttext(sh.cast, sh.castele) + sh.active.cast.activename : ""), ui.mkFont(12, sh.card.upped ? "black" : "white")));
+				child.setTexture(ui.getTextImage(sh.activetext1(), ui.mkFont(12, sh.card.upped ? "black" : "white")));
 				child.visible = true;
 				shiesprite[j].alpha = sh.status.immaterial ? .7 : 1;
 				shiesprite[j].setTexture(getWeaponShieldImage(sh.card.code));

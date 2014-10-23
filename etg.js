@@ -712,6 +712,14 @@ Thing.prototype.activetext = function(){
 	}
 	return info;
 }
+Thing.prototype.activetext1 = function(){
+	if (this.active.cast) return casttext(this.cast, this.castele) + this.active.cast.activename[0];
+	var order = ["hit", "death", "owndeath", "buff", "destroy", "draw", "dmg", "shield"];
+	for(var i=0; i<order.length; i++){
+		if (this.active[order[i]]) return order[i] + " " + this.active[order[i]].activename;
+	}
+	return this.active.auto ? this.active.auto.activename : "";
+}
 Thing.prototype.place = function(fromhand){
 	this.procactive("play", [fromhand]);
 }
@@ -1034,7 +1042,7 @@ Weapon.prototype.attack = Creature.prototype.attack = function(stasis, freedomCh
 		this.dmg(this.status.poison, true);
 	}
 	var target = this.owner.foe;
-	if (this.active.auto && !this.status.frozen){
+	if (this.active.auto && (!this.status.frozen || this.active.auto == Actives.overdrive || this.active.auto == Actives.acceleration)){
 		this.active.auto(this);
 	}
 	this.usedactive = false;
@@ -1083,7 +1091,7 @@ Weapon.prototype.attack = Creature.prototype.attack = function(stasis, freedomCh
 	if (this.status.delayed){
 		this.status.delayed--;
 	}
-	if (this.active.postauto && !this.status.frozen) {
+	if (this.active.postauto) {
 		this.active.postauto(this);
 	}
 	delete this.status.dive;
