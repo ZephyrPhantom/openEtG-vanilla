@@ -61,10 +61,9 @@ function refreshRenderer(stage, animCb) {
 	realStage.next = animCb;
 }
 
-var renderer = new PIXI.autoDetectRenderer(900, 600);
-leftpane.appendChild(renderer.view);
+var renderer = new PIXI.autoDetectRenderer(900, 600, leftpane, true);
 var realStage = new PIXI.Stage(0x336699, true);
-realStage.click = renderer.view.blur.bind(renderer.view);
+renderer.view.addEventListener("click", function(){this.blur()});
 var caimgcache = {}, crimgcache = {}, wsimgcache = {}, artcache = {}, artimagecache = {};
 var elecols = [0xa99683, 0xaa5999, 0x777777, 0x996633, 0x5f4930, 0x50a005, 0xcc6611, 0x205080, 0xa9a9a9, 0x337ddd, 0xccaa22, 0x333333, 0x77bbdd];
 
@@ -113,7 +112,7 @@ function getArtImage(code, cb){
 	if (!(code in artimagecache)){
 		var loader = new PIXI.ImageLoader("../Cards/" + code + ".png");
 		loader.addEventListener("loaded", function() {
-			return cb(artimagecache[code] = PIXI.Texture.fromFrame("../Cards/" + code + ".png"));
+			cb(artimagecache[code] = PIXI.Texture.fromFrame("../Cards/" + code + ".png"));
 		});
 		loader.load();
 	}
@@ -179,7 +178,6 @@ function getCreatureImage(code) {
 				var artspr = new PIXI.Sprite(art);
 				artspr.scale.set(0.5, 0.5);
 				artspr.position.set(0, 9);
-				if (card.shiny) artspr.filters = [shinyFilter];
 				graphics.addChild(artspr);
 			}
 			if (card) {
@@ -211,7 +209,6 @@ function getWeaponShieldImage(code) {
 				var artspr = new PIXI.Sprite(art);
 				artspr.scale.set(5/8, 5/8);
 				artspr.position.set(0, 11);
-				if (card.shiny) artspr.filters = [shinyFilter];
 				graphics.addChild(artspr);
 			}
 			if (card) {

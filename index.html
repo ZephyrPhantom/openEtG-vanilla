@@ -25,10 +25,9 @@
 			width:900px;
 			position:absolute;
 		}
-		#leftpane {
-			background-color:#336699;
-			width:900px;
-			height:600px;
+		#leftpane{
+			-webkit-user-select:none;
+			position:absolute;
 		}
 	</style>
 	<script src="../node_modules/engine.io-client/engine.io.js"></script>
@@ -36,7 +35,7 @@
 	<script src="etgify.js"></script>
 </head>
 <body>
-	<div id="leftpane"></div>
+	<canvas id="leftpane" width=900 height=600></canvas>
 	<div id="rightpane">
         <a href="../artcredit.htm" target="_blank">Art credits</a>&emsp;&emsp;<a href="https://github.com/serprex/openEtG-vanilla" target="_blank">Git</a>&emsp;&emsp;<a href="../forum/?board=2" target="_blank">Forum</a><br><br>
 		<input id="foename" type="text" placeholder="Challenge" onkeydown="maybeChallenge(event)" /> <input id="pvphp" type="text" placeholder="HP" style="width: 30px"/><input id="pvpmark" type="text" placeholder="Mark" style="width: 30px" /><input id="pvpdeck" type="text" placeholder="Deck" style="width: 30px" /><input id="pvpdraw" type="text" placeholder="Draw" style="width:30px" /><br>
