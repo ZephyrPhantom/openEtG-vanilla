@@ -6,7 +6,7 @@ module.exports = function(deck) {
 		if (~bannedCards.indexOf(card.code)) return card.name + " is banned";
 		if (!card.element)
 			return card.name + " is Other";
-		else if (card.rarity == 4)
+		else if (~etg.ShardList.indexOf(card.code))
 			return card.name + " is a Shard";
 		if (card.type != etg.PillarEnum) elements[card.element] = 1;
 		if (card.upped) anyupped = true;
