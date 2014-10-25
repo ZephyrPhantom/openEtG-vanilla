@@ -1,4 +1,4 @@
-module.exports = function(deck, mark) {
+module.exports = function(deck) {
 	function countOther(e){
 		var ret = 0;
 		for(var i=0; i<13; i++){
@@ -14,7 +14,7 @@ module.exports = function(deck, mark) {
 		var card = deck[i];
 		if (eleCount[card.element]) eleCount[card.element]++;
 		else eleCount[card.element] = 1;
-		var idx = cardlist.indexOf(card.code);
+		var idx = cardlist.indexOf(card.asUpped(true).code);
 		if (~idx){
 			var ele = (idx>>1)+1;
 			if (eleList[ele]) eleList[ele]++;
@@ -26,7 +26,7 @@ module.exports = function(deck, mark) {
 	if (upped < 0) return "Too many upgrades due to shard restrictions";
 	var ret = [];
 	for(var i=1; i<13; i++){
-		if (eleList[i]>=6 && upped >= countOther(i)*2 + (mark != i)*2){
+		if (eleList[i]>=6 && upped >= countOther(i)*2){
 			ret.push(etg.eleNames[i]);
 		}
 	}
