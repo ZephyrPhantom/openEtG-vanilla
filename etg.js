@@ -1066,7 +1066,7 @@ Weapon.prototype.attack = Creature.prototype.attack = function(stasis, freedomCh
 					this.active.hit(this, target, trueatk);
 				}
 			}
-		}else if (target.gpull && trueatk > 0){
+		}else if (isCreature && target.gpull && trueatk > 0){
 			var gpull = target.gpull;
 			var dmg = gpull.dmg(trueatk);
 			if (this.hasactive("hit", "vampirism")){
