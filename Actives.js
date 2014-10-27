@@ -747,7 +747,7 @@ serendipity:function(c,t){
 	var cards = [], num = Math.min(8-c.owner.hand.length, 3), anyentro = false;
 	for(var i=num-1; i>=0; i--){
 		// Don't accept Marks/Nymphs
-		cards[i] = c.owner.randomcard(c.card.upped, function(x){return (x.type != etg.PillarEnum || !x.name.match(/^Mark/)) && !x.isOf(Cards.Relic) && !etg.ShardList.some(function(shard){!shard || x.isOf(shard)}) && !etg.NymphList.some(function(nymph){!nymph || x.isOf(nymph)}) && (i>0 || anyentro || x.element == etg.Entropy)});
+		cards[i] = c.owner.randomcard(c.card.upped, function(x){return (x.type != etg.PillarEnum || !x.name.match(/^Mark/)) && !x.isOf(Cards.Relic) && !x.isOf(Cards.Miracle) && !etg.ShardList.some(function(shard){!shard || x.isOf(shard)}) && !etg.NymphList.some(function(nymph){!nymph || x.isOf(nymph)}) && (i>0 || anyentro || x.element == etg.Entropy)});
 		anyentro |= cards[i].element == etg.Entropy;
 	}
 	for(var i=0; i<num; i++){

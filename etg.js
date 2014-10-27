@@ -1056,7 +1056,7 @@ Weapon.prototype.attack = Creature.prototype.attack = function(stasis, freedomCh
 		if (this.status.psion){
 			target.spelldmg(trueatk);
 		}else if (momentum || trueatk < 0){
-			var stillblock = false, fsh, fhsa;
+			var stillblock = false, fsh, fsha;
 			if (!momentum && (fsh = target.shield) && (fsha = fsh.active.shield) && (fsha == Actives.wings || fsha == Actives.weight)){
 				stillblock = fsha(fsh, this);
 			}
