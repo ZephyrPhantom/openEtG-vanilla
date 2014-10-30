@@ -698,7 +698,7 @@ function startMatch(game) {
 		(function(_j) {
 			for (var i = 0;i < 8;i++) {
 				handsprite[j][i] = new PIXI.Sprite(gfx.nopic);
-				handsprite[j][i].position.set(j ? 20 : 780, (j ? 130 : 310) + 20 * i);
+				handsprite[j][i].position.set(j ? 20 : 780, (j ? 130 : 310) + 19 * i);
 				(function(_i) {
 					setClick(handsprite[j][i], function() {
 						if (game.phase != etg.PlayPhase) return;

@@ -402,9 +402,6 @@ infect:function(c,t){
 	Effect.mkText("Infect", t);
 	t.addpoison(1);
 },
-infest:function(c,t){
-	new etg.Creature(Cards.MalignantCell, c.owner).place();
-},
 integrity:function(c,t){
 	var activeType = ["auto", "hit", "buff", "death"];
 	var shardTally = [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -736,10 +733,14 @@ scarab:function(c,t){
 },
 scramble:function(c,t){
 	if (t instanceof etg.Player && !t.sanctuary){
+		var n = 0;
 		for (var i=0; i<9; i++){
 			if (t.spend(etg.Other, 1)){
-				t.spend(etg.Other, -1);
-			}
+				n++;
+			}else break;
+		}
+		while(n--){
+			t.spend(etg.Other, -1);
 		}
 	}
 },
