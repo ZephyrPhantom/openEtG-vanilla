@@ -482,8 +482,8 @@ function startEditor() {
 		saveDeck();
 	});
 	editorui.addChild(bclear);
-	function saveDeck(){
-		deckimport.value = etgutil.encodedeck(editordeck) + "01" + etg.toTrueMark(editormark);
+	function saveDeck() {
+		deckimport.value = editordeck.join(" ") + " " + etg.toTrueMark(editormark);
 	}
 	var bimport = makeButton(8, 80, "Import");
 	setClick(bimport, function() {
@@ -494,7 +494,7 @@ function startEditor() {
 	editorui.addChild(bimport);
 	var bconvert = makeButton(5, 554, "Convert Code");
 	setClick(bconvert, function() {
-		deckimport.value = editordeck.join(" ") + " " + etg.toTrueMark(editormark);
+		deckimport.value = etgutil.encodedeck(editordeck) + "01" + etg.toTrueMark(editormark);
 	});
 	editorui.addChild(bconvert);
 	var editordecksprites = [];
