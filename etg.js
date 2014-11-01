@@ -5,7 +5,7 @@ var Effect = require("./Effect");
 var ui = require("./uiutil");
 var etgutil = require("./etgutil");
 var Cards = require("./Cards");
-function Game(first, seed){
+function Game(seed, flip){
 	this.rng = new MersenneTwister(seed);
 	this.phase = PlayPhase;
 	this.ply = 0;
@@ -13,7 +13,7 @@ function Game(first, seed){
 	this.player2 = new Player(this);
 	this.player1.foe = this.player2;
 	this.player2.foe = this.player1;
-	this.turn = first?this.player1:this.player2;
+	this.turn = (seed < etgutil.MAX_INT/2) === !flip ? this.player1 : this.player2;
 	this.expectedDamage = [0, 0];
 	this.time = Date.now();
 }
@@ -22,7 +22,7 @@ var activecache = {};
 var activecastcache = {};
 function Card(type, info){
 	this.type = type;
-	this.element = parseInt(info.Element);
+	this.element = parseInt(info.E);
 	this.name = info.Name;
 	this.code = info.Code;
 	if ((parseInt(this.code, 32)&0x3FFF) > 6999){
@@ -79,7 +79,6 @@ function Card(type, info){
 function Thing(card, owner){
 	this.owner = owner;
 	this.card = card;
-	this.usedactive = true;
 	if (this.status){
 		for (var key in this.status){
 			if (key in passives) delete this.status[key];
@@ -106,6 +105,7 @@ function Player(game){
 	this.precognition = false;
 	this.gpull = undefined;
 	this.nova = 0;
+	this.nova2 = 0;
 	this.maxhp = this.hp = 100;
 	this.hand = [];
 	this.deck = [];
@@ -117,6 +117,7 @@ function Player(game){
 	this.shardgolem = undefined;
 }
 function Creature(card, owner){
+	this.usedactive = true;
 	if (card == Cards.ShardGolem){
 		this.card = card;
 		this.owner = owner;
@@ -126,10 +127,10 @@ function Creature(card, owner){
 		this.castele = Earth;
 		this.active = clone(golem.active);
 		this.status = clone(golem.status);
-		this.usedactive = true;
 	}else this.transform(card, owner);
 }
 function Permanent(card, owner){
+	this.usedactive = true;
 	this.cast = card.cast;
 	this.castele = card.castele;
 	Thing.apply(this, arguments);
@@ -186,7 +187,7 @@ var SpellEnum = 4;
 var CreatureEnum = 5;
 var PlayPhase = 0;
 var EndPhase = 1;
-var passives = { airborne: true, nocturnal: true, voodoo: true, swarm: true, ranged: true, additive: true, stackable: true, salvage: true, token: true, poisonous: true, singularity: true, decrsteam: true, siphon: true, mutant: true };
+var passives = { airborne: true, nocturnal: true, voodoo: true, swarm: true, ranged: true, additive: true, stackable: true, salvage: true, token: true, poisonous: true, singularity: true, siphon: true, mutant: true };
 var PlayerRng = Object.create(Player.prototype);
 PlayerRng.rng = Math.random;
 PlayerRng.upto = function(x){ return Math.floor(Math.random()*x); }
@@ -459,6 +460,7 @@ Player.prototype.isCloaked = function(){
 Player.prototype.info = function(){
 	var info = this.hp + "/" + this.maxhp + " " + this.deck.length + "cards";
 	if (this.nova)info += " " + this.nova + "nova";
+	if (this.nova2)info += " " + this.nova + "nova2";
 	info += objinfo(this.status);
 	if (this.neuro)info += " neuro";
 	if (this.sosa)info += " " + this.sosa + "sosa";
@@ -500,8 +502,8 @@ Player.prototype.spend = function(qtype, x) {
 		}
 	}else this.quanta[qtype] -= x;
 	for (var i=1; i<13; i++){
-		if (this.quanta[i]>99){
-			this.quanta[i]=99;
+		if (this.quanta[i]>75){
+			this.quanta[i]=75;
 		}
 	}
 	return true;
@@ -597,7 +599,7 @@ Player.prototype.endturn = function(discard) {
 	if (this.foe.sosa > 0){
 		this.foe.sosa--;
 	}
-	this.nova = 0;
+	this.nova = this.nova2 = 0;
 	for (var i = this.foe.drawpower !== undefined ? this.foe.drawpower : 1; i > 0; i--) {
 		this.foe.drawcard();
 	}
@@ -635,26 +637,23 @@ Player.prototype.drawcard = function() {
 			this.hand[this.hand.length] = new CardInstance(this.deck.pop(), this);
 			this.procactive("draw");
 			if (this.deck.length == 0 && this.game.player1 == this)
-				Effect.mkSpriteFade(getTextImage("This was your last card!", ui.mkFont(32, "white"), 0));
+				Effect.mkSpriteFade(ui.getTextImage("This was your last card!", ui.mkFont(32, "white"), 0));
 		}else this.game.setWinner(this.foe);
 	}
 }
-Player.prototype.drawhand = function(x,secondtry) {
-	if (x >= 0){
-		while (this.hand.length > 0){
-			this.deck.push(this.hand.pop().card);
-		}
-		this.shuffle(this.deck);
-		var haszerocost = false;
-		for (var i = 0;i < x;i++) {
-			var cardInst = new CardInstance(this.deck.pop(), this);
-			this.hand.push(cardInst);
-			if (!cardInst.card.cost)
-				haszerocost = true;
-		}
-		if (!haszerocost && !secondtry) {
-			console.log("Mulligan'd")
-			this.drawhand(x, true);
+Player.prototype.drawhand = function() {
+	this.shuffle(this.deck);
+	var haszerocost = false;
+	for (var i = 0;i < 7;i++) {
+		var card = this.deck.pop();
+		new CardInstance(card, this).place();
+		if (!card.cost) haszerocost = true;
+	}
+	console.log("Mulligan'd");
+	if (!haszerocost){
+		while(this.hand.length) this.deck.push(this.hand.pop().card);
+		for(var i=0; i<7; i++){
+			new CardInstance(this.deck.shift(), this).place();
 		}
 	}
 }
@@ -712,6 +711,14 @@ Thing.prototype.activetext = function(){
 		if (this.active[key])info += (key != "auto"?" " + (key == "cast"?casttext(this.cast, this.castele):key):"") + " " + activename(this.active[key]);
 	}
 	return info;
+}
+Thing.prototype.activetext1 = function(){
+	if (this.active.cast) return casttext(this.cast, this.castele) + this.active.cast.activename[0];
+	var order = ["hit", "death", "owndeath", "buff", "destroy", "draw", "dmg", "shield"];
+	for(var i=0; i<order.length; i++){
+		if (this.active[order[i]]) return order[i] + " " + this.active[order[i]].activename;
+	}
+	return this.active.auto ? this.active.auto.activename : "";
 }
 Thing.prototype.place = function(fromhand){
 	this.procactive("play", [fromhand]);
@@ -886,6 +893,12 @@ Creature.prototype.transform = Weapon.prototype.transform = function(card, owner
 	this.cast = card.cast;
 	this.castele = card.castele;
 	Thing.call(this, card, owner || this.owner);
+	if (this.status.mutant){
+		var buff = this.owner.upto(25);
+		this.buffhp(Math.floor(buff/5));
+		this.atk += buff%5;
+		this.mutantactive();
+	}
 }
 Thing.prototype.evade = function(sender) { return false; }
 Creature.prototype.evade = function(sender) {
@@ -905,8 +918,8 @@ Creature.prototype.calcEclipse = function(){
 	}
 	var bonus = 0;
 	for (var j=0; j<2; j++){
+		var pl = j == 0 ? this.owner : this.owner.foe;
 		for (var i=0; i<16; i++){
-			var pl = j == 0 ? this.owner : this.owner.foe;
 			if (pl.permanents[i]){
 				if (pl.permanents[i].card == Cards.Nightfall){
 					bonus = 1;
@@ -918,6 +931,29 @@ Creature.prototype.calcEclipse = function(){
 	}
 	return bonus;
 }
+Thing.prototype.lobo = function(){
+	// TODO deal with combined actives
+	for (var key in this.active){
+		if (!(this.active[key].activename in passives)) delete this.active[key];
+	}
+}
+Thing.prototype.mutantactive = function(){
+	this.lobo();
+	var abilities = ["hatch","freeze","burrow","destroy","steal","dive","heal","paradox","lycanthropy","growth1","infect","gpull","devour","mutation","growth","ablaze","poison","deja","endow","guard","mitosis"];
+	var index = this.owner.upto(abilities.length+2)-2;
+	if (index<0){
+		this.status[["momentum","immaterial"][~index]] = true;
+	}else{
+		var active = Actives[abilities[index]];
+		if (active == Actives.growth1){
+			this.active.death = active;
+		}else{
+			this.active.cast = active;
+			this.cast = this.owner.uptoceil(2);
+			this.castele = this.card.element;
+		}
+	}
+}
 Weapon.prototype.trueatk = Creature.prototype.trueatk = function(adrenaline){
 	var dmg = this.atk;
 	if (this.status.dive)dmg += this.status.dive;
@@ -925,7 +961,6 @@ Weapon.prototype.trueatk = Creature.prototype.trueatk = function(adrenaline){
 	if (this instanceof Creature){
 		dmg += this.calcEclipse();
 	}
-	if (this.status.burrowed)dmg = Math.ceil(dmg/2);
 	var y=adrenaline || this.status.adrenaline || 0;
 	if (y<2)return dmg;
 	var attackCoefficient = 4-countAdrenaline(dmg);
@@ -1007,7 +1042,7 @@ Weapon.prototype.attack = Creature.prototype.attack = function(stasis, freedomCh
 		this.dmg(this.status.poison, true);
 	}
 	var target = this.owner.foe;
-	if (this.active.auto && !this.status.frozen && (!this.status.adrenaline || this.status.adrenaline<3)){
+	if (this.active.auto && (!this.status.frozen || this.active.auto == Actives.overdrive || this.active.auto == Actives.acceleration)){
 		this.active.auto(this);
 	}
 	this.usedactive = false;
@@ -1021,11 +1056,17 @@ Weapon.prototype.attack = Creature.prototype.attack = function(stasis, freedomCh
 		if (this.status.psion){
 			target.spelldmg(trueatk);
 		}else if (momentum || trueatk < 0){
-			target.dmg(trueatk);
-			if (this.active.hit){
-				this.active.hit(this, target, trueatk);
+			var stillblock = false, fsh, fsha;
+			if (!momentum && (fsh = target.shield) && (fsha = fsh.active.shield) && (fsha == Actives.wings || fsha == Actives.weight)){
+				stillblock = fsha(fsh, this);
 			}
-		}else if (target.gpull){
+			if (!stillblock){
+				target.dmg(trueatk);
+				if (this.active.hit){
+					this.active.hit(this, target, trueatk);
+				}
+			}
+		}else if (isCreature && target.gpull && trueatk > 0){
 			var gpull = target.gpull;
 			var dmg = gpull.dmg(trueatk);
 			if (this.hasactive("hit", "vampirism")){
@@ -1050,7 +1091,7 @@ Weapon.prototype.attack = Creature.prototype.attack = function(stasis, freedomCh
 	if (this.status.delayed){
 		this.status.delayed--;
 	}
-	if (this.active.postauto && !this.status.frozen && (!this.status.adrenaline || this.status.adrenaline < 3)) {
+	if (this.active.postauto) {
 		this.active.postauto(this);
 	}
 	delete this.status.dive;
@@ -1083,18 +1124,17 @@ CardInstance.prototype.useactive = function(target){
 	if (owner.neuro){
 		owner.addpoison(1);
 	}
-	owner.spend(card.costele, card.cost);
 	if (card.type <= PermanentEnum){
 		var cons = [Pillar, Weapon, Shield, Permanent][card.type];
 		new cons(card, owner).place(true);
 	}else if (card.type == SpellEnum){
 		if (!target || !target.evade(owner)){
 			card.active(this, target);
-			this.procactive("spell", [target]);
 		}
 	}else if (card.type == CreatureEnum){
 		new Creature(card, owner).place(true);
 	} else console.log("Unknown card type: " + card.type);
+	owner.spend(card.costele, card.cost);
 	owner.game.updateExpectedDamage();
 }
 function countAdrenaline(x){

@@ -2,28 +2,6 @@
 var Effect = require("./Effect");
 var etg = require("./etg");
 var Cards = require("./Cards");
-function mutantactive(t){
-	lobo(t);
-	var abilities = ["hatch","freeze","burrow","destroy","steal","dive","heal","paradox","lycanthropy","growth1","infect","gpull","devour","mutation","growth","ablaze","poison","deja","endow","guard","mitosis"];
-	var index = t.owner.upto(abilities.length+2)-2;
-	if (index<0){
-		t.status[["momentum","immaterial"][~index]] = true;
-	}else{
-		var active = Actives[abilities[index]];
-		if (active == Actives.growth1){
-			t.active.death = active;
-		}else{
-			t.active.cast = active;
-			return true;
-		}
-	}
-}
-function lobo(t){
-	// TODO deal with combined actives
-	for (var key in t.active){
-		if (!(t.active[key].activename in etg.passives)) delete t.active[key];
-	}
-}
 function adrenathrottle(f){
 	return function(c){
 		if (!c.status || (c.status.adrenaline || 0)<3){
@@ -43,7 +21,7 @@ acceleration:function(c,t){
 	c.dmg(1, true);
 },
 accelerationspell:function(c,t){
-	lobo(t);
+	t.lobo();
 	t.active.auto = Actives.acceleration;
 },
 accretion:function(c,t){
@@ -78,13 +56,13 @@ antimatter:function(c,t){
 bblood:function(c,t){
 	Effect.mkText("0|20", t);
 	t.buffhp(20);
-	t.status.delay = 6;
+	t.status.delayed = 6;
 },
 blackhole:function(c,t){
-	if (!t.sanctuary){
+	if (!c.owner.foe.sanctuary){
 		for (var q=1; q<13; q++){
-			c.owner.dmg(-Math.min(t.quanta[q],3));
-			t.quanta[q] = Math.max(t.quanta[q]-3,0);
+			c.owner.dmg(-Math.min(c.owner.foe.quanta[q],3));
+			c.owner.foe.quanta[q] = Math.max(c.owner.foe.quanta[q]-3,0);
 		}
 	}
 },
@@ -116,7 +94,7 @@ burrow:function(c,t){
 	c.atk = Math.floor(c.atk/2);
 },
 butterfly:function(c,t){
-	lobo(t);
+	t.lobo();
 	t.active.cast = Actives.destroy;
 	t.cast = 3;
 	t.castele = etg.Entropy;
@@ -152,8 +130,9 @@ chimera:function(c,t){
 	c.owner.gpull = chim;
 },
 cpower:function(c,t){
-	t.buffhp(c.owner.uptoceil(5));
-	t.atk += c.owner.uptoceil(5);
+	var buff = t.owner.upto(25);
+	t.buffhp(Math.floor(buff/5)+1);
+	t.atk += buff%5+1;
 },
 cseed:function(c,t){
 	Actives[["drainlife", "firebolt", "freeze", "gpullspell", "icebolt", "infect", "lightning", "lobotomize", "parallel", "rewind", "snipe", "swave"][c.owner.upto(12)]](c, t);
@@ -417,17 +396,11 @@ improve:function(c,t){
 	t.buffhp(c.owner.upto(5));
 	t.atk += c.owner.upto(5);
 	t.status.mutant = true;
-	if(mutantactive(t)){
-		t.cast = c.owner.uptoceil(2);
-		t.castele = t.card.element;
-	}
+	t.mutantactive();
 },
 infect:function(c,t){
 	Effect.mkText("Infect", t);
 	t.addpoison(1);
-},
-infest:function(c,t){
-	new etg.Creature(Cards.MalignantCell, c.owner).place();
 },
 integrity:function(c,t){
 	var activeType = ["auto", "hit", "buff", "death"];
@@ -442,7 +415,7 @@ integrity:function(c,t){
 		["ablaze", "ablaze", "fiery", "destroy", "destroy", "rage"],
 		["steam", "steam", "freeze", "freeze", "nymph", "nymph"],
 		["heal", "endow", "endow", "luciferin", "luciferin", "luciferin"],
-		["queen", "queen", "sniper", "dive", "gas", "gas"],
+		["queen", "queen", "snipe", "dive", "gas", "gas"],
 		["scarab", "scarab", "deja", "neuro", "precognition", "precognition"],
 		["siphon", "vampire", "vampire", "liquid", "liquid", "steal"],
 		["lobotomize", "lobotomize", "lobotomize", "quint", "quint", "quint"],
@@ -456,7 +429,7 @@ integrity:function(c,t){
 		ablaze: 1, fiery: -3, destroy: 3, rage: 2,
 		steam: 2, freeze: 2, nymph: 4,
 		heal: 1, endow: 2, luciferin: 4,
-		queen: 2, sniper: 2, dive: 2, gas: 2,
+		queen: 2, snipe: 2, dive: 2, gas: 2,
 		scarab: 2, deja: 4, neuro: -2, precognition: 2,
 		siphon: -1, vampire: -2, liquid: 2, steal: 3,
 		lobotomize: 2, quint: 2,
@@ -492,9 +465,6 @@ integrity:function(c,t){
 	if (shardTally[etg.Life]>0){
 		status.poisonous = true;
 	}
-	if (shardTally[etg.Gravity]>0){
-		status.salvage = true;
-	}
 	if (shardTally[etg.Aether]>1){
 		status.immaterial = true;
 	}
@@ -522,15 +492,16 @@ lightning:function(c,t){
 },
 liquid:function(c,t){
 	Effect.mkText("Liquid", t);
-	lobo(t);
+	t.lobo();
 	t.active.hit = Actives.vampire;
 	t.addpoison(1);
 },
 lobotomize:function(c,t){
 	Effect.mkText("Lobotomize", t);
-	lobo(t);
+	t.lobo();
 	delete t.status.momentum;
 	delete t.status.psion;
+	delete t.status.mutant;
 },
 losecharge:function(c,t){
 	if(--c.status.charges<0){
@@ -566,7 +537,7 @@ mitosis:function(c,t){
 	new etg.Creature(c.card, c.owner).place();
 },
 mitosisspell:function(c,t){
-	lobo(t);
+	t.lobo();
 	t.active.cast = Actives.mitosis;
 	t.castele = t.card.element;
 	t.cast = t.card.cost;
@@ -582,7 +553,7 @@ mutation:function(c,t){
 	if (rnd<.1){
 		Effect.mkText("Death", t);
 		t.die();
-	}else if (rnd<(t.card.isOf(Cards.Abomination)?.9:.5)){
+	}else if (rnd<.5){
 		Actives.improve(c, t);
 	}else{
 		Effect.mkText("Abomination", t);
@@ -591,9 +562,7 @@ mutation:function(c,t){
 },
 neuro:adrenathrottle(function(c,t){
 	t.addpoison(1);
-	if (t instanceof etg.Player){
-		t.neuro = true;
-	}
+	t.neuro = true;
 }),
 nightmare:function(c,t){
 	if (!c.owner.foe.sanctuary){
@@ -608,8 +577,7 @@ nova:function(c,t){
 	for (var i=1; i<13; i++){
 		c.owner.spend(i, -1);
 	}
-	c.owner.nova += 2;
-	if (c.owner.nova >= 6){
+	if (++c.owner.nova > 2){
 		new etg.Creature(Cards.Singularity, c.owner).place();
 	}
 },
@@ -617,8 +585,7 @@ nova2:function(c,t){
 	for (var i=1; i<13; i++){
 		c.owner.spend(i, -2);
 	}
-	c.owner.nova += 3;
-	if (c.owner.nova >= 6){
+	if (++c.owner.nova2 > 1){
 		new etg.Creature(Cards.SingularityUp, c.owner).place();
 	}
 },
@@ -637,7 +604,7 @@ overdrive:function(c,t){
 	c.dmg(1, true);
 },
 overdrivespell:function(c,t){
-	lobo(t);
+	t.lobo();
 	t.active.auto = Actives.overdrive;
 },
 pandemonium:function(c,t){
@@ -653,12 +620,10 @@ parallel:function(c,t){
 	copy.place();
 	copy.status.airborne = copy.card.status.airborne;
 	if (copy.status.mutant){
-		t.buffhp(c.owner.upto(5));
-		t.atk += c.owner.upto(5);
-		if(mutantactive(t)){
-			t.cast = c.owner.uptoceil(2);
-			t.castele = t.card.element;
-		}
+		var buff = t.owner.upto(25);
+		t.buffhp(Math.floor(buff/5));
+		t.atk += buff%5;
+		t.mutantactive();
 	}
 	if (copy.status.voodoo){
 		copy.owner.foe.dmg(copy.maxhp-copy.hp);
@@ -680,7 +645,7 @@ plague:function(c,t){
 	c.owner.foe.masscc(c, Actives.infect);
 },
 platearmor:function(c,t){
-	var buff = c.card.upped?6:4;
+	var buff = c.card.upped?6:3;
 	Effect.mkText("0|"+buff, t);
 	t.buffhp(buff);
 },
@@ -731,8 +696,13 @@ rebirth:function(c,t){
 	c.transform(Cards.Phoenix.asUpped(c.card.upped));
 },
 regenerate:function(c,t){
-	Effect.mkText("+5", c);
-	c.owner.dmg(-5);
+	if (!c.status.delayed){
+		Effect.mkText("+5", c);
+		c.owner.dmg(-5);
+	}
+},
+relic:function(c,t){
+	c.place();
 },
 rewind:function(c,t){
 	if (t.card.isOf(Cards.Skeleton)){
@@ -750,7 +720,7 @@ salvage:function(c, t){
 		Effect.mkText("Salvage", c);
 		c.status.salvaged = true;
 		t.status.salvaged = true;
-		c.owner.hand.push(new etg.CardInstance(t.card, c.owner));
+		new etg.CardInstance(t.card, c.owner).place();
 	}
 },
 sanctuary:function(c,t){
@@ -763,10 +733,14 @@ scarab:function(c,t){
 },
 scramble:function(c,t){
 	if (t instanceof etg.Player && !t.sanctuary){
+		var n = 0;
 		for (var i=0; i<9; i++){
 			if (t.spend(etg.Other, 1)){
-				t.spend(etg.Other, -1);
-			}
+				n++;
+			}else break;
+		}
+		while(n--){
+			t.spend(etg.Other, -1);
 		}
 	}
 },
@@ -774,7 +748,7 @@ serendipity:function(c,t){
 	var cards = [], num = Math.min(8-c.owner.hand.length, 3), anyentro = false;
 	for(var i=num-1; i>=0; i--){
 		// Don't accept Marks/Nymphs
-		cards[i] = c.owner.randomcard(c.card.upped, function(x){return (x.type != etg.PillarEnum || !x.name.match(/^Mark/)) && !etg.ShardList.some(function(shard){!shard || x.isOf(shard)}) && !etg.NymphList.some(function(nymph){!nymph || x.isOf(nymph)}) && (i>0 || anyentro || x.element == etg.Entropy)});
+		cards[i] = c.owner.randomcard(c.card.upped, function(x){return (x.type != etg.PillarEnum || !x.name.match(/^Mark/)) && !x.isOf(Cards.Relic) && !x.isOf(Cards.Miracle) && !etg.ShardList.some(function(shard){!shard || x.isOf(shard)}) && !etg.NymphList.some(function(nymph){!nymph || x.isOf(nymph)}) && (i>0 || anyentro || x.element == etg.Entropy)});
 		anyentro |= cards[i].element == etg.Entropy;
 	}
 	for(var i=0; i<num; i++){
@@ -782,12 +756,8 @@ serendipity:function(c,t){
 	}
 },
 silence:function(c,t){
-	if (t instanceof etg.Player){
-		if (!t.sanctuary){
-			t.silence = true;
-		}
-	}else{
-		t.usedactive = true;
+	if (!c.owner.foe.sanctuary){
+		c.owner.foe.silence = true;
 	}
 },
 singularity:function(c,t){
@@ -850,7 +820,7 @@ soulcatch:function(c,t){
 	c.owner.spend(etg.Death, c.card.upped?-3:-2);
 },
 sskin:function(c,t){
-	c.owner.buffhp(c.owner.quanta[etg.Earth]);
+	c.owner.buffhp(c.owner.quanta[etg.Earth]-c.card.cost);
 },
 steal:function(c,t){
 	if (t.status.stackable){

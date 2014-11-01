@@ -66,12 +66,9 @@ function getTextImage(text, font, bgcolor, width) {
 		size = font;
 		font = mkFont(font);
 	}else size = parseInt(font.font);
-	var fontkey = JSON.stringify(font) + bgcolor + "w" + width;
-	if (!(fontkey in tximgcache)) {
-		tximgcache[fontkey] = {};
-	}
-	if (text in tximgcache[fontkey]) {
-		return tximgcache[fontkey][text];
+	var key = JSON.stringify(arguments);
+	if (key in tximgcache) {
+		return tximgcache[key];
 	}
 	var doc = new PIXI.DisplayObjectContainer();
 	if (bgcolor !== ""){
@@ -103,10 +100,6 @@ function getTextImage(text, font, bgcolor, width) {
 			w = Math.max(w, x);
 			x = 0;
 			y += h;
-		}else if (piece == "$"){
-			var spr = new PIXI.Sprite(gfx.gold);
-			spr.scale.set(size/16, size/16);
-			pushChild(spr);
 		}else if (/^\d\d?:\d\d?$/.test(piece)) {
 			var parse = piece.split(":");
 			var num = parseInt(parse[0]);
@@ -147,7 +140,7 @@ function getTextImage(text, font, bgcolor, width) {
 		bg.endFill();
 	}
 	rtex.render(doc);
-	return tximgcache[fontkey][text] = rtex;
+	return tximgcache[key] = rtex;
 }
 exports.mkFont = mkFont;
 exports.reflectPos = reflectPos;

@@ -1,4 +1,5 @@
 "use strict";
+PIXI.AUTO_PREVENT_DEFAULT = false;
 (function() {
 var htmlElements = ["leftpane", "chatinput", "deckimport", "foename", "challenge", "chatBox", "bottompane", "username"];
 htmlElements.forEach(function(name){
@@ -9,15 +10,21 @@ htmlElements.forEach(function(name){
 require("./etg.client").loadcards(function(){
 	if (gfx.loaded) startEditor();
 });
-PIXI.AUTO_PREVENT_DEFAULT = false;
-var guestname, muteset = {};
+var guestname, muteset = {}, muteall;
 var etgutil = require("./etgutil");
 var etg = require("./etg");
 var Actives = require("./Actives");
 var Effect = require("./Effect");
 var ui = require("./uiutil");
 var Cards = require("./Cards");
-var socket = eio(location.hostname + ":13602");
+var lastError = 0;
+window.onerror = function(){
+	var now = Date.now();
+	if (lastError+999<now){
+		chat(Array.apply(null, arguments).join(", "));
+		lastError = now;
+	}
+}
 function maybeSetText(obj, text) {
 	if (obj.text != text) obj.setText(text);
 }
@@ -54,10 +61,9 @@ function refreshRenderer(stage, animCb) {
 	realStage.next = animCb;
 }
 
-var renderer = new PIXI.autoDetectRenderer(900, 600);
-leftpane.appendChild(renderer.view);
-var realStage = new PIXI.Stage(0x336699, true);
-realStage.click = renderer.view.blur.bind(renderer.view);
+var renderer = new PIXI.autoDetectRenderer(900, 600, {view:leftpane, transparent:true});
+var realStage = new PIXI.Stage();
+renderer.view.addEventListener("click", function(){this.blur()});
 var caimgcache = {}, crimgcache = {}, wsimgcache = {}, artcache = {}, artimagecache = {};
 var elecols = [0xa99683, 0xaa5999, 0x777777, 0x996633, 0x5f4930, 0x50a005, 0xcc6611, 0x205080, 0xa9a9a9, 0x337ddd, 0xccaa22, 0x333333, 0x77bbdd];
 
@@ -106,7 +112,7 @@ function getArtImage(code, cb){
 	if (!(code in artimagecache)){
 		var loader = new PIXI.ImageLoader("../Cards/" + code + ".png");
 		loader.addEventListener("loaded", function() {
-			return cb(artimagecache[code] = PIXI.Texture.fromFrame("../Cards/" + code + ".png"));
+			cb(artimagecache[code] = PIXI.Texture.fromFrame("../Cards/" + code + ".png"));
 		});
 		loader.load();
 	}
@@ -172,7 +178,6 @@ function getCreatureImage(code) {
 				var artspr = new PIXI.Sprite(art);
 				artspr.scale.set(0.5, 0.5);
 				artspr.position.set(0, 9);
-				if (card.shiny) artspr.filters = [shinyFilter];
 				graphics.addChild(artspr);
 			}
 			if (card) {
@@ -204,7 +209,6 @@ function getWeaponShieldImage(code) {
 				var artspr = new PIXI.Sprite(art);
 				artspr.scale.set(5/8, 5/8);
 				artspr.position.set(0, 11);
-				if (card.shiny) artspr.filters = [shinyFilter];
 				graphics.addChild(artspr);
 			}
 			if (card) {
@@ -219,7 +223,7 @@ function getWeaponShieldImage(code) {
 	}
 }
 function initGame(data) {
-	var game = new etg.Game(data.first, data.seed);
+	var game = new etg.Game(data.seed, data.flip);
 	if (data.p1hp) {
 		game.player1.maxhp = game.player1.hp = data.p1hp;
 	}
@@ -256,8 +260,8 @@ function initGame(data) {
 			pl.deck = deckPower(pl.deck, 2);
 		}
 	}
-	game.turn.drawhand(7);
-	game.turn.foe.drawhand(7);
+	game.turn.drawhand();
+	game.turn.foe.drawhand();
 	if (data.foename) game.foename = data.foename;
 	startMatch(game);
 	return game;
@@ -389,7 +393,7 @@ function makeCardSelector(cardmouseover, cardclick){
 	var elefilter = 0, rarefilter = 0;
 	var columns = [[],[],[],[],[],[]], columnspr = [[],[],[],[],[],[]];
 	for (var i = 0;i < 13;i++) {
-		var sprite = makeButton((i>6?40:4), 300 + (i%7) * 32 + (i>6?32:0), gfx.eicons[i]);
+		var sprite = makeButton((!i || i&1?4:40), 316 + Math.floor((i-1)/2) * 32, gfx.eicons[i]);
 		sprite.interactive = true;
 		(function(_i) {
 			setClick(sprite, function() {
@@ -507,6 +511,7 @@ function startEditor() {
 			setClick(sprite, function() {
 				editormark = _i;
 				editormarksprite.setTexture(gfx.eicons[_i]);
+				saveDeck();
 			});
 		})(i);
 		editorui.addChild(sprite);
@@ -693,7 +698,7 @@ function startMatch(game) {
 		(function(_j) {
 			for (var i = 0;i < 8;i++) {
 				handsprite[j][i] = new PIXI.Sprite(gfx.nopic);
-				handsprite[j][i].position.set(j ? 20 : 780, (j ? 130 : 310) + 20 * i);
+				handsprite[j][i].position.set(j ? 20 : 780, (j ? 130 : 310) + 19 * i);
 				(function(_i) {
 					setClick(handsprite[j][i], function() {
 						if (game.phase != etg.PlayPhase) return;
@@ -950,7 +955,7 @@ function startMatch(game) {
 		foeplays.children.forEach(function(foeplay){
 			maybeSetTexture(foeplay, getCardImage(foeplay.card.code));
 		});
-		foeplays.visible = !(cloakgfx.visible = game.player2.isCloaked());
+		cloakgfx.visible = game.player2.isCloaked();
 		fgfx.clear();
 		if (game.turn == game.player1 && !game.targetingMode && game.phase != etg.EndPhase) {
 			for (var i = 0;i < game.player1.hand.length;i++) {
@@ -1008,7 +1013,7 @@ function startMatch(game) {
 					fgfx.endFill();
 				}
 			}
-			if (pl.nova >= 3){
+			if (pl.nova > 1 || pl.nova2){
 				fgfx.beginFill(elecols[etg.Entropy], .3);
 				fgfx.drawRect(handsprite[j][0].position.x - 2, handsprite[j][0].position.y - 2, 124, 164);
 				fgfx.endFill();
@@ -1024,8 +1029,7 @@ function startMatch(game) {
 					var child = creasprite[j][i].getChildAt(1);
 					child.setTexture(ui.getTextImage(cr.trueatk() + "|" + cr.truehp() + (cr.status.charges ? " x" + cr.status.charges : ""), ui.mkFont(10, cr.card.upped ? "black" : "white"), maybeLighten(cr.card)));
 					var child2 = creasprite[j][i].getChildAt(2);
-					var activetext = cr.active.cast ? etg.casttext(cr.cast, cr.castele) + cr.active.cast.activename : (cr.active.hit ? cr.active.hit.activename : "");
-					child2.setTexture(ui.getTextImage(activetext, ui.mkFont(8, cr.card.upped ? "black" : "white")));
+					child2.setTexture(ui.getTextImage(cr.activetext1(), ui.mkFont(8, cr.card.upped ? "black" : "white")));
 					drawStatus(cr, creasprite[j][i]);
 				} else creasprite[j][i].visible = false;
 			}
@@ -1044,7 +1048,7 @@ function startMatch(game) {
 					}
 					else child.setTexture(ui.getTextImage(pr.status.charges !== undefined ? " " + pr.status.charges : "", ui.mkFont(10, pr.card.upped ? "black" : "white"), maybeLighten(pr.card)));
 					var child2 = permsprite[j][i].getChildAt(1);
-					child2.setTexture(pr instanceof etg.Pillar ? gfx.nopic : ui.getTextImage(pr.activetext().replace(" losecharge", ""), ui.mkFont(8, pr.card.upped ? "black" : "white")));
+					child2.setTexture(pr instanceof etg.Pillar ? gfx.nopic : ui.getTextImage(pr.activetext1(), ui.mkFont(8, pr.card.upped ? "black" : "white")));
 				} else permsprite[j][i].visible = false;
 			}
 			var wp = pl.weapon;
@@ -1054,7 +1058,7 @@ function startMatch(game) {
 				child.setTexture(ui.getTextImage(wp.trueatk() + (wp.status.charges ? " x" + wp.status.charges : ""), ui.mkFont(12, wp.card.upped ? "black" : "white"), maybeLighten(wp.card)));
 				child.visible = true;
 				var child = weapsprite[j].getChildAt(2);
-				child.setTexture(ui.getTextImage(wp.activetext(), ui.mkFont(12, wp.card.upped ? "black" : "white")));
+				child.setTexture(ui.getTextImage(wp.activetext1(), ui.mkFont(12, wp.card.upped ? "black" : "white")));
 				child.visible = true;
 				weapsprite[j].setTexture(getWeaponShieldImage(wp.card.code));
 				drawStatus(wp, weapsprite[j]);
@@ -1066,7 +1070,7 @@ function startMatch(game) {
 				child.setTexture(ui.getTextImage(sh.status.charges ? "x" + sh.status.charges: "" + sh.dr + "", ui.mkFont(12, sh.card.upped ? "black" : "white"), maybeLighten(sh.card)));
 				child.visible = true;
 				var child = shiesprite[j].getChildAt(1);
-				child.setTexture(ui.getTextImage((sh.active.shield ? " " + sh.active.shield.activename : "") + (sh.active.buff ? " " + sh.active.buff.activename : "") + (sh.active.cast ? etg.casttext(sh.cast, sh.castele) + sh.active.cast.activename : ""), ui.mkFont(12, sh.card.upped ? "black" : "white")));
+				child.setTexture(ui.getTextImage(sh.activetext1(), ui.mkFont(12, sh.card.upped ? "black" : "white")));
 				child.visible = true;
 				shiesprite[j].alpha = sh.status.immaterial ? .7 : 1;
 				shiesprite[j].setTexture(getWeaponShieldImage(sh.card.code));
@@ -1119,6 +1123,7 @@ function chat(message, fontcolor, nodecklink) {
 	span.innerHTML = message;
 	addChatSpan(span);
 }
+var socket = eio({hostname: location.hostname, port: 13602});
 socket.on("open", function(){ chat.bind("Connected") });
 socket.on("close", function(){
 	chat("Reconnecting in 100ms");
@@ -1137,7 +1142,7 @@ socket.on("message", function(data){
 });
 var sockEvents = {
 	pvpgive: initGame,
-	chat: function(data){
+	chat:function(data){
 		if (data.u in muteset) return;
 		var now = new Date(), h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
 		if (h < 10) h = "0"+h;
@@ -1147,22 +1152,49 @@ var sockEvents = {
 		chat(msg, data.mode || "black");
 	}
 };
+function chatmute(){
+	var muted = [];
+	for(var name in muteset){
+		muted.push(name);
+	}
+	chat((muteall?"You have chat muted. ":"") + "Muted: " + muted.join(", "));
+}
 function maybeSendChat(e) {
 	e.cancelBubble = true;
 	if (e.keyCode == 13 && chatinput.value) {
+		e.preventDefault();
 		var msg = chatinput.value;
 		chatinput.value = "";
 		if (msg == "/clear"){
 			while (chatBox.firstChild) chatBox.firstChild.remove();
+		}else if (msg == "/who"){
+			sockEmit("who");
+		}else if (msg.match(/^\/roll( |$)\d*d?\d*$/)){
+			var data = {u:""}
+			var ndn = msg.slice(6).split("d");
+			if (!ndn[1]){
+				data.X = parseInt(ndn[0] || etgutil.MAX_INT);
+			}else{
+				data.A = parseInt(ndn[0]);
+				data.X = parseInt(ndn[1]);
+			}
+			sock.emit("roll", data);
+		}else if (msg == "/mute"){
+			muteall = true;
+			chatmute();
+		}else if (msg == "/unmute"){
+			muteall = false;
+			chatmute();
 		}else if (msg.match(/^\/mute /)){
 			muteset[msg.substring(6)] = true;
+			chatmute();
 		}else if (msg.match(/^\/unmute /)){
 			delete muteset[msg.substring(8)];
-		}else if (!msg.match(/^\s*$/)) {
+			chatmute();
+		}else if (!msg.match(/^\/[^/]/)) {
 			var name = username.value || guestname || (guestname = (10000 + Math.floor(Math.random() * 89999)) + "V");
 			sockEmit("guestchat", { msg: msg, u: name });
-		}
-		e.preventDefault();
+		}else chat("Not a command: " + msg);
 	}
 }
 function sanitizeHtml(x) {
@@ -1198,10 +1230,10 @@ function challengeClick() {
 			return;
 		}
 		var gameData = {};
-		parseInput(gameData, "hp", pvphp.value);
-		parseInput(gameData, "draw", pvpdraw.value);
-		parseInput(gameData, "mark", pvpmark.value);
-		parseInput(gameData, "deck", pvpdeck.value);
+		parseInput(gameData, "p1hp", pvphp.value);
+		parseInput(gameData, "p1draw", pvpdraw.value);
+		parseInput(gameData, "p1mark", pvpmark.value);
+		parseInput(gameData, "p1deck", pvpdeck.value);
 		gameData.deck = deck;
 		gameData.room = foename.value;
 		sockEmit("pvpwant", gameData);
