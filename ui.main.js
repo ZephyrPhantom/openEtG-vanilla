@@ -406,7 +406,7 @@ function makeCardSelector(cardmouseover, cardclick){
 	for (var i = 0;i < 6;i++) {
 		for (var j = 0;j < 15;j++) {
 			var sprite = new PIXI.Sprite(gfx.nopic);
-			sprite.position.set(100 + i * 130, 272 + j * 20);
+			sprite.position.set(100 + i * 133, 272 + j * 19);
 			var sprcount = new PIXI.Text("", { font: "12px Dosis" });
 			sprcount.position.set(102, 4);
 			sprite.addChild(sprcount);
@@ -518,7 +518,7 @@ function startEditor() {
 	}
 	for (var i = 0;i < 60;i++) {
 		var sprite = new PIXI.Sprite(gfx.nopic);
-		sprite.position.set(100 + Math.floor(i / 10) * 100, 32 + (i % 10) * 20);
+		sprite.position.set(100 + Math.floor(i / 10) * 99, 32 + (i % 10) * 19);
 		(function(_i) {
 			setClick(sprite, function() {
 				var code = editordeck[_i], card = Cards.Codes[code];
@@ -877,7 +877,7 @@ function startMatch(game) {
 			console.log("cast", c.toString(), (t || "-").toString(), bits);
 			if (c instanceof etg.CardInstance) {
 				var sprite = new PIXI.Sprite(gfx.nopic);
-				sprite.position.set((foeplays.children.length % 9) * 100, Math.floor(foeplays.children.length / 9) * 20);
+				sprite.position.set((foeplays.children.length % 9) * 99, Math.floor(foeplays.children.length / 9) * 19);
 				sprite.card = c.card;
 				foeplays.addChild(sprite);
 			}
@@ -1126,8 +1126,8 @@ function chat(message, fontcolor, nodecklink) {
 var socket = eio({hostname: location.hostname, port: 13602});
 socket.on("open", function(){ chat.bind("Connected") });
 socket.on("close", function(){
-	chat("Reconnecting in 100ms");
-	setTimeout(function(){socket.open()}, 100);
+	chat("Reconnecting in 99ms");
+	setTimeout(function(){socket.open()}, 99);
 });
 socket.on("error", function(err){
 	console.log(err);
