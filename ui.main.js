@@ -590,16 +590,17 @@ function startMatch(game) {
 		}
 	}
 	function drawStatus(obj, spr) {
-		spr.getChildAt(0).getChildAt(0).visible = obj.status.psion;
-		spr.getChildAt(0).getChildAt(1).visible = obj.status.aflatoxin;
-		spr.getChildAt(0).getChildAt(2).visible = obj.status.poison > 0;
-		spr.getChildAt(0).getChildAt(3).visible = obj.status.airborne || obj.status.ranged;
-		spr.getChildAt(0).getChildAt(4).visible = obj.status.momentum;
-		spr.getChildAt(0).getChildAt(5).visible = obj.status.adrenaline;
-		spr.getChildAt(0).getChildAt(6).visible = obj.status.poison < 0;
-		spr.getChildAt(0).getChildAt(7).visible = obj.status.delayed;
-		spr.getChildAt(0).getChildAt(8).visible = obj == obj.owner.gpull;
-		spr.getChildAt(0).getChildAt(9).visible = obj.status.frozen;
+		var statuses = spr.children[0].children;
+		statuses[0].visible = obj.status.psion;
+		statuses[1].visible = obj.status.aflatoxin;
+		statuses[2].visible = !obj.status.aflatoxin && obj.status.poison > 0;
+		statuses[3].visible = obj.status.airborne || obj.status.ranged;
+		statuses[4].visible = obj.status.momentum;
+		statuses[5].visible = obj.status.adrenaline;
+		statuses[6].visible = obj.status.poison < 0;
+		statuses[7].visible = obj.status.delayed;
+		statuses[8].visible = obj == obj.owner.gpull;
+		statuses[9].visible = obj.status.frozen;
 		spr.alpha = obj.status.immaterial || obj.status.burrowed ? .7 : 1;
 	}
 	var gameui = new PIXI.DisplayObjectContainer(), discarding;
@@ -616,7 +617,7 @@ function startMatch(game) {
 	winnername.position.set(800, 500);
 	gameui.addChild(winnername);
 	var endturn = makeButton(800, 540, "Accept Hand");
-	var cancel = makeButton(800, 500, " ");
+	var cancel = makeButton(800, 500, "");
 	var resign = makeButton(8, 24, "Resign");
 	gameui.addChild(endturn);
 	gameui.addChild(cancel);
