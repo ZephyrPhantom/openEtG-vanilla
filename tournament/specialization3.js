@@ -21,12 +21,13 @@ module.exports = function(deck) {
 	if (upped < 0) return "You have too few unupgraded cards, needs " + (-upped) + " more"
 	var hasSpecial = false;
 	for (code in cardList) {
+		var card = Cards.Codes[code];
 		if (~specialList.indexOf(code)){
 			if (cardList[code] < 6) return "You have to have at least 6 copies of " + Cards.Codes[code].name;
 			hasSpecial = true;
 		}
 		else {
-			if (cardList[code] >= 4) return "You have too many copies of " + Cards.Codes.code.name;
+			if (cardList[code] >= 4 && card.type) return "You have too many copies of " + Cards.Codes[code].name;
 		}
 	}
 	if (!hasSpecial) return "You have to have at least 1 card from the special list in your deck"
