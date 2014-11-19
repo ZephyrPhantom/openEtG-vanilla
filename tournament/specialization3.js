@@ -27,7 +27,7 @@ module.exports = function(deck) {
 			hasSpecial = true;
 		}
 		else {
-			if (cardList[code] >= 4 && card.type) return "You have too many copies of " + Cards.Codes[code].name;
+			if (cardList[code] > 4 && card.type) return "You have too many copies of " + Cards.Codes[code].name;
 		}
 	}
 	if (!hasSpecial) return "You have to have at least 1 card from the special list in your deck"
