@@ -25,7 +25,7 @@ function Card(type, info){
 	this.element = parseInt(info.E);
 	this.name = info.Name;
 	this.code = info.Code;
-	this.tier = info.Tier;
+	this.tier = parseInt(info.Tier);
 	if ((parseInt(this.code, 32)&0x3FFF) > 6999){
 		this.upped = true;
 	}
