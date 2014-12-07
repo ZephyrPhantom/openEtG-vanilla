@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Name Game</title>
+	<link href="../forum/Smileys/default/earth.png" rel="shortcut icon" />
+	<style>
+		body {
+			background-color:black;
+			color:white;
+			margin:0;
+		}
+		a {
+			color:#6699FF;
+			text-decoration:none;
+		}
+	</style>
+	<script src="etgify.js"></script>
+</head>
+<body>
+	<input id="nameinput" type="text" placeholder="Name" style="width:800px">
+	<div id="infobox"></div>
+	<script>
+	"use strict";
+	var etg = require("./etg");
+	var Cards = require("./Cards");
+	var infobox = document.getElementById("infobox");
+	require("./etg.client").loadcards(function(){
+		infobox.appendChild(document.createTextNode("Cards loaded"));
+		document.getElementById("nameinput").addEventListener("keydown", printstat);
+	});
+	function printstat(e){
+		if (e.keyCode != 13) return;
+		while (infobox.firstChild) infobox.firstChild.remove();
+		var deck = [], letters = {};
+		for(var i=0; i<this.value.length; i++){
+			var letter = this.value.charAt(i).toUpperCase();
+			if (letter in letters) continue;
+			letters[letter] = true;
+			Array.prototype.push.apply(deck, etg.filtercards(false, function(x){return x.name.charAt(0) == letter}));
+		}
+		for(var i=0; i<deck.length; i+=70){
+			var img = document.createElement("img");
+			img.src = "http://dek.im/deck/" + deck.slice(i, i+70).join(" ");
+			infobox.appendChild(img);
+		}
+	}
+	</script>
+</body>
+</html>

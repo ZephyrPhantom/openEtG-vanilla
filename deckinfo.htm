@@ -1,7 +1,8 @@
 <!DOCTYPE html>
+<html>
 <head>
 	<title>Deck Info</title>
-	<link href="../forum/Smileys/default/water.png" rel="shortcut icon" />
+	<link href="../forum/Smileys/default/time.png" rel="shortcut icon" />
 	<style>
 		body {
 			background-color:black;
@@ -16,19 +17,18 @@
 	<script src="etgify.js"></script>
 </head>
 <body>
-	<input id="deckimport" type="text" placeholder="Deck" style="width:800px">
-	<div style="display:flex"><div id="infobox"></div><img id="deckpreview" style="padding-left:8px;width:646px"></div>
+	<input id="deckinput" type="text" placeholder="Deck" style="width:800px">
+	<div style="display:flex"><div id="infobox"></div><img id="deckpreview" style="padding-left:8px;width:646px;height:252px"></div>
 	<script>
 	"use strict";
 	var infobox = document.getElementById("infobox");
 	function setInfo(x){
-		while (infobox.firstChild) infobox.firstChild.remove();
 		infobox.appendChild(typeof x === "string" ? document.createTextNode(x) : x);
 	}
 	var Cards = require("./Cards");
 	require("./etg.client").loadcards(function(){
 		setInfo("Cards loaded");
-		document.getElementById("deckimport").addEventListener("keydown", printstat);
+		document.getElementById("deckinput").addEventListener("keydown", printstat);
 	});
 	function mkTable(){
 		var tbl = document.createElement("table");
@@ -37,7 +37,7 @@
 			var col1 = document.createElement("td");
 			var col2 = document.createElement("td");
 			col1.appendChild(document.createTextNode(arguments[i]));
-			col2.appendChild(document.createTextNode(arguments[i+1].toString()));
+			col2.appendChild(document.createTextNode(arguments[i+1]));
 			row.appendChild(col1);
 			row.appendChild(col2);
 			tbl.appendChild(row);
@@ -47,9 +47,6 @@
 	function printstat(e){
 		if (e.keyCode != 13) return;
 		document.getElementById("deckpreview").src = "http://dek.im/deck/" + this.value;
-		if (!Cards.loaded){
-			return setInfo("Cards not loaded");
-		}
 		var summon = 0, buy = 0, norarebuy = 0, sell = 0, rares = 0, nymphs = 0, pillars = 0, ups = 0, total = 0;
 		this.value.split(" ").forEach(function(code){
 			if (code in Cards.Codes){
@@ -66,6 +63,7 @@
 				else if (card.tier == 15 || card.tier == 20) nymphs++;
 			}
 		});
+		while (infobox.firstChild) infobox.firstChild.remove();
 		setInfo(mkTable("Cards", total,
 			"Upgraded", ups,
 			"Summoning cost", summon,

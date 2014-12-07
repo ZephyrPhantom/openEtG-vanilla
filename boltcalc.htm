@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Bolt Calculator</title>
+	<link href="../forum/Smileys/default/aether.png" rel="shortcut icon" />
+	<style>
+		body {
+			background-color:black;
+			color:white;
+			margin:0;
+		}
+		a {
+			color:#6699FF;
+			text-decoration:none;
+		}
+	</style>
+</head>
+<body>
+	<input id="quantainput" type="text" placeholder="Quanta" style="width:800px">
+	<div id="infobox"></div>
+	<script>
+	"use strict";
+	var infobox = document.getElementById("infobox");
+	function mkTable(x){
+		var tbl = document.createElement("table");
+		for(var i=0; i<x.length; i++){
+			var row = document.createElement("tr");
+			var data = x[i];
+			for(var j=0; j<data.length; j++){
+				var col = document.createElement("td");
+				col.appendChild(document.createTextNode(data[j]));
+				row.appendChild(col);
+			}
+			tbl.appendChild(row);
+		}
+		return tbl;
+	}
+	var costs = [3, 1, 2, 1, 3, 1];
+	document.getElementById("quantainput").addEventListener("keydown", function(e){
+		if (e.keyCode != 13) return;
+		while (infobox.firstChild) infobox.firstChild.remove();
+		var quanta = parseInt(this.value);
+		var calcs = [["Fire"], ["Fire+"], ["Water"], ["Water+"], ["Darkness"], ["Darkness+"], ["Fahrenheit Bonus", Math.floor(quanta/5)]];
+		for(var i=0; i<6; i++){
+			for(var j=0; j<6; j++){
+				var c = costs[j], q = quanta-c*i;
+				if (q >= costs[j]) calcs[j].push((j<2?3:2)*Math.floor(1+q/10)+(i>0?calcs[j][i]:0));
+			}
+		}
+		console.log(calcs);
+		infobox.appendChild(mkTable(calcs))
+	});
+	</script>
+</body>
+</html>
