@@ -256,6 +256,7 @@ enchant:function(c,t){
 endow:function(c,t){
 	Effect.mkText("Endow", t);
 	if (t.status.momentum) c.status.momentum = true;
+	if (t.status.ranged) c.status.ranged = true;
 	c.active = etg.clone(t.active);
 	c.cast = t.cast;
 	c.castele = t.castele;

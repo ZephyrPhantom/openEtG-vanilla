@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<head>
+	<title>Deck Info</title>
+	<link href="../forum/Smileys/default/water.png" rel="shortcut icon" />
+	<style>
+		body {
+			background-color:black;
+			color:white;
+			margin:0;
+		}
+		a {
+			color:#6699FF;
+			text-decoration:none;
+		}
+	</style>
+	<script src="etgify.js"></script>
+</head>
+<body>
+	<input id="deckimport" type="text" placeholder="Deck" style="width:800px">
+	<div style="display:flex"><div id="infobox"></div><img id="deckpreview" style="padding-left:8px;width:646px"></div>
+	<script>
+	"use strict";
+	var infobox = document.getElementById("infobox");
+	function clearInfo(){
+		while (infobox.firstChild) infobox.firstChild.remove();
+	}
+	require("./etg.client").loadcards(function(){
+		clearInfo();
+		chat("Cards loaded");
+		document.getElementById("deckimport").addEventListener("keydown", printstat);
+	});
+	var Cards = require("./Cards");
+	function chat(){
+		for(var i=0; i<arguments.length; i++){
+			infobox.appendChild(document.createTextNode(arguments[i]));
+			infobox.appendChild(document.createElement("br"));
+		}
+	}
+	function printstat(e){
+		if (e.keyCode != 13) return;
+		clearInfo();
+		if (!Cards.loaded){
+			return chat("Cards not loaded");
+		}
+		var summon = 0, buy = 0, sell = 0, rares = 0, nymphs = 0, pillars = 0, ups = 0, total = 0;
+		this.value.split(" ").forEach(function(code){
+			if (code in Cards.Codes){
+				var card = Cards.Codes[code], uncard = card.asUpped(false);
+				total++;
+				summon += card.cost;
+				buy += 6 * uncard.tier * uncard.tier + uncard.cost + 1500;
+				sell += 4 * card.tier * card.tier + card.cost;
+				if (card.upped) ups++;
+				if (!card.type) pillars++;
+				if (card.tier == 6 || card.tier == 8 || card.tier == 18) rares++;
+				if (card.tier == 15 || card.tier == 20) nymphs++;
+			}
+		});
+		document.getElementById("deckpreview").src = "http://dek.im/deck/" + this.value;
+		chat("Cards: " + total,
+			"Upgraded: " + ups,
+			"Summoning cost: " + summon,
+			"Cost to buy: " + buy,
+			"Sell price: " + sell,
+			"Pillars: " + pillars,
+			"Non-nymph rares: " + rares,
+			"Nymphs: " + nymphs);
+	}
+	</script>
+</body>
+</html>
