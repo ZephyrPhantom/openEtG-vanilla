@@ -592,7 +592,7 @@ nova2:function(c,t){
 },
 nymph:function(c,t){
 	Effect.mkText("Nymph", t);
-	var e = t.card.element || c.owner.uptoceil(12);
+	var e = (!t.card.name.match(/^Mark of /) && t.card.element) || c.owner.uptoceil(12);
 	Actives.destroy(c, t, false, true);
 	new etg.Creature(Cards.Codes[etg.NymphList[e]].asUpped(t.card.upped), t.owner).place();
 },
