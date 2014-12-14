@@ -12,5 +12,8 @@
   },
   "scripts": {
     "test": "npm start;firefox 127.0.0.1:13602/test.htm"
+  },
+  "dependencies": {
+    "engine.io-client": "^1.4.3"
   }
 }

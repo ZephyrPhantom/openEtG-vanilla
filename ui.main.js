@@ -1124,7 +1124,7 @@ function chat(message, fontcolor, nodecklink) {
 	span.innerHTML = message;
 	addChatSpan(span);
 }
-var socket = eio({hostname: location.hostname, port: 13602});
+var socket = require("engine.io-client")({hostname: location.hostname, port: 13602});
 socket.on("open", function(){ chat.bind("Connected") });
 socket.on("close", function(){
 	chat("Reconnecting in 99ms");
