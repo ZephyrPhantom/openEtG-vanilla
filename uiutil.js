@@ -75,7 +75,7 @@ function getTextImage(text, font, bgcolor, width) {
 		var bg = new PIXI.Graphics();
 		doc.addChild(bg);
 	}
-	var pieces = text.replace(/\|/g, " | ").split(/(\d\d?:\d\d?|\$|\n)/);
+	var pieces = text.replace(/\|/g, " | ").split(/(\d\d?:\d\d?|\n)/);
 	var x = 0, y = 0, h = Math.max(size, new PIXI.Text("j", font).height), w = 0;
 	function pushChild(){
 		var w = 0;

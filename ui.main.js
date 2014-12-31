@@ -110,11 +110,11 @@ function makeArt(card, art, oldrend) {
 }
 function getArtImage(code, cb){
 	if (!(code in artimagecache)){
-		var loader = new PIXI.ImageLoader("../Cards/" + code + ".png");
-		loader.addEventListener("loaded", function() {
-			cb(artimagecache[code] = PIXI.Texture.fromFrame("../Cards/" + code + ".png"));
+		var img = new Image();
+		img.addEventListener("load", function(){
+			cb(artimagecache[code] = new PIXI.Texture(new PIXI.BaseTexture(img)));
 		});
-		loader.load();
+		img.src = "../Cards/" + code + ".png";
 	}
 	return cb(artimagecache[code]);
 }
@@ -132,29 +132,35 @@ function getCardImage(code) {
 		var card = Cards.Codes[code];
 		var rend = new PIXI.RenderTexture(100, 20);
 		var graphics = new PIXI.Graphics();
-		graphics.lineStyle(2, 0x222222, 1);
+		graphics.lineStyle(1, card && card.shiny ? 0xdaa520 : 0x222222);
 		graphics.beginFill(card ? maybeLighten(card) : code == "0" ? 0x887766 : 0x111111);
-		graphics.drawRect(0, 0, 100, 20);
+		graphics.drawRect(0, 0, 99, 19);
 		graphics.endFill();
 		if (card) {
-			var clipwidth = 2;
+			var clipwidth = rend.width-2;
 			if (card.cost) {
 				var text = new PIXI.Text(card.cost, { font: "11px Dosis", fill: card.upped ? "black" : "white" });
 				text.anchor.x = 1;
-				text.position.set(rend.width - 20, 5);
+				text.position.set(rend.width-2, 5);
 				graphics.addChild(text);
-				clipwidth += text.width + 22;
-				if (card.costele) {
+				clipwidth -= text.width+2;
+				if (card.costele != card.element) {
 					var eleicon = new PIXI.Sprite(gfx.eicons[card.costele]);
-					eleicon.position.set(rend.width - 1, 10);
+					eleicon.position.set(clipwidth, 10);
 					eleicon.anchor.set(1, .5);
 					eleicon.scale.set(.5, .5);
 					graphics.addChild(eleicon);
+					clipwidth -= 18;
 				}
 			}
-			var text, loopi = 0;
-			do text = new PIXI.Text(card.name.substring(0, card.name.length - (loopi++)), { font: "11px Dosis", fill: card.upped ? "black" : "white" }); while (text.width > rend.width - clipwidth);
+			var text = new PIXI.Text(card.name, { font: "11px Dosis", fill: card.upped ? "black" : "white" });
 			text.position.set(2, 5);
+			if (text.width > clipwidth){
+				text.mask = new PIXI.Graphics();
+				text.mask.beginFill();
+				text.mask.drawRect(0, 0, clipwidth, 20);
+				text.mask.endFill();
+			}
 			graphics.addChild(text);
 		}
 		rend.render(graphics);
