@@ -324,7 +324,10 @@ gfx.load(function(loadingScreen){
 function makeButton(x, y, img, mouseoverfunc) {
 	var b;
 	if (typeof img == "string"){
-		b = new PIXI.Sprite(gfx.button);
+		b = new PIXI.Graphics();
+		b.beginFill(0xFFFFFF);
+		b.drawRect(0, 0, 71, 21);
+		b.endFill();
 		var txt = new PIXI.Text(img, {font: "14px Dosis"});
 		txt.anchor.set(.5, .5);
 		txt.position.set(b.width/2, b.height/2);
@@ -1124,7 +1127,7 @@ function chat(message, fontcolor, nodecklink) {
 	span.innerHTML = message;
 	addChatSpan(span);
 }
-var socket = require("engine.io-client")({hostname: location.hostname, port: 13602});
+var socket = eio({hostname: location.hostname, port: 13602});
 socket.on("open", function(){ chat.bind("Connected") });
 socket.on("close", function(){
 	chat("Reconnecting in 99ms");

@@ -1,7 +1,7 @@
 "use strict";
 exports.loaded = false;
 function load(preload, postload){
-	var singles = ["../assets/button.png", "../assets/bg_default.png", "../assets/bg_game.png"];
+	var singles = ["../assets/bg_default.png", "../assets/bg_game.png"];
 	var preLoader = new PIXI.AssetLoader(["../assets/esheet.png", "../assets/backsheet.png",
 		"../assets/cardborders.png", "../assets/statussheet.png", "../assets/statusborders.png", "../assets/typesheet.png"].concat(singles));
 	var loadingBarGraphic = new PIXI.Graphics();

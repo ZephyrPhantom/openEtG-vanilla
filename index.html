@@ -4,22 +4,22 @@
 	<link href="http://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" type="text/css">
 	<link href="../forum/Smileys/default/life.png" rel="shortcut icon" />
 	<style>
-		body {
+		body{
 			background-color:black;
 			color:white;
 			margin:0;
 			font-family:Dosis;
 		}
-		a {
+		a{
 			color:#6699FF;
 			text-decoration:none;
 		}
-		#rightpane {
+		#rightpane{
 			left:900px;
 			top:0px;
 			position:absolute;
 		}
-		#deckimport {
+		#deckimport{
 			left:0px;
 			top:600px;
 			width:900px;
@@ -29,8 +29,16 @@
 			-webkit-user-select:none;
 			position:absolute;
 		}
+		#chatinput{
+			width:350px;
+			height:40px;
+			resize:none;
+			font-family:Dosis;
+			font-size:14px;
+		}
 	</style>
 	<script src="../pixi.dev.js"></script>
+	<script src="../node_modules/engine.io-client/engine.io.js"></script>
 	<script src="etgify.js"></script>
 </head>
 <body>
@@ -41,7 +49,7 @@
 		<input id="challenge" type="submit" value="PvP" onclick="challengeClick()" />
 		<input id="username" type="text" placeholder="Name" />
 		<div id="chatBox" style="width:350px;height:400px;overflow-y:scroll;overflow-x:hidden;background-color:white"></div>
-		<textarea id="chatinput" placeholder="Chat" style="width:350px;height:40px;resize:none" onkeydown="maybeSendChat(event)"></textarea>
+		<textarea id="chatinput" placeholder="Chat" onkeydown="maybeSendChat(event)"></textarea>
 	</div>
 	<input id="deckimport" type="text" placeholder="Deck" style="width:890px" />
     <script src="ui.main.js"></script>
