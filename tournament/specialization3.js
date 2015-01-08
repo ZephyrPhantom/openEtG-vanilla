@@ -20,7 +20,7 @@ module.exports = function(deck) {
 	}
 	if (upped < 0) return "You have too few unupgraded cards, needs " + (-upped) + " more"
 	var hasSpecial = false;
-	for (code in cardList) {
+	for (var code in cardList) {
 		var card = Cards.Codes[code];
 		if (~specialList.indexOf(code)){
 			if (cardList[code] < 6) return "You have to have at least 6 copies of " + Cards.Codes[code].name;
