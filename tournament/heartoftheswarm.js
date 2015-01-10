@@ -1,5 +1,5 @@
 module.exports = function(deck) {
-	var spellList = ["4vo", "4vn", "52s", "5c9", "5f8", "5li", "5op", "622", "8pi"];
+	var spellList = ["4vo", "4vn", "52s", "5c9", "5f8", "5li", "5op", "61r", "622", "8pi"];
 	var perms = {};
 	var spells = {};
 	var creatures = 0;
