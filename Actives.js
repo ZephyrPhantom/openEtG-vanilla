@@ -849,6 +849,7 @@ steal:function(c,t){
 		t.remove();
 		t.owner = c.owner;
 		t.usedactive = true;
+		if (t.card.isOf(Cards.Sundial)) t.status.charges++;
 		t.place();
 	}
 },
