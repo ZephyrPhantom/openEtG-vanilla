@@ -762,6 +762,10 @@ silence:function(c,t){
 	}
 },
 singularity:function(c,t){
+	if (c.trueatk() > 0){
+		Actives.antimatter(c, c);
+		return;
+	}
 	var r = c.owner.rng();
 	if (r > .9){
 		c.status.adrenaline = 1;
@@ -784,7 +788,6 @@ singularity:function(c,t){
 	}else if (r > .1 && c.owner.weapon){
 		c.owner.weapon = new etg.Weapon(Cards.Dagger, c.owner);
 	}
-	c.dmg(c.trueatk(), true);
 },
 siphon:adrenathrottle(function(c, t) {
 	if (!c.owner.foe.sanctuary && c.owner.foe.spend(etg.Other, 1)) {
