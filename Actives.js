@@ -778,8 +778,9 @@ singularity:function(c,t){
 	}else if (r > .5){
 		Actives.blackhole(c.owner.foe, c.owner);
 	}else if (r > .4){
-		c.atk -= c.owner.uptoceil(5);
-		c.buffhp(c.owner.uptoceil(5));
+		var buff = c.owner.upto(25);
+		c.buffhp(Math.floor(buff/5)+1);
+		c.atk -= buff%5+1;
 	}else if (r > .3){
 		Actives.nova(c.owner.foe);
 		c.owner.foe.nova = 0;
