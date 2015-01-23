@@ -955,6 +955,12 @@ Thing.prototype.mutantactive = function(){
 		}
 	}
 }
+var adrtbl = [
+	[0, 0, 0, 0],
+	[1, 1, 1], [2, 2, 2], [3, 3, 3],
+	[3, 2], [4, 2], [4, 2], [5, 3], [6, 3],
+	[3], [4], [4], [4], [5], [5], [5]
+];
 Weapon.prototype.trueatk = Creature.prototype.trueatk = function(adrenaline){
 	var dmg = this.atk;
 	if (this.status.dive)dmg += this.status.dive;
@@ -964,11 +970,8 @@ Weapon.prototype.trueatk = Creature.prototype.trueatk = function(adrenaline){
 	}
 	var y=adrenaline || this.status.adrenaline || 0;
 	if (y<2)return dmg;
-	var attackCoefficient = 4-countAdrenaline(dmg);
-	for(var i=1; i<y; i++){
-		dmg -= Math.ceil(attackCoefficient*dmg*i/3);
-	}
-	return dmg;
+	var row = adrtbl[dmg];
+	return row ? row[y-2] || 0 : 0;
 }
 Player.prototype.truehp = function(){ return this.hp; }
 Weapon.prototype.truehp = function(){ return this.card.health; }
@@ -1141,7 +1144,8 @@ CardInstance.prototype.useactive = function(target){
 	owner.game.updateExpectedDamage();
 }
 function countAdrenaline(x){
-	return 5-Math.floor(Math.sqrt(Math.abs(x)));
+	var atks = adrtbl[Math.abs(x)];
+	return atks?atks.length+1:1;
 }
 var filtercache = [];
 function filtercards(upped, filter, cmp, showshiny){
