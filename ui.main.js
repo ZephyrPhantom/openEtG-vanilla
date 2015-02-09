@@ -7,7 +7,7 @@ htmlElements.forEach(function(name){
 });
 })();
 (function(){
-require("./etg.client").loadcards(function(){
+require("./httpcards")(function(){
 	if (gfx.loaded) startEditor();
 });
 var guestname, muteset = {}, muteall;
@@ -612,10 +612,31 @@ function startMatch(game) {
 		statuses[9].visible = obj.status.frozen;
 		spr.alpha = obj.status.immaterial || obj.status.burrowed ? .7 : 1;
 	}
-	var gameui = new PIXI.DisplayObjectContainer(), discarding;
-	gameui.interactive = true;
-	var redlines = new PIXI.Sprite(gfx.bg_game);
-	redlines.position.y = 12;
+	var redhor = [
+		12, 0, 900,
+		144, 145, 796,
+		301, 103, 796,
+		459, 103, 754,
+		590, 103, 754,
+	], redver = [
+		103, 301, 590,
+		144, 12, 301,
+		275, 12, 144,
+		624, 459, 590,
+		754, 301, 590,
+		796, 12, 301,
+	], redlines = new PIXI.Graphics();
+	for(var j=0; j<4; j++){
+		redlines.lineStyle(1, [0x121212, 0x6a2e0d, 0x8a3e1d, 0x969696][j]);
+		for (var i=0; i<redhor.length; i+=3){
+			redlines.moveTo(redhor[i+1], redhor[i]-j);
+			redlines.lineTo(redhor[i+2], redhor[i]-j);
+		}
+		for (var i=0; i<redver.length; i+=3){
+			redlines.moveTo(redver[i]+j, redver[i+1]);
+			redlines.lineTo(redver[i]+j, redver[i+2]);
+		}
+	}
 	gameui.addChild(redlines);
 	var cloakgfx = new PIXI.Graphics();
 	cloakgfx.beginFill(0);

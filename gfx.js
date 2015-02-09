@@ -1,7 +1,7 @@
 "use strict";
 exports.loaded = false;
 function load(preload, postload){
-	var singles = ["bg_default", "bg_game"];
+	var singles = ["bg_default"];
 	var assets = ["eicons", "cardBacks", "cardBorders", "sicons", "sborders", "ticons"].concat(singles);
 	var widths = {
 		eicons: 32,
