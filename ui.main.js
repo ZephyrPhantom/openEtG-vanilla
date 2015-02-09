@@ -612,6 +612,8 @@ function startMatch(game) {
 		statuses[9].visible = obj.status.frozen;
 		spr.alpha = obj.status.immaterial || obj.status.burrowed ? .7 : 1;
 	}
+	var gameui = new PIXI.DisplayObjectContainer();, discarding;
+	gameui.interactive = true;
 	var redhor = [
 		12, 0, 900,
 		144, 145, 796,
