@@ -7,12 +7,10 @@
     "url": "https://github.com/serprex/openEtG-vanilla.git"
   },
   "devDependencies": {
-    "qunitjs": "^1.15.0",
-    "urllib": "^2.0.1"
+    "urllib": "^2.2.2"
   },
   "scripts": {
     "test": "npm start;firefox 127.0.0.1:13602/test.htm"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
