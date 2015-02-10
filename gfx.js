@@ -2,8 +2,8 @@
 var ui = require("./uiutil");
 var Cards = require("./Cards");
 exports.loaded = false;
-function load(preload, postload){
-	var singles = ["bg_default"];
+function load(progress, postload){
+	var singles = [];
 	var assets = ["eicons", "cardBacks", "cardBorders", "sicons", "sborders", "ticons"].concat(singles);
 	var widths = {
 		eicons: 32,
@@ -13,17 +13,12 @@ function load(preload, postload){
 		ticons: 25,
 		sborders: 64,
 	};
-	var loadingBar = new PIXI.Graphics();
-	preload(loadingBar);
 	var loadCount = 0;
 	assets.forEach(function(asset){
 		var img = new Image();
 		img.addEventListener("load", function(){
 			loadCount++;
-			loadingBar.clear();
-			loadingBar.beginFill(loadCount == assets.length ? 0x336699 : 0xFFFFFF);
-			loadingBar.drawRect(0, 284, 900*loadCount/assets.length, 32);
-			loadingBar.endFill();
+			progress(loadCount/assets.length);
 			var w = widths[asset], tex = new PIXI.Texture(new PIXI.BaseTexture(this));
 			if (w){
 				var ts = [];
