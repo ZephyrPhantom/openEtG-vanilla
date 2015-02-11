@@ -1,5 +1,5 @@
 rule mkcjs
  command=mkcjs $out $in
 build etgify.js:mkcjs etg.js InteractionManager.js chat.js px.js sock.js httpcards.js etgutil.js uiutil.js Actives.js MersenneTwister.js Effect.js Cards.js gfx.js views/Login.js views/Editor.js views/Match.js views/Result.js
-build tournify.js:mkcjs tournament/rotation.js tournament/wintercoming.js tournament/quantacontrolreturns.js tournament/inception.js tournament/tamerandomness.js tournament/shoecobbler.js tournament/powerless3.js tournament/barbershop.js tournament/specialization2.js tournament/venomouspoison.js tournament/specialization3.js tournament/heartoftheswarm.js tournament/symmetricity.js
+build tournify.js:mkcjs tournament/rotation.js tournament/wintercoming.js tournament/quantacontrolreturns.js tournament/inception.js tournament/tamerandomness.js tournament/shoecobbler.js tournament/powerless3.js tournament/barbershop.js tournament/specialization2.js tournament/venomouspoison.js tournament/specialization3.js tournament/heartoftheswarm.js tournament/symmetricity.js tournament/valentine.js
 default etgify.js tournify.js
