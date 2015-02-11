@@ -9,19 +9,18 @@ module.exports = function(deck) {
 		if (etg.ShardList.some(function(x){return x && card.asUpped(false).code == x})) return "Shards are banned";
 		if (bans.some(function(x){return card.asUpped(false).code == x}) || ~unuppedbans.indexOf(card.code)) return card.name + " is banned";
 		if (card.type == etg.PillarEnum) continue;
-		var nymph = etg.NymphList.indexOf(card.code);
+		var nymph = etg.NymphList.indexOf(card.asUpped(false).code);
 		if (~nymph){
 			if (nymphs[nymph]) return "You may only have 1 " + card.name;
 			nymphs[nymph] = 1;
-		}
-		if (card.type == etg.CreatureEnum || card.isOf(Cards.Chimera)) cards[card.asUpped(false).code] = (cards[card.asUpped(false).code] || 0) + 1;
+		}else if (card.type == etg.CreatureEnum || card.isOf(Cards.Chimera)) cards[card.asUpped(false).code] = (cards[card.asUpped(false).code] || 0) + 1;
 	}
 	for (var code in cards){
 		if (cards[code] > 2) return "May not have more than 2 copies of " + Cards.Codes[card].name;
 		var ele = Cards.Codes[code].element;
 		if (cards[code] == 1 && nymphs[ele]){
 			nymphs[ele]++;
-		}
+		}else return "Nymphless single: " + Cards.Codes[code].name;
 	}
 	for (var ele in nymphs){
 		if (nymphs[ele] > 4) return "Too many singles in " + etg.eleNames[ele];
