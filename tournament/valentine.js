@@ -1,6 +1,6 @@
 module.exports = function(deck) {
 	deck.sort(function(x,y){return (x.code>y.code)-(x.code<y.code)});
-	var bans = "4vd 4vl 4vo 4vp 52l 52p 52s 534 55m 55r 55t 561 562 56i 58v 593 596 5c3 5f4 5f5 5f6 5f8 5f9 5fb 5fk 5i8 5ic 5if 5ig 5ih 5ij 5io 5oh 5ol 5om 5on 5p0 5rq 5rs 5un 5us 5uu 5v8 61q 61t 61u".split(" ");
+	var bans = "4vd 4vl 4vo 4vp 52i 52l 52p 52s 534 55m 55r 55t 561 562 58v 593 596 5c3 5f4 5f5 5f6 5f8 5f9 5fb 5fk 5i8 5ic 5if 5ig 5ih 5ij 5io 5lc 5oh 5ol 5om 5on 5p0 5rq 5rs 5un 5us 5uu 5v8 61q 61t 61u".split(" ");
 	var unuppedbans = "4vi 4vk 4vm 5ie".split(" ");
 	var cards = {}, nymphs = {};
 	if (deck.length > 35) return "Deck may be only 35 cards at most, not " + deck.length;
