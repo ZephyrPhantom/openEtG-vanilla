@@ -265,7 +265,7 @@ DeckDisplay.prototype.mousemove = function(){
 		}
 	}
 }
-function CardSelector(dom, cardmouseover, cardclick, maxedIndicator){
+function CardSelector(dom, cardmouseover, cardclick){
 	var self = this;
 	PIXI.Container.call(this);
 	this._cardpool = this.cardpool = undefined;
@@ -274,7 +274,6 @@ function CardSelector(dom, cardmouseover, cardclick, maxedIndicator){
 	this.cardmouseover = cardmouseover;
 	this.cardclick = cardclick;
 	this.hitArea = new PIXI.math.Rectangle(100, 272, 800, 328);
-	if (maxedIndicator) this.addChild(this.maxedIndicator = new PIXI.Graphics());
 	this.elefilter = 0;
 	this.columns = [[],[],[],[],[],[]];
 	this.columnspr = [[],[],[],[],[],[]];
@@ -346,7 +345,6 @@ CardSelector.prototype.makeColumns = function(){
 }
 CardSelector.prototype.renderColumns = function(){
 	if (this.cardminus) this.cardminus.rendered = true;
-	if (this.maxedIndicator) this.maxedIndicator.clear();
 	for (var i = 0;i < 6; i++){
 		for (var j = 0;j < this.columns[i].length;j++) {
 			var spr = this.columnspr[i][j], code = this.columns[i][j].code;
@@ -356,10 +354,6 @@ CardSelector.prototype.renderColumns = function(){
 				var card = Cards.Codes[code];
 				var cardAmount = card.type == etg.PillarEnum ? "-" : code in this.cardpool ? this.cardpool[code] - ((this.cardminus && this.cardminus[code]) || 0) : 0;
 				spr.countText.text = cardAmount;
-				if (this.maxedIndicator && card.type != etg.PillarEnum && cardAmount >= 6) {
-					this.maxedIndicator.beginFill(ui.elecols[cardAmount >= 12 ? etg.Chroma : etg.Light]);
-					this.maxedIndicator.drawRect(spr.position.x + 100, spr.position.y, 33, 20);
-				}
 			}
 		}
 		for (;j < 15;j++) {
