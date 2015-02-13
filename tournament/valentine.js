@@ -17,10 +17,11 @@ module.exports = function(deck) {
 	}
 	for (var code in cards){
 		if (cards[code] > 2) return "May not have more than 2 copies of " + Cards.Codes[card].name;
-		var ele = Cards.Codes[code].element;
-		if (cards[code] == 1 && nymphs[ele]){
-			nymphs[ele]++;
-		}else return "Nymphless single: " + Cards.Codes[code].name;
+		else if (cards[code] == 1){
+			var ele = Cards.Codes[code].element;
+			if (nymphs[ele]) nymphs[ele]++;
+			else return "Nymphless single: " + Cards.Codes[code].name;
+		}
 	}
 	for (var ele in nymphs){
 		if (nymphs[ele] > 4) return "Too many singles in " + etg.eleNames[ele];
