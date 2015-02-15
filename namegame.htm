@@ -24,6 +24,11 @@
 	<label><input id="hideshard" type="checkbox" checked>Shards</label>
 	<label><input id="hiderare" type="checkbox">Rares</label>
 	<label><input id="hidenymph" type="checkbox">Nymphs</label>
+	<br>Ignore prefix:
+	<label><input id="ignoreElite" type="checkbox">Elite</label>
+	<label><input id="ignoreImproved" type="checkbox">Improved</label>
+	<label><input id="ignoreShard" type="checkbox">Shard</label>
+	<label><input id="ignoreMark" type="checkbox">Mark</label></label>
 	<br>Upgraded:
 	<label><input name="upped" type="radio" value="no" checked>No</label>
 	<label><input name="upped" type="radio" value="yes">Yes</label>
@@ -39,13 +44,21 @@
 		document.getElementById("nameinput").addEventListener("keydown", printstat);
 	});
 	function printstat(e){
-		var letter, hide = {};
+		var letter, hide = {}, ignore = function(name){return name};
 		["pillar", "mark", "shard", "rare", "nymph"].forEach(function(x){
 			if (document.getElementById("hide"+x).checked) hide[x] = true;
 		});
+		["Elite", "Improved", "Shard", "Mark"].forEach(function(x){
+			if (document.getElementById("ignore"+x).checked){
+				var oldignore = ignore;
+				ignore = function(name){
+					return oldignore(name).replace(new RegExp("^" + x + "( of)? "), "");
+				}
+			}
+		});
 		var upped = document.querySelector("input[name='upped']:checked").value;
 		function cardfilter(card){
-			if (card.name.charAt(0) == letter){
+			if (ignore(card.name).charAt(0) == letter){
 				if (hide.pillar && !card.type) return false;
 				if (hide.mark && card.name.match(/^Mark of /)) return false;
 				if (hide.shard && card.name.match(/^Shard of /)) return false;
@@ -70,6 +83,7 @@
 			img.src = "http://dek.im/deck/" + deck.slice(i, i+70).join(" ");
 			infobox.appendChild(img);
 		}
+		if (!deck.length) infobox.appendChild(document.createTextNode("No matches"));
 	}
 	</script>
 </body>
