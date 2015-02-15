@@ -26,7 +26,7 @@
 		infobox.appendChild(typeof x === "string" ? document.createTextNode(x) : x);
 	}
 	var Cards = require("./Cards");
-	require("./etg.client").loadcards(function(){
+	require("./httpcards")(function(){
 		setInfo("Cards loaded");
 		document.getElementById("deckinput").addEventListener("keydown", printstat);
 	});
