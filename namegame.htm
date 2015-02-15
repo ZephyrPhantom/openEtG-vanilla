@@ -34,7 +34,7 @@
 	var etg = require("./etg");
 	var Cards = require("./Cards");
 	var infobox = document.getElementById("infobox");
-	require("./etg.client").loadcards(function(){
+	require("./httpcards")(function(){
 		infobox.appendChild(document.createTextNode("Cards loaded"));
 		document.getElementById("nameinput").addEventListener("keydown", printstat);
 	});
