@@ -4,23 +4,25 @@
 	<title>Bolt Calculator</title>
 	<link href="../forum/Smileys/default/aether.png" rel="shortcut icon" />
 	<style>
-		body {
+		body{
 			background-color:black;
 			color:white;
 			margin:0;
 		}
-		a {
+		a{
 			color:#6699FF;
 			text-decoration:none;
 		}
+		#quantainput{width:800px}
 	</style>
 </head>
 <body>
-	<input id="quantainput" type="text" placeholder="Quanta" style="width:800px">
+	<input id="quantainput" type="text" placeholder="Quanta"><br>
+	Upped: <span id="uppedcount"></span><input id="upped" type="range" min="0" max="6" value="0"><br>
 	<div id="infobox"></div>
 	<script>
 	"use strict";
-	var infobox = document.getElementById("infobox");
+	var infobox = document.getElementById("infobox"), uppedcount = document.getElementById("uppedcount"), upped = document.getElementById("upped");
 	function mkTable(x){
 		var tbl = document.createElement("table");
 		for(var i=0; i<x.length; i++){
@@ -36,18 +38,25 @@
 		return tbl;
 	}
 	var costs = [3, 1, 2, 1, 3, 1];
+	uppedcount.appendChild(document.createTextNode(upped.value));
+	upped.addEventListener("input", function(e){
+		while (uppedcount.firstChild) uppedcount.firstChild.remove();
+		uppedcount.appendChild(document.createTextNode(this.value));
+	});
 	document.getElementById("quantainput").addEventListener("keydown", function(e){
 		if (e.keyCode != 13) return;
 		while (infobox.firstChild) infobox.firstChild.remove();
-		var quanta = parseInt(this.value);
-		var calcs = [["Fire"], ["Fire+"], ["Water"], ["Water+"], ["Darkness"], ["Darkness+"], ["Fahrenheit Bonus", Math.floor(quanta/5)]];
-		for(var i=0; i<6; i++){
-			for(var j=0; j<6; j++){
-				var c = costs[j], q = quanta-c*i;
-				if (q >= costs[j]) calcs[j].push((j<2?3:2)*Math.floor(1+q/10)+(i>0?calcs[j][i]:0));
+		var quanta = parseInt(this.value), ups = upped.value;
+		var calcs = [["Fire"], ["Water"], ["Darkness"], ["Fahrenheit Bonus", Math.floor(quanta/5)]];
+		for(var j=0; j<3; j++){
+			var q = quanta;
+			for(var i=0; i<6; i++){
+				var cost = costs[j*2+(i<ups)];
+				if (q >= costs[j]) calcs[j].push((j?2:3)*Math.floor(1+q/10)+(i>0?calcs[j][i]:0));
+				else break;
+				q -= cost;
 			}
 		}
-		console.log(calcs);
 		infobox.appendChild(mkTable(calcs))
 	});
 	</script>
