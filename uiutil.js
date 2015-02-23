@@ -73,7 +73,6 @@ function getTextImage(text, size, color, bgcolor, width) {
 		var bg = new PIXI.Graphics();
 		doc.addChild(bg);
 	}
-	var pieces = text.replace(/\|/g, " | ").split(/(\d\d?:\d\d?|\n)/);
 	var x = 0, y = 0, h = Math.floor(size*1.4), w = 0;
 	function pushChild(){
 		var w = 0;
@@ -93,12 +92,45 @@ function getTextImage(text, size, color, bgcolor, width) {
 			doc.addChild(c);
 		}
 	}
-	pieces.forEach(function(piece){
+	var canvas = document.createElement("canvas"), ctx = canvas.getContext("2d");
+	var textxy = [], font = ctx.font = size + "px Dosis";
+	function pushText(text){
+		var block = [];
+		etg.iterSplit(text, " ", function(word){
+			if (word){
+				block.push(word);
+				if (width && x + ctx.measureText(block.join(" ")).width >= width){
+					block.pop();
+					textxy.push(block.join(" "), x, y+size);
+					block.length = 1;
+					block[0] = word;
+					x = 0;
+					y += h;
+				}
+			}
+		});
+		if (block.length){
+			var blocktext = block.join(" ");
+			textxy.push(blocktext, x, y+size);
+			x += ctx.measureText(blocktext).width;
+			if (x >= width){
+				x = 0;
+				y += h;
+			}
+		}
+	}
+	text = text.replace(/\|/g, " | ");
+	var sep = /\d\d?:\d\d?|\n/g, reres, lastindex = 0;
+	while (reres = sep.exec(text)){
+		var piece = reres[0];
+		if (reres.index != lastindex){
+			pushText(text.slice(lastindex, reres.index));
+		}
 		if (piece == "\n"){
 			w = Math.max(w, x);
 			x = 0;
 			y += h;
-		}else if (/^\d\d?:\d\d?$/.test(piece)) {
+		}else{
 			var parse = piece.split(":");
 			var num = parseInt(parse[0]);
 			var icon = gfx.eicons[parseInt(parse[1])];
@@ -113,29 +145,24 @@ function getTextImage(text, size, color, bgcolor, width) {
 			}else{
 				var spr = new PIXI.Sprite(icon);
 				spr.scale.set(size/32, size/32);
-				pushChild(new PIXI.Sprite(gfx.Text(num, size, color)), spr);
-			}
-		} else if (piece) {
-			var txt = new PIXI.Sprite(gfx.Text(piece, size, color));
-			if (!width || x + txt.width < width){
-				pushChild(txt);
-			}else{
-				piece.split(" ").forEach(function(word){
-					if (word){
-						pushChild(new PIXI.Sprite(gfx.Text(word, size, color)));
-						if (x){
-							x += 3;
-						}
-					}
-				});
+				pushText(num.toString());
+				pushChild(spr);
 			}
 		}
-	});
+		lastindex = reres.index + piece.length;
+	}
+	if (lastindex != text.length) pushText(text.slice(lastindex));
 	var rtex = require("./px").mkRenderTexture(width || Math.max(w, x), y+h);
 	if (bg){
 		bg.beginFill(bgcolor);
 		bg.drawRect(0, 0, rtex.width, rtex.height);
 	}
+	canvas.width = rtex.width;
+	canvas.height = rtex.height;
+	ctx.font = font;
+	ctx.fillStyle = color || "black";
+	for(var i=0; i<textxy.length; i+=3) ctx.fillText(textxy[i], textxy[i+1], textxy[i+2]);
+	doc.addChild(new PIXI.Sprite(new PIXI.Texture(new PIXI.BaseTexture(canvas))));
 	rtex.render(doc);
 	return tximgcache[key] = rtex;
 }

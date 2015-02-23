@@ -80,15 +80,15 @@ exports.domText = function(text){
 			if (this.textcache == text) return;
 			this.textcache = text;
 			while (this.firstChild) this.firstChild.remove();
-			var ele = this;
-			var pieces = text.replace(/\|/g, " | ").split(/(\d\d?:\d\d?|\$|\n)/);
-			pieces.forEach(function(piece){
+			text = text.replace(/\|/g, " | ");
+			var sep = /\d\d?:\d\d?|\n/g, reres, lastindex = 0;
+			while (reres = sep.exec(text)){
+				var piece = reres[0];
+				if (reres.index != lastindex){
+					this.appendChild(document.createTextNode(text.slice(lastindex, reres.index)));
+				}
 				if (piece == "\n") {
-					ele.appendChild(document.createElement("br"));
-				}else if (piece == "$") {
-					var sp = document.createElement("span");
-					sp.className = "coin";
-					ele.appendChild(sp);
+					this.appendChild(document.createElement("br"));
 				}else if (/^\d\d?:\d\d?$/.test(piece)) {
 					var parse = piece.split(":");
 					var num = parseInt(parse[0]);
@@ -96,18 +96,20 @@ exports.domText = function(text){
 						for (var j = 0;j < num;j++) {
 							var sp = document.createElement("span");
 							sp.className = "eicon e"+parse[1];
-							ele.appendChild(sp);
+							this.appendChild(sp);
 						}
 					}else{
-						ele.appendChild(document.createTextNode(parse[0]));
+						this.appendChild(document.createTextNode(parse[0]));
 						var sp = document.createElement("span");
 						sp.className = "eicon e"+parse[1];
-						ele.appendChild(sp);
+						this.appendChild(sp);
 					}
-				} else if (piece) {
-					ele.appendChild(document.createTextNode(piece));
 				}
-			});
+				lastindex = reres.index + piece.length;
+			}
+			if (lastindex != text.length){
+				this.appendChild(document.createTextNode(text.slice(lastindex)));
+			}
 		}
 	});
 	ele.text = text;
