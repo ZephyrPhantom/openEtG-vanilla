@@ -63,60 +63,56 @@ function tgtToPos(t) {
 var tximgcache = {};
 function getTextImage(text, size, color, bgcolor, width) {
 	if (!gfx.loaded || !text) return gfx.nopic;
-	if (bgcolor === undefined) bgcolor = "";
 	var key = JSON.stringify(arguments);
 	if (key in tximgcache) {
 		return tximgcache[key];
 	}
-	var doc = new PIXI.Container();
-	if (bgcolor !== ""){
-		var bg = new PIXI.Graphics();
-		doc.addChild(bg);
-	}
 	var x = 0, y = 0, h = Math.floor(size*1.4), w = 0;
-	function pushChild(){
+	function pushChild(texture, num){
+		if (num === undefined) num = 1;
 		var w = 0;
 		if (x > 0){
-			for (var i = 0; i<arguments.length; i++){
-				w += arguments[i].width;
-			}
+			w += size;
 		}
 		if (width && x + w > width){
 			x = 0;
 			y += h;
 		}
-		for (var i = 0; i<arguments.length; i++){
-			var c = arguments[i];
-			c.position.set(x, y);
-			x += c.width;
-			doc.addChild(c);
+		for (var i = 0; i<num; i++){
+			textxy.push(texture, x, y);
+			x += size;
 		}
 	}
 	var canvas = document.createElement("canvas"), ctx = canvas.getContext("2d");
 	var textxy = [], font = ctx.font = size + "px Dosis";
 	function pushText(text){
-		var block = [];
+		var w = ctx.measureText(text).width;
+		if (!width || x + w <= width){
+			textxy.push(text, x, y+size);
+			x += w + 3;
+			return;
+		}
+		var idx = 0, endidx = 0, oldblock = "";
 		etg.iterSplit(text, " ", function(word){
-			if (word){
-				block.push(word);
-				if (width && x + ctx.measureText(block.join(" ")).width >= width){
-					block.pop();
-					textxy.push(block.join(" "), x, y+size);
-					block.length = 1;
-					block[0] = word;
-					x = 0;
-					y += h;
-				}
-			}
-		});
-		if (block.length){
-			var blocktext = block.join(" ");
-			textxy.push(blocktext, x, y+size);
-			x += ctx.measureText(blocktext).width;
-			if (x >= width){
+			var nextendidx = endidx + word.length + 1;
+			var newblock = text.slice(idx, nextendidx-1);
+			if (width && x + ctx.measureText(newblock).width >= width){
+				textxy.push(oldblock, x, y+size);
+				newblock = word;
+				idx = endidx;
 				x = 0;
 				y += h;
 			}
+			oldblock = newblock;
+			endidx = nextendidx;
+		});
+		if (idx != text.length){
+			textxy.push(oldblock, x, y+size);
+			x += ctx.measureText(oldblock).width;
+			if (width && x >= width){
+				x = 0;
+				y += h;
+			}else x += 3;
 		}
 	}
 	text = text.replace(/\|/g, " | ");
@@ -135,36 +131,29 @@ function getTextImage(text, size, color, bgcolor, width) {
 			var num = parseInt(parse[0]);
 			var icon = gfx.eicons[parseInt(parse[1])];
 			if (num < 4) {
-				var icons = [];
-				for (var j = 0;j < num;j++) {
-					var spr = new PIXI.Sprite(icon);
-					spr.scale.set(size/32, size/32);
-					icons.push(spr);
-				}
-				pushChild.apply(null, icons);
+				pushChild(icon, num);
 			}else{
-				var spr = new PIXI.Sprite(icon);
-				spr.scale.set(size/32, size/32);
 				pushText(num.toString());
-				pushChild(spr);
+				pushChild(icon);
 			}
 		}
 		lastindex = reres.index + piece.length;
 	}
 	if (lastindex != text.length) pushText(text.slice(lastindex));
-	var rtex = require("./px").mkRenderTexture(width || Math.max(w, x), y+h);
-	if (bg){
-		bg.beginFill(bgcolor);
-		bg.drawRect(0, 0, rtex.width, rtex.height);
+	canvas.width = width || Math.max(w, x);
+	canvas.height = y+h;
+	if (bgcolor){
+		ctx.fillStyle = PIXI.utils.hex2string(bgcolor);
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
 	}
-	canvas.width = rtex.width;
-	canvas.height = rtex.height;
 	ctx.font = font;
 	ctx.fillStyle = color || "black";
-	for(var i=0; i<textxy.length; i+=3) ctx.fillText(textxy[i], textxy[i+1], textxy[i+2]);
-	doc.addChild(new PIXI.Sprite(new PIXI.Texture(new PIXI.BaseTexture(canvas))));
-	rtex.render(doc);
-	return tximgcache[key] = rtex;
+	for(var i=0; i<textxy.length; i+=3){
+		var c = textxy[i];
+		if (typeof c === "string") ctx.fillText(c, textxy[i+1], textxy[i+2]);
+		else ctx.drawImage(c.baseTexture.source, c.crop.x, c.crop.y, c.crop.width, c.crop.height, textxy[i+1], textxy[i+2], size, size);
+	}
+	return tximgcache[key] = new PIXI.Texture(new PIXI.BaseTexture(canvas));
 }
 var sounds = {}, musics = {}, currentMusic;
 var soundEnabled = false, musicEnabled = false;

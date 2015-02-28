@@ -17,6 +17,15 @@ function Game(seed, flip){
 	this.expectedDamage = [0, 0];
 	this.time = Date.now();
 }
+function iterSplit(src, str, func, thisObj){
+	var i=0;
+	while(true){
+		var j=src.indexOf(str, i);
+		func.call(thisObj, src.slice(i, (~j?j:src.length)));
+		if (j == -1) return;
+		i=j+str.length;
+	}
+}
 var statuscache = {};
 var activecache = {};
 var activecastcache = {};
@@ -1192,6 +1201,7 @@ exports.Shield = Shield;
 exports.Permanent = Permanent;
 exports.Creature = Creature;
 exports.passives = passives;
+exports.iterSplit = iterSplit;
 exports.isEmpty = isEmpty;
 exports.filtercards = filtercards;
 exports.countAdrenaline = countAdrenaline;
