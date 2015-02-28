@@ -1,18 +1,26 @@
 var chat = require("./chat");
 var etgutil = require("./etgutil");
 var socket = new WebSocket("ws://"+location.hostname+":13602");
+var buffer = [];
+var attempts = 0, attemptTimeout = 0;
 socket.onopen = function(){
+	attempts = 0;
+	if (attemptTimeout) clearTimeout(attemptTimeout);
+	buffer.forEach(this.send, this);
+	buffer.length = 0;
 	chat("Connected");
 }
 socket.onclose = function reconnect(){
-	chat("Reconnecting in 99ms");
-	setTimeout(function(){
+	attempts = Math.min(attempts+1, 8);
+	var timeout = 99+Math.floor(99*Math.random())*attempts;
+	attemptTimeout = setTimeout(function(){
 		var oldsock = socket;
-		socket = new WebSocket("ws://"+location.hostname+":13602");
+		exports.et = socket = new WebSocket("ws://"+location.hostname+":13602");
 		socket.onopen = oldsock.onopen;
 		socket.onclose = oldsock.onclose;
 		socket.onmessage = oldsock.onmessage;
-	}, 99);
+	}, timeout);
+	chat("Reconnecting in "+ timeout +"ms");
 }
 exports.et = socket;
 exports.emit = function(x, data){
