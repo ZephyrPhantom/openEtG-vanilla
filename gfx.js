@@ -141,7 +141,11 @@ function getInstImage(code, scale, cache){
 	return cache[code] || getArtImage(code, function(art) {
 		var card = Cards.Codes[code];
 		var rend = require("./px").mkRenderTexture(Math.ceil(128 * scale), Math.ceil(164 * scale));
-		var border = new PIXI.Sprite(exports.cardBorders[card.element + (card.upped ? 13 : 0)]);
+		var btex = exports.cardBorders[card.element + (card.upped ? 13 : 0)];
+		var border = new PIXI.Sprite(btex), border2 = new PIXI.Sprite(btex);
+		border2.position.y = 164;
+		border2.scale.y = -1;
+		border.addChild(border2);
 		var graphics = new PIXI.Graphics();
 		border.addChild(graphics);
 		graphics.beginFill(ui.maybeLighten(card));
