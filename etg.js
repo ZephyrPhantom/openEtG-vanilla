@@ -1,9 +1,9 @@
 "use strict";
-var MersenneTwister = require("./MersenneTwister");
+var MersenneTwister = require("../MersenneTwister");
 var Actives = require("./Actives");
 var Effect = require("./Effect");
-var ui = require("./uiutil");
-var etgutil = require("./etgutil");
+var ui = require("../uiutil");
+var etgutil = require("../etgutil");
 var Cards = require("./Cards");
 function Game(seed, flip){
 	this.rng = new MersenneTwister(seed);

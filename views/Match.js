@@ -6,7 +6,7 @@ var sock = require("../sock");
 var Cards = require("../Cards");
 var Effect = require("../Effect");
 var Actives = require("../Actives");
-var etgutil = require("../etgutil");
+var etgutil = require("../../etgutil");
 function startMatch(game) {
 	function drawBorder(obj, spr) {
 		if (obj) {
@@ -289,7 +289,7 @@ function startMatch(game) {
 				dom.push([quantaxy[0] + ((k & 1) ? 32 : 86), quantaxy[1] + Math.floor((k - 1) / 2) * 32 + 4,
 					quantatext[j][k-1]]);
 				var quantaicon = document.createElement("span");
-				quantaicon.className = "Eicon E"+k;
+				quantaicon.className = "ico e"+k;
 				dom.push([quantaxy[0] + ((k & 1) ? 0 : 54), quantaxy[1] + Math.floor((k - 1) / 2) * 32, quantaicon]);
 			}
 			px.setClick(playerOverlay[j], function() {
@@ -557,7 +557,7 @@ function startMatch(game) {
 				shiesprite[j].alpha = sh.status.immaterial ? .7 : 1;
 				shiesprite[j].texture = gfx.getWeaponShieldImage(sh.card.code);
 			} else shiesprite[j].visible = false;
-			marksprite[j].className = "Eicon E"+pl.mark;
+			marksprite[j].className = "ico e"+pl.mark;
 			marktext[j].text = pl.markpower != 1 ? "x" + pl.markpower : "";
 			for (var i = 1;i < 13;i++) {
 				quantatext[j][i-1].text = pl.quanta[i] || "";

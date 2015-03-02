@@ -3,7 +3,7 @@ var etg = require("../etg");
 var gfx = require("../gfx");
 var sock = require("../sock");
 var Cards = require("../Cards");
-var etgutil = require("../etgutil");
+var etgutil = require("../../etgutil");
 module.exports = function() {
 	function sumCardMinus(cardminus, code){
 		var sum = 0;

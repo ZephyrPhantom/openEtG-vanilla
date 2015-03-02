@@ -1,5 +1,5 @@
-var chat = require("./chat");
-var etgutil = require("./etgutil");
+var chat = require("../chat");
+var etgutil = require("../etgutil");
 var socket = new WebSocket("ws://"+location.hostname+":13602");
 var buffer = [];
 var attempts = 0, attemptTimeout = 0;

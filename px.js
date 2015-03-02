@@ -12,10 +12,10 @@ var gfx = require("./gfx");
 var etg = require("./etg");
 var ui = require("./uiutil");
 var Cards = require("./Cards");
-var etgutil = require("./etgutil");
+var etgutil = require("../etgutil");
 var renderer = new PIXI.autoDetectRenderer(900, 600, {view:document.getElementById("leftpane"), transparent:true});
 var noStage = {}, curStage = noStage;
-var interman = new (require("./InteractionManager"))(noStage, renderer);
+var interman = new (require("../InteractionManager"))(noStage, renderer);
 exports.mouse = interman.mouse;
 function animate() {
 	if (curStage.view){
@@ -63,9 +63,9 @@ function setFilter(style, brightness){
 	}
 }
 exports.domEButton = function(e, click, ch){
-	if (!ch) ch = "E";
+	if (!ch) ch = "e";
 	var ele = document.createElement("span");
-	ele.className = "imgb "+ch+"icon "+ch+e;
+	ele.className = "imgb ico "+ch+e;
 	ele.addEventListener("click", click);
 	return ele;
 }
@@ -95,13 +95,17 @@ exports.domText = function(text){
 					if (num < 4) {
 						for (var j = 0;j < num;j++) {
 							var sp = document.createElement("span");
-							sp.className = "eicon e"+parse[1];
+							sp.className = "ico e"+parse[1];
+							sp.style.width = "16px";
+							sp.style.height = "16px";
 							this.appendChild(sp);
 						}
 					}else{
 						this.appendChild(document.createTextNode(parse[0]));
 						var sp = document.createElement("span");
-						sp.className = "eicon e"+parse[1];
+						sp.className = "ico e"+parse[1];
+						sp.style.width = "16px";
+						sp.style.height = "16px";
 						this.appendChild(sp);
 					}
 				}

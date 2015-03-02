@@ -3,30 +3,42 @@ var ui = require("./uiutil");
 var Cards = require("./Cards");
 exports.loaded = false;
 function load(progress, postload){
-	var singles = [];
-	var assets = ["eicons", "cardBacks", "cardBorders", "sicons", "sborders", "ticons"].concat(singles);
+	var assets = ["cardBacks", "cardBorders", "atlas"];
 	var widths = {
-		eicons: 32,
 		cardBacks: 132,
 		cardBorders: 128,
-		sicons: 13,
-		ticons: 25,
-		sborders: 64,
 	};
+	function process(asset, tex, base){
+		var w = widths[asset];
+		if (w){
+			var ts = [];
+			for (var x = 0; x < (base?base.w:tex.width); x += w){
+				ts.push(new PIXI.Texture(tex, new PIXI.math.Rectangle(base?base.x+x:x, base?base.y:0, w, base?base.h:tex.height)));
+			}
+			exports[asset] = ts;
+		}else{
+			var id = asset.match(/\d+$/), tex = new PIXI.Texture(tex, base?new PIXI.math.Rectangle(base.x, base.y, base.w, base.h):null);
+			if (id){
+				asset = asset.slice(0, -id[0].length);
+				if (!(asset in exports)) exports[asset] = [];
+				exports[asset][id[0]] = tex;
+			}else exports[asset] = tex;
+		}
+	}
 	var loadCount = 0;
 	assets.forEach(function(asset){
 		var img = new Image();
 		img.addEventListener("load", function(){
 			loadCount++;
 			progress(loadCount/assets.length);
-			var w = widths[asset], tex = new PIXI.Texture(new PIXI.BaseTexture(this));
-			if (w){
-				var ts = [];
-				for (var x = 0; x < tex.width; x += w){
-					ts.push(new PIXI.Texture(tex, new PIXI.math.Rectangle(x, 0, w, tex.height)));
+			var tex = new PIXI.BaseTexture(this);
+			if (asset == "atlas"){
+				var atlas = require("../assets/atlas");
+				for(var key in atlas){
+					var data = atlas[key];
+					process(key, tex, data);
 				}
-				exports[asset] = ts;
-			}else exports[asset] = tex;
+			}else process(asset, tex);
 			if (loadCount == assets.length){
 				exports.loaded = true;
 				postload();
@@ -55,7 +67,7 @@ function makeArt(card, art, oldrend) {
 		artspr.position.set(2, 20);
 		template.addChild(artspr);
 	}
-	var typemark = new PIXI.Sprite(exports.ticons[card.type]);
+	var typemark = new PIXI.Sprite(exports.t[card.type]);
 	typemark.anchor.set(1, 1);
 	typemark.position.set(128, 252);
 	template.addChild(typemark);
@@ -68,7 +80,7 @@ function makeArt(card, art, oldrend) {
 		text.position.set(rend.width-3, 2);
 		template.addChild(text);
 		if (card.costele != card.element) {
-			var eleicon = new PIXI.Sprite(exports.eicons[card.costele]);
+			var eleicon = new PIXI.Sprite(exports.e[card.costele]);
 			eleicon.position.set(rend.width-text.width-5, 10);
 			eleicon.anchor.set(1, .5);
 			eleicon.scale.set(.5, .5);
@@ -118,7 +130,7 @@ function getCardImage(code) {
 				graphics.addChild(text);
 				clipwidth -= text.width+2;
 				if (card.costele != card.element) {
-					var eleicon = new PIXI.Sprite(exports.eicons[card.costele]);
+					var eleicon = new PIXI.Sprite(exports.e[card.costele]);
 					eleicon.position.set(clipwidth, 10);
 					eleicon.anchor.set(1, .5);
 					eleicon.scale.set(.5, .5);

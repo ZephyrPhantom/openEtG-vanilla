@@ -1,7 +1,7 @@
 "use strict";
-require("./httpcards")(function() {
+require("../httpcards")(function() {
 	var etg = require("./etg");
-	var etgutil = require("./etgutil");
+	var etgutil = require("../etgutil");
 	var Actives = require("./Actives");
 	var Cards = require("./Cards");
 	var game, player1, player2;
