@@ -4,94 +4,29 @@
 	<link href="http://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" type="text/css">
 	<link href="../forum/Smileys/default/life.png" rel="shortcut icon">
 	<link href="../assets/atlas.css" rel="stylesheet">
+	<link href="../ui.css" rel="stylesheet">
 	<style>
-		*{box-sizing:border-box}
-		body{
-			background-color:black;
-			background-image:url(../assets/bg_default.png);
-			background-repeat:no-repeat;
-			color:white;
-			margin:0;
-			font:16px Dosis;
-		}
-		a{
-			color:#6699FF;
-			text-decoration:none;
-		}
-		input[type="button"]{
-			background:linear-gradient(to bottom,#ddeef0,#8999a9);
-			border-radius:4px;
-			border:solid black 1px;
-			width:72px;
-			height:20px;
-			font:14px Dosis;
-			cursor:pointer;
-		}
-		input[type="button"]:hover{background:linear-gradient(to bottom,#ccdde0,#586776)}
-		input[type="button"]:hover:active{background:linear-gradient(to bottom,#aabbc0,#485766)}
-		input[type="text"],input[type="password"],input:not([type]){width:150px}
-		#rightpane{
-			left:900px;
-			top:0px;
-			position:absolute;
-		}
 		#deckimport{
 			left:0px;
 			top:600px;
 			width:900px;
 			position:absolute;
 		}
-		#leftpane{
-			-webkit-user-select:none;
-			position:absolute;
-		}
-		#chatBox{
-			width:350px;
-			height:470px;
-			overflow-y:scroll;
-			overflow-x:hidden;
-			color:red;
-			background-color:white;
-			word-wrap:break-word;
-		}
-		#chatinput{
-			width:350px;
-			height:40px;
-			resize:none;
-			font:14px Dosis;
-		}
-		.numput{width:32px!important}
-		.imgb:hover{
-			-webkit-filter:brightness(0.6);
-			filter:brightness(0.6);
-			cursor:pointer;
-		}
-		.imgb:active{
-			-webkit-filter:brightness(0.4);
-			filter:brightness(0.4);
-			cursor:pointer;
-		}
-		.coin{
-			background:url(../assets/gold.png);
-			display:inline-block;
-			width:16px;
-			height:16px;
-		}
 	</style>
 	<script src="../pixi.min.js"></script>
 	<script src="etgify.js"></script>
 </head>
 <body>
-	<canvas id="leftpane" width=900 height=600></canvas>
 	<div id="rightpane">
 		<a href="../artcredit.htm" target="_blank">Art credits</a>&emsp;&emsp;<a href="../forum/?board=2" target="_blank">Forum</a><br><br>
-		<input id="foename" type="text" placeholder="Challenge" onkeydown="maybeChallenge(event)" /> <input id="pvphp" class="numput" type="text" placeholder="HP"/><input id="pvpmark" class="numput" type="text" placeholder="Mark"/><input id="pvpdeck" class="numput" type="text" placeholder="Deck"/><input id="pvpdraw" class="numput" type="text" placeholder="Draw"/><br>
-		<input id="challenge" type="submit" value="PvP" onclick="challengeClick()" />
-		<input id="username" type="text" placeholder="Name" />
+		<input id="foename" type="text" placeholder="Challenge" onkeydown="maybeChallenge(event)"/> <input id="pvphp" class="numput" type="text" placeholder="HP"/><input id="pvpmark" class="numput" type="text" placeholder="Mark"/><input id="pvpdeck" class="numput" type="text" placeholder="Deck"/><input id="pvpdraw" class="numput" type="text" placeholder="Draw"/><br>
+		<input id="challenge" type="submit" value="PvP" onclick="challengeClick()"/>
+		<input id="username" type="text" placeholder="Name"/>
 		<div id="chatBox"></div>
 		<textarea id="chatinput" placeholder="Chat" onkeydown="maybeSendChat(event)"></textarea>
 	</div>
-	<input id="deckimport" type="text" placeholder="Deck" style="width:890px" />
+	<canvas id="leftpane" width=900 height=600></canvas>
+	<input id="deckimport" type="text" placeholder="Deck"/>
     <script src="ui.main.js"></script>
 </body>
 </html>
