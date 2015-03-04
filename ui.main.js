@@ -88,7 +88,7 @@ function maybeSendChat(e) {
 		var msg = chatinput.value;
 		chatinput.value = "";
 		if (msg == "/clear"){
-			while (chatBox.firstChild) chatBox.firstChild.remove();
+			chat.clear();
 		}else if (msg == "/who"){
 			sock.emit("who");
 		}else if (msg.match(/^\/roll( |$)\d*d?\d*$/)){
