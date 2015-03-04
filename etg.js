@@ -5,6 +5,7 @@ var Effect = require("./Effect");
 var ui = require("../uiutil");
 var etgutil = require("../etgutil");
 var Cards = require("./Cards");
+var skillText = require("./skillText");
 function Game(seed, flip){
 	this.rng = new MersenneTwister(seed);
 	this.phase = PlayPhase;
@@ -274,11 +275,11 @@ Game.prototype.bitsToTgt = function(x) {
 	} else console.log("Unknown tgtop: " + tgtop + ", " + x);
 }
 Game.prototype.getTarget = function(src, active, cb) {
-	var targetingFilter = Cards.Targeting[active.activename];
+	var targetingFilter = Cards.Targeting[active.activename[0]];
 	if (targetingFilter) {
 		this.targetingMode = function(t) { return (t instanceof Player || t instanceof CardInstance || t.owner == this.turn || t.status.cloak || !t.owner.isCloaked()) && targetingFilter(src, t); }
 		this.targetingModeCb = cb;
-		this.targetingText = active.activename;
+		this.targetingText = active.activename[0];
 	} else {
 		cb();
 	}
@@ -314,17 +315,6 @@ function clone(obj){
 	}
 	return result;
 }
-function objinfo(obj){
-	var info = "";
-	for (var key in obj){
-		var val = obj[key]
-		if (val===true)info += " " + key;
-		else if (val){
-			info += " " + val + key;
-		}
-	}
-	return info;
-}
 function combineactive(a1, a2){
 	if (!a1){
 		return a2;
@@ -332,7 +322,7 @@ function combineactive(a1, a2){
 	var combine = function(){
 		return (a1.apply(null, arguments) || 0) + (a2.apply(null, arguments) || 0);
 	}
-	combine.activename = a1.activename + " " + a2.activename;
+	combine.activename = a1.activename.concat(a2.activename);
 	return combine;
 }
 function isEmpty(obj){
@@ -410,7 +400,7 @@ Creature.prototype.hash = function(){
 	hash ^= hashObj(this.status) ^ (this.hp*17 + this.atk*31 - this.maxhp - this.usedactive * 3);
 	hash ^= parseInt(this.card.code, 32);
 	for (var key in this.active){
-		hash ^= hashString(key + ":" + this.active[key].activename);
+		hash ^= hashString(key + ":" + this.active[key].activename.join(":"));
 	}
 	if (this.active.cast){
 		hash ^= this.cast * 7 + this.castele * 23;
@@ -426,18 +416,15 @@ Card.prototype.readCost = function(attr, cost){
 	return true;
 }
 Card.prototype.info = function(){
-	if (this.type == PillarEnum){
-		return "1:" + this.element + " " + activename(this.active.auto);
+	if (this.type == SpellEnum){
+		return skillText(this);
 	}else{
-		var dmgtype = "";
-		if (this.type == WeaponEnum){
-			if (this.status && this.status.ranged) dmgtype = " ranged";
-			if (this.status && this.status.psion) dmgtype += " spell";
-		}
-		var prefix = this.type == WeaponEnum?"Deal " + this.attack + dmgtype + " damage. ":
-			this.type == ShieldEnum?""+(this.health?"Reduce damage by "+this.health+" ":""):
-			this.type == CreatureEnum?this.attack+"|"+this.health+" ":"";
-		return prefix + (this.text || (this.type == SpellEnum ? activename(this.active) : Thing.prototype.activetext.call(this) + objinfo(this.status)));
+		var text = [];
+		if (this.type == ShieldEnum && this.health) text.push("Reduce damage by "+this.health)
+		else if (this.type == CreatureEnum || this.type == WeaponEnum) text.push(this.attack+"|"+this.health);
+		var skills = skillText(this);
+		if (skills) text.push(skills);
+		return text.join("\n");
 	}
 }
 Thing.prototype.toString = function(){ return this.card.name; }
@@ -693,42 +680,34 @@ Player.prototype.masscc = function(caster, func, massmass, saveowncloak){
 		}
 	}
 }
-Creature.prototype.info = function(){
-	var info=this.trueatk()+"|"+this.truehp()+"/"+this.maxhp;
-	info += this.activetext();
-	if (this.owner.gpull == this)info += " gpull";
-	return info + objinfo(this.status);
+function infocore(c, info){
+	var stext = skillText(c);
+	return stext ? info + "\n" + stext : info;
 }
-Permanent.prototype.info = function(){
-	var info = this.status.charges?"x"+this.status.charges:"";
-	return info + this.activetext() + objinfo(this.status);
+Creature.prototype.info = function(){
+	var info = this.trueatk()+"|"+this.truehp()+"/"+this.maxhp;
+	if (this.owner.gpull == this) info += "\ngpull";
+	return infocore(this, info);
 }
 Weapon.prototype.info = function(){
-	var info = this.trueatk().toString();
-	return info + this.activetext() + objinfo(this.status);
+	return infocore(this, this.trueatk().toString());
 }
 Shield.prototype.info = function(){
-	var info = this.dr + "DR" + this.activetext();
-	if (this.status.charges)info += " x"+this.status.charges;
-	return info + objinfo(this.status);
+	return infocore(this, this.truedr() + "DR");
 }
 Pillar.prototype.info = function(){
-	return this.status.charges + " 1:" + (this.pendstate?this.owner.mark:this.card.element) + (this.status.immaterial?" immaterial":"");
+	return infocore(this, this.status.charges + " 1:" + (this.status.pendstate?this.owner.mark:this.card.element));
+}
+Thing.prototype.info = function(){
+	return skillText(this);
 }
 Thing.prototype.activetext = function(){
-	var info = "";
-	for(var key in this.active){
-		if (this.active[key])info += (key != "auto"?" " + (key == "cast"?casttext(this.cast, this.castele):key):"") + " " + activename(this.active[key]);
-	}
-	return info;
-}
-Thing.prototype.activetext1 = function(){
-	if (this.active.cast) return casttext(this.cast, this.castele) + this.active.cast.activename;
+	if (this.active.cast) return casttext(this.cast, this.castele) + this.active.cast.activename.join(" ");
 	var order = ["hit", "death", "owndeath", "buff", "destroy", "draw", "dmg", "shield", "postauto"];
 	for(var i=0; i<order.length; i++){
-		if (this.active[order[i]]) return order[i] + " " + this.active[order[i]].activename;
+		if (this.active[order[i]]) return order[i] + " " + this.active[order[i]].activename.join(" ");
 	}
-	return this.active.auto ? this.active.auto.activename : "";
+	return this.active.auto ? this.active.auto.activename.join(" ") : "";
 }
 Thing.prototype.place = function(fromhand){
 	this.procactive("play", [fromhand]);
@@ -944,7 +923,7 @@ Creature.prototype.calcEclipse = function(){
 Thing.prototype.lobo = function(){
 	// TODO deal with combined actives
 	for (var key in this.active){
-		if (!(this.active[key].activename in passives)) delete this.active[key];
+		if (!(this.active[key].activename[0] in passives)) delete this.active[key];
 	}
 }
 Thing.prototype.mutantactive = function(){
@@ -1016,21 +995,19 @@ Thing.prototype.addactive = function(type, active){
 }
 Thing.prototype.rmactive = function(type, activename){
 	if (!this.active[type])return;
-	var actives = this.active[type].activename.split(" "), idx;
+	var actives = this.active[type].activename, idx;
 	if (~(idx=actives.indexOf(activename))){
 		if (actives.length == 1){
 			delete this.active[type];
 		} else {
-			actives.splice(idx, 1);
-			this.active[type] = actives.reduce(function(previous, current){
-				return combineactive(previous, Actives[current]);
+			this.active[type] = actives.reduce(function(previous, current, i){
+				return i == idx ? previous : combineactive(previous, Actives[current]);
 			}, null);
 		}
 	}
 }
 Thing.prototype.hasactive = function(type, activename) {
-	if (!this.active[type])return false;
-	return ~this.active[type].activename.split(" ").indexOf(activename);
+	return (type in this.active) && ~this.active[type].activename.indexOf(activename);
 }
 Thing.prototype.canactive = function() {
 	return this.owner.game.turn == this.owner && this.active.cast && !this.usedactive && !this.status.delayed && !this.status.frozen && this.owner.canspend(this.castele, this.cast);
@@ -1180,7 +1157,7 @@ Player.prototype.randomcard = function(upped, filter){
 	return keys && keys.length && Cards.Codes[keys[this.upto(keys.length)]];
 }
 function activename(active){
-	return active?active.activename:"";
+	return active?active.activename.join(" "):"";
 }
 function casttext(cast, castele){
 	return cast == 0?"0":cast + ":" + castele;

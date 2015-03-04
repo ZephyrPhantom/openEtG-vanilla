@@ -5,7 +5,7 @@ exports.loaded = false;
 function load(progress, postload){
 	var assets = ["cardBacks", "atlas"];
 	function process(asset, tex, base){
-		var id = asset.match(/\d+$/), tex = new PIXI.Texture(tex, base?new PIXI.math.Rectangle(base.x, base.y, base.w, base.h):null);
+		var id = asset.match(/\d+$/), tex = new PIXI.Texture(tex, base?new PIXI.math.Rectangle(base[0], base[1], base[2], base[3]):null);
 		if (id){
 			asset = asset.slice(0, -id[0].length);
 			if (!(asset in exports)) exports[asset] = [];

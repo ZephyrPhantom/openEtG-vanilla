@@ -1005,6 +1005,6 @@ wings:function(c,t){
 },
 }
 for(var key in Actives){
-	Actives[key].activename = key;
+	Actives[key].activename = [key];
 }
 module.exports = Actives

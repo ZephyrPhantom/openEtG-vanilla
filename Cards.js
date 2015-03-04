@@ -5,30 +5,24 @@ exports.Codes = {};
 var etg = require("./etg");
 var etgutil = require("../etgutil");
 exports.parseCsv = function(type, file){
-	var csv = file.split("\n");
-	var keys = csv[0].split(",");
-	for(var j=1; j<csv.length; j++){
-		var carddata = csv[j].split(",");
-		var cardcode = carddata[2];
-		var cardinfo = {};
-		for(var k=0; k<carddata.length; k++){
-			if (carddata[k].charAt(0) == '"'){
-				for (var kk=k+1; kk<carddata.length; kk++){
-					carddata[k] += "," + carddata[kk];
-				}
-				cardinfo[keys[k]] = carddata[k].substring(1, carddata[k].length-1).replace(/""/g, '"');
-				break;
+	var keys;
+	etg.iterSplit(file, "\n", function(line){
+		if (!keys){
+			keys = line.split(",")
+		}else{
+			var cardinfo = {}, nth = 0;
+			etg.iterSplit(line, ",", function(value){
+				cardinfo[keys[nth++]] = value;
+			});
+			var cardcode = cardinfo.Code;
+			if (cardcode in exports.Codes){
+				console.log(cardcode + " duplicate " + cardinfo.Name + " " + exports.Codes[cardcode].name);
 			}else{
-				cardinfo[keys[k]] = carddata[k];
+				var nospacename = cardinfo.Name.replace(/ |'/g, "");
+				exports[nospacename in exports?nospacename+"Up":nospacename] = exports.Codes[cardcode] = new etg.Card(type, cardinfo);
 			}
 		}
-		if (cardcode in exports.Codes){
-			console.log(cardcode + " duplicate " + carddata[1] + " " + exports.Codes[cardcode].name);
-		}else{
-			var nospacename = carddata[1].replace(/ |'/g, "");
-			exports[nospacename in exports?nospacename+"Up":nospacename] = exports.Codes[cardcode] = new etg.Card(type, cardinfo);
-		}
-	}
+	});
 }
 exports.parseTargeting = function(file){
 	var csv = file.split("\n");

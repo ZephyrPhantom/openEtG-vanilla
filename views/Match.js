@@ -511,7 +511,7 @@ function startMatch(game) {
 					var child = creasprite[j][i].getChildAt(1);
 					child.texture = ui.getTextImage(cr.trueatk() + "|" + cr.truehp() + (cr.status.charges ? " x" + cr.status.charges : ""), 10, cr.card.upped ? "black" : "white", ui.maybeLighten(cr.card));
 					var child2 = creasprite[j][i].getChildAt(2);
-					child2.texture = ui.getTextImage(cr.activetext1(), 8, cr.card.upped ? "black" : "white");
+					child2.texture = ui.getTextImage(cr.activetext(), 8, cr.card.upped ? "black" : "white");
 					drawStatus(cr, creasprite[j][i]);
 				} else creasprite[j][i].visible = false;
 			}
@@ -525,12 +525,9 @@ function startMatch(game) {
 					if (pr instanceof etg.Pillar) {
 						child.texture = ui.getTextImage("1:" + (pr.pendstate ? pr.owner.mark : pr.card.element) + " x" + pr.status.charges, 10, pr.card.upped ? "black" : "white", ui.maybeLighten(pr.card));
 					}
-					else if (pr.active.auto && pr.active.auto.activename == "locket") {
-						child.texture = ui.getTextImage("1:" + (pr.status.mode || pr.owner.mark), 10, pr.card.upped ? "black" : "white", ui.maybeLighten(pr.card));
-					}
 					else child.texture = ui.getTextImage(pr.status.charges !== undefined ? " " + pr.status.charges : "", 10, pr.card.upped ? "black" : "white", ui.maybeLighten(pr.card));
 					var child2 = permsprite[j][i].getChildAt(1);
-					child2.texture = pr instanceof etg.Pillar ? gfx.nopic : ui.getTextImage(pr.activetext1(), 8, pr.card.upped ? "black" : "white");
+					child2.texture = pr instanceof etg.Pillar ? gfx.nopic : ui.getTextImage(pr.activetext(), 8, pr.card.upped ? "black" : "white");
 				} else permsprite[j][i].visible = false;
 			}
 			var wp = pl.weapon;
@@ -540,7 +537,7 @@ function startMatch(game) {
 				child.texture = ui.getTextImage(wp.trueatk() + (wp.status.charges ? " x" + wp.status.charges : ""), 12, wp.card.upped ? "black" : "white", ui.maybeLighten(wp.card));
 				child.visible = true;
 				var child = weapsprite[j].getChildAt(2);
-				child.texture = ui.getTextImage(wp.activetext1(), 12, wp.card.upped ? "black" : "white");
+				child.texture = ui.getTextImage(wp.activetext(), 12, wp.card.upped ? "black" : "white");
 				child.visible = true;
 				weapsprite[j].texture = gfx.getWeaponShieldImage(wp.card.code);
 				drawStatus(wp, weapsprite[j]);
@@ -552,7 +549,7 @@ function startMatch(game) {
 				child.texture = ui.getTextImage(sh.status.charges ? "x" + sh.status.charges: "" + sh.dr, 12, sh.card.upped ? "black" : "white", ui.maybeLighten(sh.card));
 				child.visible = true;
 				var child = shiesprite[j].getChildAt(1);
-				child.texture = ui.getTextImage(sh.activetext1(), 12, sh.card.upped ? "black" : "white");
+				child.texture = ui.getTextImage(sh.activetext(), 12, sh.card.upped ? "black" : "white");
 				child.visible = true;
 				shiesprite[j].alpha = sh.status.immaterial ? .7 : 1;
 				shiesprite[j].texture = gfx.getWeaponShieldImage(sh.card.code);
