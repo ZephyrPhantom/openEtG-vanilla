@@ -26,7 +26,7 @@ module.exports = function() {
 		if (editordeck.length > 60){
 			editordeck.length = 60;
 		}
-		marksprite.className = "Eicon E"+editormark;
+		marksprite.className = "ico e"+editormark;
 		if (editordeck.length > 60) editordeck.length = 60;
 		editordeck.sort(etg.cardCmp);
 		decksprite.deck = editordeck;
@@ -63,7 +63,7 @@ module.exports = function() {
 		(function(_i) {
 			var sprite = px.domEButton(i, function() {
 				editormark = _i;
-				marksprite.className = "Eicon E"+_i;
+				marksprite.className = "ico e"+_i;
 				saveDeck();
 			});
 			dom.push([200+i*32, 234, sprite]);
