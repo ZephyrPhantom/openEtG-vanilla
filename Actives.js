@@ -352,10 +352,10 @@ hatch:function(c,t){
 	var bans = [Cards.ShardofFocus, Cards.FateEgg, Cards.Immortal, Cards.Scarab, Cards.DevonianDragon, Cards.Chimera];
 	c.transform(c.owner.randomcard(c.card.upped, function(x){return x.type == etg.CreatureEnum && !bans.some(function(ban){return x.isOf(ban)})}));
 },
-heal:function(c,t){
+mend:function(c,t){
 	t.dmg(-5);
 },
-heal20:function(c,t){
+heal:function(c,t){
 	c.owner.dmg(-20);
 },
 holylight:function(c,t){
