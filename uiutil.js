@@ -68,28 +68,35 @@ function getTextImage(text, size, color, bgcolor, width) {
 		return tximgcache[key];
 	}
 	var x = 0, y = 0, h = Math.floor(size*1.4), w = 0;
-	function pushChild(texture, num){
+	function pushIcon(texture, num){
 		if (num === undefined) num = 1;
-		var w = 0;
-		if (x > 0){
-			w += size;
-		}
+		setMode(1);
+		var w = size * num;
 		if (width && x + w > width){
 			x = 0;
 			y += h;
 		}
 		for (var i = 0; i<num; i++){
-			textxy.push(texture, x, y);
+			iconxy.push(texture, x, y);
 			x += size;
 		}
 	}
 	var canvas = document.createElement("canvas"), ctx = canvas.getContext("2d");
-	var textxy = [], font = ctx.font = size + "px Dosis";
+	var textxy = [], font = ctx.font = size + "px Dosis", mode = 0, iconxy = [];
+	function setMode(m){
+		if (mode != m){
+			if (x) x += 3;
+			mode = m;
+		}
+	}
 	function pushText(text){
+		text = text.trim();
+		if (!text) return;
+		setMode(0);
 		var w = ctx.measureText(text).width;
 		if (!width || x + w <= width){
 			textxy.push(text, x, y+size);
-			x += w + 3;
+			x += w;
 			return;
 		}
 		var idx = 0, endidx = 0, oldblock = "";
@@ -112,7 +119,7 @@ function getTextImage(text, size, color, bgcolor, width) {
 			if (width && x >= width){
 				x = 0;
 				y += h;
-			}else x += 3;
+			}
 		}
 	}
 	text = text.replace(/\|/g, " | ");
@@ -131,10 +138,13 @@ function getTextImage(text, size, color, bgcolor, width) {
 			var num = parseInt(parse[0]);
 			var icon = gfx.e[parseInt(parse[1])];
 			if (num < 4) {
-				pushChild(icon, num);
+				pushIcon(icon, num);
 			}else{
+				setMode(1);
+				mode = 0;
 				pushText(num.toString());
-				pushChild(icon);
+				mode = 1;
+				pushIcon(icon);
 			}
 		}
 		lastindex = reres.index + piece.length;
@@ -149,11 +159,22 @@ function getTextImage(text, size, color, bgcolor, width) {
 	ctx.font = font;
 	ctx.fillStyle = color || "black";
 	for(var i=0; i<textxy.length; i+=3){
-		var c = textxy[i];
-		if (typeof c === "string") ctx.fillText(c, textxy[i+1], textxy[i+2]);
-		else ctx.drawImage(c.baseTexture.source, c.crop.x, c.crop.y, c.crop.width, c.crop.height, textxy[i+1], textxy[i+2], size, size);
+		ctx.fillText(textxy[i], textxy[i+1], textxy[i+2]);
 	}
-	return tximgcache[key] = new PIXI.Texture(new PIXI.BaseTexture(canvas));
+	if (iconxy.length){
+		var rend = require("./px").mkRenderTexture(canvas.width, canvas.height);
+		var spr = new PIXI.Sprite(new PIXI.Texture(new PIXI.BaseTexture(canvas)));
+		for (var i=0; i<iconxy.length; i+=3){
+			var ico = new PIXI.Sprite(iconxy[i]);
+			ico.position.set(iconxy[i+1], iconxy[i+2]);
+			ico.scale.set(size/32, size/32);
+			spr.addChild(ico);
+		}
+		rend.render(spr);
+		return tximgcache[key] = rend;
+	}else{
+		return tximgcache[key] = new PIXI.Texture(new PIXI.BaseTexture(canvas));
+	}
 }
 var sounds = {}, musics = {}, currentMusic;
 var soundEnabled = false, musicEnabled = false;

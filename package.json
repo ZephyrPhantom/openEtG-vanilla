@@ -7,7 +7,7 @@
     "url": "https://github.com/serprex/openEtG-vanilla.git"
   },
   "devDependencies": {
-    "urllib": "^2.2.2"
+    "urllib": "^2.3.3"
   },
   "scripts": {
     "test": "npm start;firefox 127.0.0.1:13602/test.htm"
