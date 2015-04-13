@@ -117,7 +117,7 @@ var data = {
 	pend:function(c){return "Oscilliate between producing "+(c.element?1:3)+":"+c.element + " & quanta of mark"},
 	plague:"Poison foe's creatures. Removes cloak",
 	platearmor:["Target gains 0|3", "Target gains 0|6"],
-	poison1:{
+	poison:{
 		hit:"Apply poison on hit. Throttled",
 		cast:"Apply poison to foe"
 	},
