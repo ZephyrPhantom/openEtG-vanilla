@@ -1,5 +1,5 @@
 "use strict";
-var ui = require("./uiutil");
+var ui = require("./ui");
 var Cards = require("./Cards");
 exports.loaded = false;
 function load(progress, postload){

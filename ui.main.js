@@ -8,8 +8,8 @@ htmlElements.forEach(function(name){
 (function(){
 var guestname, muteset = {}, muteall;
 var px = require("./px");
+var ui = require("./ui");
 var etg = require("./etg");
-var ui = require("./uiutil");
 var chat = require("../chat");
 var Cards = require("./Cards");
 var Effect = require("./Effect");
@@ -25,6 +25,22 @@ window.onerror = function(){
 }
 var sockEvents = {
 	pvpgive: require("./views/Match"),
+	roll:function(data) {
+		var span = document.createElement("span");
+		span.style.color = "#006000";
+		if (data.u){
+			var b = document.createElement("b");
+			b.appendChild(document.createTextNode(data.u + " "));
+			span.appendChild(b);
+		}
+		span.appendChild(document.createTextNode((data.A||1) + "d" + data.X + " "));
+		var a = document.createElement("a");
+		a.target = "_blank";
+		a.href = "../speed/" + data.sum;
+		a.appendChild(document.createTextNode(data.sum));
+		span.appendChild(a);
+		chat.addSpan(span);
+	},
 	chat:function(data){
 		if ((muteall && !data.mode) || data.u in muteset) return;
 		var now = new Date(), h = now.getHours(), m = now.getMinutes(),

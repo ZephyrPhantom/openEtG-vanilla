@@ -8,14 +8,15 @@ document.addEventListener("mousemove", function(e){
 	}
 	this.lastmove = now;
 });
+var ui = require("./ui");
 var gfx = require("./gfx");
 var etg = require("./etg");
-var ui = require("./uiutil");
 var Cards = require("./Cards");
 var etgutil = require("../etgutil");
 var renderer = new PIXI.autoDetectRenderer(900, 600, {view:document.getElementById("leftpane"), transparent:true});
 var noStage = {}, curStage = noStage;
-var interman = new (require("../InteractionManager"))(noStage, renderer);
+var interman = require("../InteractionManager");
+interman.init(noStage, renderer);
 exports.mouse = interman.mouse;
 function animate() {
 	if (curStage.view){
@@ -176,7 +177,7 @@ exports.refreshRenderer = function(stage) {
 exports.setClick = function(obj, click, sound) {
 	obj.click = click;
 }
-exports.hitTest = interman.hitTest.bind(interman);
+exports.hitTest = interman.hitTest;
 exports.setInteractive = function() {
 	for (var i = 0;i < arguments.length;i++) {
 		arguments[i].interactive = true;
