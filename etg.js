@@ -943,12 +943,25 @@ Thing.prototype.mutantactive = function(){
 		}
 	}
 }
-var adrtbl = [
-	[0, 0, 0, 0],
-	[1, 1, 1], [2, 2, 2], [3, 3, 3],
-	[3, 2], [4, 2], [4, 2], [5, 3], [6, 3],
-	[3], [4], [4], [4], [5], [5], [5]
-];
+// adrtbl is a bitpacked 2d array
+// [[0,0,0,0],[1,1,1],[2,2,2],[3,3,3],[3,2],[4,2],[4,2],[5,3],[6,3],[3],[4],[4],[4],[5],[5],[5]]
+var adrtbl = new Uint16Array([4, 587, 1171, 1755, 154, 162, 162, 234, 242, 25, 33, 33, 33, 41, 41, 41]);
+function countAdrenaline(x){
+	x = Math.abs(x|0);
+	return x>15?1:(adrtbl[x]&7)+1;
+}
+function getAdrenalRow(x){
+	x|=0;
+	var sign=(x>0)-(x<0);
+	x = Math.abs(x);
+	if (x>15) return new Int8Array(0);
+	var row = adrtbl[x], ret = new Int8Array(row&7);
+	for(var i=0; i<ret.length; i++){
+		var shift = (i+1)*3;
+		ret[i] = ((row&(7<<shift))>>shift)*sign;
+	}
+	return ret;
+}
 Weapon.prototype.trueatk = Creature.prototype.trueatk = function(adrenaline){
 	var dmg = this.atk;
 	if (this.status.dive)dmg += this.status.dive;
@@ -958,8 +971,10 @@ Weapon.prototype.trueatk = Creature.prototype.trueatk = function(adrenaline){
 	}
 	var y=adrenaline || this.status.adrenaline || 0;
 	if (y<2)return dmg;
-	var row = adrtbl[dmg];
-	return row ? row[y-2] || 0 : 0;
+	var row = adrtbl[Math.abs(dmg)];
+	if (y-2 >= (row&7)) return 0;
+	var shift = (y-1)*3;
+	return ((row&(7<<shift))>>shift)*((dmg>0)-(dmg<0));
 }
 Player.prototype.truehp = function(){ return this.hp; }
 Weapon.prototype.truehp = function(){ return this.card.health; }
@@ -1182,6 +1197,7 @@ exports.iterSplit = iterSplit;
 exports.isEmpty = isEmpty;
 exports.filtercards = filtercards;
 exports.countAdrenaline = countAdrenaline;
+exports.getAdrenalRow = getAdrenalRow;
 exports.clone = clone;
 exports.casttext = casttext;
 exports.fromTrueMark = fromTrueMark;
