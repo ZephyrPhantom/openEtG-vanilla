@@ -127,7 +127,7 @@ function startMatch(game) {
 			return Math.ceil(t.truehp()*(t.status.frozen?150:100)/(t.truehp()+100));
 		},
 		adrenaline:function(t){
-			return "extra: " + etg.getAdrenalRow(t.trueatk()).join(", "));
+			return "extra: " + etg.getAdrenalRow(t.trueatk()).join(", ");
 		},
 	};
 	function setInfo(obj) {
