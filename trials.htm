@@ -101,6 +101,7 @@
 			count = 0;
 			for (var i = 1;i < eleCount.length;i++) {
 				if (eleCount[i] > 0 && i != element) {
+					if (eleCount[i] > eleCount[element]) return "You have more " + etg.eleNames[i] + " cards than " + etg.eleNames[element];
 					usedElements += etg.eleNames[i] + " ";
 					count++;
 				}
