@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<head><script src="etgify.js"></script></head>
+<body>
+<input id="deckcode" type="text" placeholder="Deck" style="width:890px"/><br>
+<input id="legality" type="text" readonly style="width:400px" />
+<input id="test" type="submit" value="Test Deck" onclick="testDeck()" />
+<select id="elements">
+	<option value="1">Entropy (No bans)</option>
+	<option value="2">Death (No bans)</option>
+	<option value="3">Gravity (No bans)</option>
+	<option value="4">Earth (No bans)</option>
+	<option value="5">Life (No bans)</option>
+	<option value="6">Fire (No bans)</option>
+	<option value="7">Water (No bans)</option>
+	<option value="8">Light (No bans)</option>
+	<option value="9">Air (No bans)</option>
+	<option value="10">Time (No bans)</option>
+	<option value="11">Darkness</option>
+	<option value="12">Aether (No bans)</option>
+</select>
+<label><input id="checkbans" type="checkbox"/>In-Element</label><br>
+	<label><input id="wartactics" type="checkbox" />Developing War Tactics</label><br>
+	<label><input id="ownwar" type="checkbox" />Starting Your Own Little War</label><br>
+	<label>	<input id="reporter" type="checkbox" />Being a War Reporter</label><br>
+	<label>	<input id="wagingwar" type="checkbox" />Waging War</label><br>
+	<input id="training" type="number" min="0" max="3" value="0" style="width:30px" />Beginning War Training<br>
+	<label>	<input id="takingarms" type="checkbox" />Taking Up Arm</label><br>
+	<label><input id="master" type="checkbox" />Returning Master</label>
+<script>
+	var Cards = require("./Cards");
+	var etg = require("./etg");
+	require("./httpcards")();
+	function testDeck() {
+		var deckcode = document.getElementById("deckcode");
+		var legality = document.getElementById("legality");
+		var elements = document.getElementById("elements");
+		var element = parseInt(elements.options[elements.selectedIndex].value);
+		var checkbans = document.getElementById("checkbans").checked;
+		var tasks = {
+			tactics: document.getElementById("wartactics").checked,
+			ownwar: document.getElementById("ownwar").checked,
+			reporter: document.getElementById("reporter").checked,
+			wagingwar: document.getElementById("wagingwar").checked,
+			training: parseInt(document.getElementById("training").value),
+			arms: document.getElementById("takingarms").checked,
+			master: document.getElementById("master").checked,
+		}
+		if (!Cards.loaded){
+			legality.value = "Card DB not yet downloaded";
+			return;
+		}
+		var code = deckcode.value.split(" ");
+		var deck = [];
+		var markele = 0;
+		for (var i = 0;i < code.length;i++) {
+		    var maybeMark = etg.fromTrueMark(code[i]);
+			if (~maybeMark) markele = maybeMark;
+			else if (Cards.Codes[code[i]]) deck.push(Cards.Codes[code[i]]);
+			else {
+				legality.value = "Not a real deck code. " + (code[i] || "???");
+				return;
+			}
+		}		
+		legality.value = checkDeck();
+		function checkDeck() {
+			if (deck.length > 60) return "Your deck is too large";
+			if (deck.length < 30) return "Your deck is too small";
+			banLists = [[],
+						[],
+						[],
+						[],
+						[],
+						[],
+						[],
+						[],
+						[],
+						[],
+						[],
+						"53e 52r 55p 56i 593 5fc 5ig 5io 5m6 5pa 5ol 5rk 5up 61q 8pi".split(" "),
+						[]];
+			eleCount = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+			var creaUps = 4*tasks.tactics + tasks.arms, permUps = 4*tasks.ownwar + tasks.arms, pillUps = 5*tasks.reporter, spellUps = 4*tasks.wagingwar+ tasks.arms, restUps = tasks.training + tasks.arms + (tasks.master ? (checkbans ? 14 : 6) : 0);
+			for (var i = 0;i < deck.length;i++) {
+				var card = deck[i];
+				if (checkbans && ~banLists[element].indexOf(card.code)) return card.name + " is banned";
+				eleCount[card.element]++;
+				if (card.upped) {
+					switch (card.type) {
+						case 0: if (pillUps) pillUps--; else if (restUps) restUps--; else return "Too many upgraded pillars"; break;
+						case 1:
+						case 2:
+						case 3: if (permUps) permUps--; else if (restUps) restUps--; else return "Too many upgraded permanents"; break;
+						case 4: if (spellUps) spellUps--; else if (restUps) restUps--; else return "Too many upgraded spells"; break;
+						case 5: if (creaUps) creaUps--; else if (restUps) restUps--; else return "Too many upgraded creatures"; break;
+					}
+				}
+			}
+			if (eleCount[element] < Math.ceil(0.4 * deck.length)) return "Too few in-element cards (At least 40%)";
+			if (eleCount[element] > Math.ceil(0.75 * deck.length) && eleCount[element] != deck.length) return "Too few off-element cards (At least 25%)";
+			usedElements = "";
+			count = 0;
+			for (var i = 1;i < eleCount.length;i++) {
+				if (eleCount[i] > 0 && i != element) {
+					usedElements += etg.eleNames[i] + " ";
+					count++;
+				}
+			}
+			if (count > 5) usedElements = "Rainbow OR " + usedElements;
+			return "Legal, " + (usedElements ? "off-elements: " + usedElements : "mono-deck");
+		}
+	}
+</script>
+</body>
