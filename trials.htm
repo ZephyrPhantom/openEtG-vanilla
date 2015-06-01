@@ -79,7 +79,7 @@
 						"53e 52r 55p 56i 593 5fc 5ig 5io 5m6 5pa 5ol 5rk 5up 61q 8pi".split(" "),
 						"4vl 53e 56i 593 5ic 5j2 5li 5m6 5pa 61t".split(" ")];
 			eleCount = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-			var creaUps = 4*tasks.tactics + tasks.arms, permUps = 4*tasks.ownwar + tasks.arms, pillUps = 5*tasks.reporter, spellUps = 4*tasks.wagingwar+ tasks.arms, restUps = tasks.training + tasks.arms + (tasks.master ? (checkbans ? 14 : 6) : 0);
+			var creaUps = 4*tasks.tactics + tasks.arms, permUps = 4*tasks.ownwar + tasks.arms, pillUps = 5*tasks.reporter, spellUps = 4*tasks.wagingwar+ tasks.arms, restUps = tasks.training + tasks.arms + (tasks.master ? (checkbans ? 14 : 20) : 0);
 			for (var i = 0;i < deck.length;i++) {
 				var card = deck[i];
 				if (checkbans && ~banLists[element].indexOf(card.code)) return card.name + " is banned";
