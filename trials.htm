@@ -5,18 +5,18 @@
 <input id="legality" type="text" readonly style="width:400px" />
 <input id="test" type="submit" value="Test Deck" onclick="testDeck()" />
 <select id="elements">
-	<option value="1">Entropy (No bans)</option>
-	<option value="2">Death (No bans)</option>
-	<option value="3">Gravity (No bans)</option>
-	<option value="4">Earth (No bans)</option>
-	<option value="5">Life (No bans)</option>
-	<option value="6">Fire (No bans)</option>
-	<option value="7">Water (No bans)</option>
-	<option value="8">Light (No bans)</option>
-	<option value="9">Air (No bans)</option>
-	<option value="10">Time (No bans)</option>
+	<option value="1">Entropy</option>
+	<option value="2">Death</option>
+	<option value="3">Gravity</option>
+	<option value="4">Earth</option>
+	<option value="5">Life</option>
+	<option value="6">Fire</option>
+	<option value="7">Water</option>
+	<option value="8">Light</option>
+	<option value="9">Air</option>
+	<option value="10">Time</option>
 	<option value="11">Darkness</option>
-	<option value="12">Aether (No bans)</option>
+	<option value="12">Aether</option>
 </select>
 <label><input id="checkbans" type="checkbox"/>In-Element</label><br>
 	<label><input id="wartactics" type="checkbox" />Developing War Tactics</label><br>
@@ -66,24 +66,26 @@
 			if (deck.length > 60) return "Your deck is too large";
 			if (deck.length < 30) return "Your deck is too small";
 			banLists = [[],
-						[],
-						[],
-						[],
-						[],
-						[],
-						[],
-						[],
-						[],
-						[],
-						[],
+						"4vn 500 52q 53e 55v 568 56i 593 5c6 5ib 5j2 5li 5pa 5um 61t".split(" "),
+						"4vl 53e 5c7 5cg 5f4 5ia 5j2 5m6 5lm 5pa 5oo 8pm".split(" "),
+						"53e 56i 5c7 5cg 5i7 5j2 5lf 5oi 5rk 622".split(" "),
+						"53e 56i 5fu 5ie 5um 61t".split(" "),
+						"4vl 52p 53e 55r 56i 5f5 5f8 5i9 5j2 5pa 5rk 61t 61u".split(" "),
+						"4vl 52r 53e 55r 590 5fu 5j2 5om 5rk 5rr 622".split(" "),
+						"4vl 4vn 500 53e 55v 568 56i 5bv 5f4 5if 5j2 5lm 5pa 5rk 5up 61t".split(" "),
+						"4vl 56i 593 5pa 5se 5ro 5v1 61t 8pm".split(" "),
+						"56i 593 5cq 5fc 5j2 5ig 5io 5m6 5lm 5pa 5rp 5um 61t 8pm".split(" "),
+						"52o 53e 55q 56i 593 590 5c7 5cg 5f9 5j2 5lm 5oo 5rk 5se 61t 8pm".split(" "),
 						"53e 52r 55p 56i 593 5fc 5ig 5io 5m6 5pa 5ol 5rk 5up 61q 8pi".split(" "),
-						[]];
+						"4vl 53e 56i 593 5ic 5j2 5li 5m6 5pa 61t".split(" ")];
 			eleCount = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-			var creaUps = 4*tasks.tactics + tasks.arms, permUps = 4*tasks.ownwar + tasks.arms, pillUps = 5*tasks.reporter, spellUps = 4*tasks.wagingwar+ tasks.arms, restUps = tasks.training + tasks.arms + (tasks.master ? (checkbans ? 14 : 6) : 0);
+			var creaUps = 4*tasks.tactics + tasks.arms, permUps = 4*tasks.ownwar + tasks.arms, pillUps = 5*tasks.reporter, spellUps = 4*tasks.wagingwar+ tasks.arms, restUps = tasks.training + tasks.arms + (tasks.master ? (checkbans ? 14 : 20) : 0);
 			for (var i = 0;i < deck.length;i++) {
 				var card = deck[i];
 				if (checkbans && ~banLists[element].indexOf(card.code)) return card.name + " is banned";
 				eleCount[card.element]++;
+				if (card == Cards.Chimera)
+					card.type = 5;
 				if (card.upped) {
 					switch (card.type) {
 						case 0: if (pillUps) pillUps--; else if (restUps) restUps--; else return "Too many upgraded pillars"; break;
