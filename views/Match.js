@@ -202,7 +202,7 @@ function startMatch(game) {
 				if (makestatuses){
 					var statuses = new PIXI.Container();
 					for (var k=0; k<7; k++){
-						var icon = new PIXI.Sprite(gfx.sicons[k]);
+						var icon = new PIXI.Sprite(gfx.s[k]);
 						icon.alpha = .6;
 						icon.anchor.y = 1;
 						icon.position.set(-34 * scale + [4, 1, 1, 0, 3, 2, 1][k] * 8, 30 * scale);
