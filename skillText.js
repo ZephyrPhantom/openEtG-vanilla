@@ -11,7 +11,7 @@ var data = {
 	antimatter:"Invert strength of target",
 	bblood:"Target creature gains 0|20 & is delayed 6 turns",
 	blackhole:"Absorb 3 quanta per element from target player. Heal 1 per absorbed quantum",
-	blazeworks:"Target enemy creature takes 50 damage. /n'I am the bone of my sword...'",
+	blazeworks:"Target enemy creature takes 50 damage. \n'I am the bone of my sword...'",
 	bless:"Target gains 3|3",
 	blockwithcharge:"Block attack per stack",
 	boneyard:["When a creature dies, summon a 1|1 Skeleton", "When a creature dies, summon a 2|2 Skeleton"],
