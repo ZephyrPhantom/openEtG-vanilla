@@ -454,18 +454,20 @@ Player.prototype.isCloaked = function(){
 	}
 	return false;
 }
+function plinfocore(info, key, val){
+	if (val===true) info.push(key);
+	else if (val) info.push(val + key);
+}
 Player.prototype.info = function(){
-	var info = this.hp + "/" + this.maxhp + " " + this.deck.length + "cards";
-	if (this.nova)info += " " + this.nova + "nova";
-	if (this.nova2)info += " " + this.nova + "nova2";
-	info += objinfo(this.status);
-	if (this.neuro)info += " neuro";
-	if (this.sosa)info += " " + this.sosa + "sosa";
-	if (this.silence)info += " silence";
-	if (this.sanctuary)info += " sanctuary";
-	if (this.precognition)info += " precognition";
-	if (this.gpull)info += " gpull";
-	return info;
+	var info = [this.hp + "/" + this.maxhp + " " + this.deck.length + "cards"];
+	for (var key in this.status){
+		plinfocore(info, key, this.status[key]);
+	}
+	["nova", "neuro", "sosa", "silence", "sanctuary", "precognition"].forEach(function(key){
+		plinfocore(info, key, this[key]);
+	}, this);
+	if (this.gpull) info.push("gpull");
+	return info.join("\n");
 }
 Player.prototype.randomquanta = function() {
 	var candidates = [];
