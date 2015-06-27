@@ -51,8 +51,8 @@ function startMatch(game) {
 		754, 301, 590,
 		796, 12, 301,
 	], redlines = new PIXI.Graphics();
-	for(var j=0; j<4; j++){
-		redlines.lineStyle(1, [0x121212, 0x6a2e0d, 0x8a3e1d, 0x969696][j]);
+	for(var j=0; j<3; j++){
+		redlines.lineStyle(1, [0x121212, 0x6a2e0d, 0x8a3e1d][j]);
 		for (var i=0; i<redhor.length; i+=3){
 			redlines.moveTo(redhor[i+1], redhor[i]-j);
 			redlines.lineTo(redhor[i+2], redhor[i]-j);
@@ -202,14 +202,14 @@ function startMatch(game) {
 				if (makestatuses){
 					var statuses = new PIXI.Container();
 					for (var k=0; k<7; k++){
-						var icon = new PIXI.Sprite(gfx.sicons[k]);
+						var icon = new PIXI.Sprite(gfx.s[k]);
 						icon.alpha = .6;
 						icon.anchor.y = 1;
 						icon.position.set(-34 * scale + [4, 1, 1, 0, 3, 2, 1][k] * 8, 30 * scale);
 						statuses.addChild(icon);
 					}
 					for (var k=0; k<3; k++){
-						var icon = new PIXI.Sprite(gfx.sborders[k]);
+						var icon = new PIXI.Sprite(gfx.sborder[k]);
 						icon.position.set(-32 * scale, -40 * scale);
 						icon.scale.set(scale, scale);
 						statuses.addChild(icon);
