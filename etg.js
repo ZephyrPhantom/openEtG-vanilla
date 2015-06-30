@@ -695,7 +695,7 @@ Weapon.prototype.info = function(){
 	return infocore(this, this.trueatk().toString());
 }
 Shield.prototype.info = function(){
-	return infocore(this, this.truedr() + "DR");
+	return infocore(this, this.dr + "DR");
 }
 Pillar.prototype.info = function(){
 	return infocore(this, this.status.charges + " 1:" + (this.status.pendstate?this.owner.mark:this.card.element));
