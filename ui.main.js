@@ -130,7 +130,7 @@ function maybeSendChat(e) {
 			delete muteset[msg.substring(8)];
 			chatmute();
 		}else if (!msg.match(/^\/[^/]/)) {
-			var name = username.value || guestname || (guestname = (10000 + Math.floor(Math.random() * 89999)) + "V");
+			var name = username.value || guestname || (guestname = (10000 + Math.floor(Math.random() * 89999)) + "C");
 			sock.emit("guestchat", { msg: msg, u: name });
 		}else chat("Not a command: " + msg);
 	}
