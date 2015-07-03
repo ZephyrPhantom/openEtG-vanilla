@@ -739,7 +739,11 @@ Pillar.prototype.place = function(fromhand){
 	Permanent.prototype.place.call(this, fromhand);
 }
 Weapon.prototype.place = function(fromhand){
-	this.owner.weapon = this;
+	if (this.status.additive && this.owner.weapon && this.card.as(this.owner.weapon.card) == this.card){
+		this.owner.weapon.status.charges += this.status.charges;
+	}else{
+		this.owner.weapon = this;
+	}
 	Thing.prototype.place.call(this, fromhand);
 }
 Shield.prototype.place = function(fromhand){
