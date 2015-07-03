@@ -3,6 +3,7 @@ var etg = require("../etg");
 var gfx = require("../gfx");
 var sock = require("../sock");
 var Cards = require("../Cards");
+var mkAi = require("../mkAi");
 var etgutil = require("../../etgutil");
 module.exports = function() {
 	function sumCardMinus(cardminus, code){
@@ -51,6 +52,12 @@ module.exports = function() {
 		processDeck();
 	});
 	dom.push([8, 80, bimport]);
+	var bai1 = px.domButton("Commoner", mkAi.mkAi(1));
+	var bai2 = px.domButton("Mage", mkAi.mkAi(2));
+	var bai3 = px.domButton("Champion", mkAi.mkAi(3));
+	dom.push([8, 120, bai1]);
+	dom.push([8, 160, bai2]);
+	dom.push([8, 200, bai3]);
 	var bconvert = px.domButton("Convert Code", function() {
 		deckimport.value = etgutil.encodedeck(editordeck) + "01" + etg.toTrueMark(editormark);
 	});

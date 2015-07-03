@@ -68,12 +68,12 @@ function startMatch(game) {
 	cloakgfx.drawRect(130, 20, 660, 280);
 	cloakgfx.endFill();
 	gameui.addChild(cloakgfx);
-	var resigning;
+	var resigning, aiDelay = 0, aiState, aiCommand;
 	var endturn = px.domButton("Accept Hand", endClick.bind(null, undefined));
 	var cancel = px.domButton("Mulligan", cancelClick);
 	var resign = px.domButton("Resign", function() {
 		if (resign.value == "Confirm"){
-			sock.emit("foeleft");
+			if (!game.ai) sock.emit("foeleft");
 			game.setWinner(game.player2);
 			endturn.click();
 		}else{
@@ -92,7 +92,7 @@ function startMatch(game) {
 				discarding = true;
 			} else {
 				discarding = false;
-				sock.emit("endturn", {bits: discard});
+				if (!game.ai) sock.emit("endturn", {bits: discard});
 				game.player1.endturn(discard);
 				delete game.targetingMode;
 				foeplays.removeChildren();
@@ -182,11 +182,11 @@ function startMatch(game) {
 							} else if (!_j && cardinst.canactive()) {
 								if (cardinst.card.type != etg.SpellEnum) {
 									console.log("summoning", _i);
-									sock.emit("cast", {bits: game.tgtToBits(cardinst)});
+									if (!game.ai) sock.emit("cast", {bits: game.tgtToBits(cardinst)});
 									cardinst.useactive();
 								} else {
 									game.getTarget(cardinst, cardinst.card.active, function(tgt) {
-										sock.emit("cast", {bits: game.tgtToBits(cardinst) | game.tgtToBits(tgt) << 9});
+										if (!game.ai) sock.emit("cast", { bits: game.tgtToBits(cardinst) | game.tgtToBits(tgt) << 9 });
 										cardinst.useactive(tgt);
 									});
 								}
@@ -234,7 +234,7 @@ function startMatch(game) {
 					} else if (_j == 0 && !game.targetingMode && inst.canactive()) {
 						game.getTarget(inst, inst.active.cast, function(tgt) {
 							delete game.targetingMode;
-							sock.emit("cast", {bits: game.tgtToBits(inst) | game.tgtToBits(tgt) << 9});
+							if (!game.ai) sock.emit("cast", { bits: game.tgtToBits(inst) | game.tgtToBits(tgt) << 9 });
 							inst.useactive(tgt);
 						});
 					}
@@ -353,10 +353,29 @@ function startMatch(game) {
 			c.useactive(t);
 		},
 		foeleft: function(){
-			game.setWinner(game.player1);
+			if (!game.ai) game.setWinner(game.player1);
 		}
 	};
-	px.refreshRenderer({view:gameui, gamedom:dom, next:function() {
+	px.refreshRenderer({view: gameui, gamedom: dom, next: function() {
+		if (game.turn == game.player2 && game.ai) {
+			if (game.phase == etg.PlayPhase) {
+				if (!aiCommand) {
+					Effect.disable = true;
+					aiState = require("../ai/search")(game, aiState);
+					Effect.disable = false;
+					if (aiState.length <= 2) {
+						aiCommand = true;
+					}
+				}
+				var now;
+				if (aiCommand && (now = Date.now()) > aiDelay) {
+					cmds[aiState[0]]({ bits: aiState[1] });
+					aiState = undefined;
+					aiCommand = false;
+					aiDelay = now +  200;
+				}
+			}
+		}
 		var pos = px.mouse;
 		var cardartcode, cardartx;
 		infobox.style.display = "none";
@@ -587,7 +606,7 @@ function deckPower(deck, amount) {
 	}
 	return res;
 }
-module.exports = function(data) {
+module.exports = function(data, ai) {
 	var game = new etg.Game(data.seed, data.flip);
 	if (data.p1hp) {
 		game.player1.maxhp = game.player1.hp = data.p1hp;
@@ -628,6 +647,7 @@ module.exports = function(data) {
 	game.turn.drawhand();
 	game.turn.foe.drawhand();
 	if (data.foename) game.foename = data.foename;
+	if (ai) game.ai = true;
 	startMatch(game);
 	return game;
 }

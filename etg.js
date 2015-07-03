@@ -118,6 +118,7 @@ function Player(game){
 	this.nova = 0;
 	this.nova2 = 0;
 	this.maxhp = this.hp = 100;
+	this.drawpower = 1;
 	this.hand = [];
 	this.deck = [];
 	this.creatures = new Array(23);
@@ -407,6 +408,42 @@ Creature.prototype.hash = function(){
 	}
 	return hash & 0x7FFFFFFF;
 }
+Permanent.prototype.hash = function() {
+	var hash = this.owner == this.owner.game.player1 ? 5351 : 5077;
+	hash ^= hashObj(this.status) ^ (this.usedactive * 3);
+	hash ^= parseInt(this.card.code, 32);
+	for (var key in this.active) {
+		hash ^= hashString(key + "=" + this.active[key].activename.join(" "));
+	}
+	if (this.active.cast) {
+		hash ^= this.cast * 7 + this.castele * 23;
+	}
+	return hash & 0x7FFFFFFF;
+}
+Weapon.prototype.hash = function() {
+	var hash = this.owner == this.owner.game.player1 ? 13 : 11;
+	hash ^= hashObj(this.status) ^ (this.atk * 31 - this.usedactive * 3);
+	hash ^= parseInt(this.card.code, 32);
+	for (var key in this.active) {
+		hash ^= hashString(key + "-" + this.active[key].activename.join(" "));
+	}
+	if (this.active.cast) {
+		hash ^= this.cast * 7 + this.castele * 23;
+	}
+	return hash & 0x7FFFFFFF;
+}
+Shield.prototype.hash = function() {
+	var hash = this.owner == this.owner.game.player1 ? 5009 : 4259;
+	hash ^= hashObj(this.status) ^ (this.dr * 31 - this.usedactive * 3);
+	hash ^= parseInt(this.card.code, 32);
+	for (var key in this.active) {
+		hash ^= hashString(key + "~" + this.active[key].activename.join(" "));
+	}
+	if (this.active.cast) {
+		hash ^= this.cast * 7 + this.castele * 23;
+	}
+	return hash & 0x7FFFFFFF;
+}
 Card.prototype.readCost = function(attr, cost){
 	var c=cost.split(":");
 	var cost = parseInt(c[0]);
@@ -445,6 +482,9 @@ Player.prototype.upto = function(x){
 }
 Player.prototype.uptoceil = function(x){
 	return Math.ceil((1-this.game.rng.rnd())*x);
+}
+Player.prototype.choose = function(x) {
+	return x[this.upto(x.length)];
 }
 Player.prototype.isCloaked = function(){
 	for(var i=0; i<16; i++){
@@ -1225,6 +1265,7 @@ exports.SpellEnum = 4;
 exports.CreatureEnum = 5;
 exports.PlayPhase = 0;
 exports.EndPhase = 1;
+exports.PillarList = Object.freeze(["4sa", "4vc", "52g", "55k", "58o", "5bs", "5f0", "5i4", "5l8", "5oc", "5rg", "5uk", "61o"]);
 exports.NymphList = [undefined, "500", "534", "568", "59c", "5cg", "5fk", "5io", "5ls", "5p0", "5s4", "5v8", "62c"];
 exports.AlchemyList = [undefined, "4vn", "52s", "55v", "595", "5c7", "5fb", "5ig", "5lj", "5om", "5rr", "5uu", "621"];
 exports.ShardList = [undefined, "50a", "53e", "56i", "59m", "5cq", "5fu", "5j2", "5m6", "5pa", "5se", "5vi", "62m"];
