@@ -84,8 +84,12 @@ bow:function(c,t){
 	return c.owner.mark == etg.Air?1:0;
 },
 bravery:function(c,t){
+	var br=2;
+	if(c.owner.mark == etg.Fire){
+		br=3;
+	}
 	if (!c.owner.foe.sanctuary){
-		for(var i=0; i<2 && c.owner.hand.length<8 && c.owner.foe.hand.length<8; i++){
+		for(var i=0; i<br && c.owner.hand.length<8 && c.owner.foe.hand.length<8; i++){
 			c.owner.drawcard();
 			c.owner.foe.drawcard();
 		}
