@@ -59,7 +59,7 @@ var data = {
 	gas:"Summon an Unstable Gas",
 	gpull:"Intercept attacks directed to owner",
 	gpullspell:"Target creature intercepts attacks directed to its owner",
-	gratitude:"Heal owner 4, 5 if 1:5",
+	gratitude:"Heal owner 3, 5 if 1:5",
 	growth1:{
 		death:"When a creature dies, gain 1|1",
 		cast:"Gain 1|1",
@@ -178,7 +178,7 @@ var data = {
 	wings:"Evade non-airborne & non-ranged attackers",
 	wisdom:"Target gains 4|0. May target immaterial, granting psionic",
 };
-[["dagger", "1:2 1:11. Increment damage if cloaked"], ["hammer", "1:3 1:4"], ["bow", "1:9"]].forEach(function(x){
+[["dagger", "1:2 1:11."], ["hammer", "1:3 1:4"], ["bow", "1:9"]].forEach(function(x){
 	data[x[0]] = "Increment damage if mark is "+x[1];
 });
 function auraText(tgts, bufftext, upbufftext){
