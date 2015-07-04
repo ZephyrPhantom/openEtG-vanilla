@@ -1,5 +1,5 @@
 "use strict";
-var ui = require("../ui");
+var ui = require("./ui");
 var Cards = require("./Cards");
 var Effect = require("./Effect");
 var Actives = require("./Actives");
