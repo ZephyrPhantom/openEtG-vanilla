@@ -213,7 +213,8 @@ Game.prototype.clone = function(){
 	obj.player2 = this.player2.clone(obj);
 	obj.player1.foe = obj.player2;
 	obj.player2.foe = obj.player1;
-	obj.turn = this.turn == this.player1?obj.player1:obj.player2;
+	obj.turn = this.turn == this.player1 ? obj.player1 : obj.player2;
+	obj.targeting = this.targeting;
 	return obj;
 }
 Game.prototype.players = function(n){
@@ -278,9 +279,16 @@ Game.prototype.bitsToTgt = function(x) {
 Game.prototype.getTarget = function(src, active, cb) {
 	var targetingFilter = Cards.Targeting[active.activename[0]];
 	if (targetingFilter) {
-		this.targetingMode = function(t) { return (t instanceof Player || t instanceof CardInstance || t.owner == this.turn || t.status.cloak || !t.owner.isCloaked()) && targetingFilter(src, t); }
-		this.targetingModeCb = cb;
-		this.targetingText = active.activename[0];
+		var game = this;
+		this.targeting = {
+			filter: function(t) { return (t instanceof Player || t instanceof CardInstance || t.owner == game.turn || t.status.cloak || !t.owner.isCloaked()) && targetingFilter(src, t); },
+			cb: function(){
+				cb.apply(null, arguments);
+				game.targeting = null;
+			},
+			text: active.activename[0],
+			src: src,
+		}
 	} else {
 		cb();
 	}
@@ -676,7 +684,7 @@ Player.prototype.drawcard = function() {
 			this.hand[this.hand.length] = new CardInstance(this.deck.pop(), this);
 			this.procactive("draw");
 			if (this.deck.length == 0 && this.game.player1 == this)
-				Effect.mkSpriteFade(ui.getTextImage("This was your last card!", ui.mkFont(32, "white"), 0));
+				Effect.mkSpriteFade(ui.getTextImage("This was your last card!", 32, "white", "black"));
 		}else this.game.setWinner(this.foe);
 	}
 }

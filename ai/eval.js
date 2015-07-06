@@ -315,7 +315,7 @@ var ActivesValues = Object.freeze({
 		return (c instanceof etg.CardInstance?c.card.attack:ttatk)*.7;
 	},
 	virtue:function(c){
-		return c instanceof etg.CardInstance ? (c.owner.foe.shield ? Math.min(c.owner.foe.shield.truedr(), c.card.attack) : 0) : (c.trueatk() - getDamage(c)) / 1.5;
+		return c instanceof etg.CardInstance ? (c.owner.foe.shield ? Math.min(c.owner.foe.shield.dr, c.card.attack) : 0) : (c.trueatk() - getDamage(c)) / 1.5;
 	},
 	virusplague:1,
 	void:5,
@@ -400,7 +400,7 @@ function estimateDamage(c, freedomChance, wallCharges, wallIndex) {
 	var tatk = c.trueatk(), fsh = c.owner.foe.shield, fshactive = fsh && fsh.active.shield;
 	var momentum = !fsh || tatk <= 0 || c.status.momentum || c.status.psionic ||
 		(c.status.burrowed && c.owner.permanents.some(function(pr){ return pr && pr.status.tunnel }));
-	var dr = momentum ? 0 : fsh.truedr(), atk = estimateAttack(tatk);
+	var dr = momentum ? 0 : fsh.dr, atk = estimateAttack(tatk);
 	if (c.status.adrenaline) {
 		var attacks = etg.countAdrenaline(tatk);
 		while (c.status.adrenaline < attacks) {
