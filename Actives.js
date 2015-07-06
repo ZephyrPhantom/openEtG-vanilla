@@ -66,10 +66,6 @@ blackhole:function(c,t){
 		}
 	}
 },
-blazeworks:function(c,t){
-	Effect.mkText("-50", t);
-	t.spelldmg(50);
-},
 bless:function(c,t){
 	Effect.mkText("3|3", t);
 	t.atk += 3;
