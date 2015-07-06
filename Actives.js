@@ -85,12 +85,7 @@ bravery:function(c,t){
 		br=3;
 	}
 	if (!c.owner.foe.sanctuary){
-<<<<<<< HEAD
 		for(var i=0; i<br && c.owner.hand.length<8 && c.owner.foe.hand.length<8; i++){
-=======
-		var n = c.owner.mark == etg.Fire?3:2;
-		for(var i=0; i<n && c.owner.hand.length<8 && c.owner.foe.hand.length<8; i++){
->>>>>>> 14516540188a4d9901f2a6f1f8779c592f4a33be
 			c.owner.drawcard();
 			c.owner.foe.drawcard();
 		}

@@ -14,12 +14,8 @@ var data = {
 	bless:"Target gains 3|3",
 	blockwithcharge:"Block attack per stack",
 	boneyard:["When a creature dies, summon a 1|1 Skeleton", "When a creature dies, summon a 2|2 Skeleton"],
-<<<<<<< HEAD
-	bravery:"Foe draws 2 cards, you draw an equal amount of cards. 3 cards are drawn if your mark is 1:6",
-=======
 	bravery:"Foe draws 2 cards, you draw an equal amount of cards",
 	burrow:"Burrow. Burrowed creatures attack with half strength",
->>>>>>> 14516540188a4d9901f2a6f1f8779c592f4a33be
 	butterfly:"Target something smaller than, or weaker than, 3. Replace target's skills with \"3:1 Destroy target permanent\"",
 	catapult:"Sacrifice target creature to deal 100HP/(100+HP) damage foe. Frozen creatures increase damage by 50%. Poisoned creatures transfer poison",
 	chimera:"Combine all your creatures to form a Chimera with momentum & gravity pull",
