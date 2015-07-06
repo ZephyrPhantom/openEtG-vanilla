@@ -52,9 +52,9 @@ module.exports = function() {
 		processDeck();
 	});
 	dom.push([8, 80, bimport]);
-	var bai1 = px.domButton("Commoner", mkAi.mkAi(1));
-	var bai2 = px.domButton("Mage", mkAi.mkAi(2));
-	var bai3 = px.domButton("Champion", mkAi.mkAi(3));
+	var bai1 = px.domButton("Commoner", mkAi.mkAi(0));
+	var bai2 = px.domButton("Mage", mkAi.mkAi(1));
+	var bai3 = px.domButton("Champion", mkAi.mkAi(2));
 	dom.push([8, 120, bai1]);
 	dom.push([8, 160, bai2]);
 	dom.push([8, 200, bai3]);
