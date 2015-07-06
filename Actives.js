@@ -81,7 +81,8 @@ bow:function(c,t){
 },
 bravery:function(c,t){
 	if (!c.owner.foe.sanctuary){
-		for(var i=0; i<2 && c.owner.hand.length<8 && c.owner.foe.hand.length<8; i++){
+		var n = c.owner.mark == etg.Fire?3:2;
+		for(var i=0; i<n && c.owner.hand.length<8 && c.owner.foe.hand.length<8; i++){
 			c.owner.drawcard();
 			c.owner.foe.drawcard();
 		}
