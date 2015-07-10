@@ -304,6 +304,9 @@ function startMatch(game) {
 		gameui.addChild(sacrificeOverlay[j]);
 		gameui.addChild(playerOverlay[j]);
 	}
+	px.setInteractive.apply(null, weapsprite);
+	px.setInteractive.apply(null, shiesprite);
+	px.setInteractive.apply(null, playerOverlay);
 	var fgfx = new PIXI.Graphics();
 	gameui.addChild(fgfx);
 	var anims = new PIXI.Container();
