@@ -150,6 +150,8 @@ function startMatch(game) {
 	var quantatext = [[], []], quantaxy = [[], []];
 	var hptext = [new px.domText(""), new px.domText("")], hpxy = [];
 	var playerOverlay = [new PIXI.Sprite(gfx.nopic), new PIXI.Sprite(gfx.nopic)];
+	var handOverlay = [new PIXI.Sprite(gfx.nopic), new PIXI.Sprite(gfx.nopic)];
+	var sacrificeOverlay = [new PIXI.Sprite(gfx.sacrifice), new PIXI.Sprite(gfx.sacrifice)];
 	for (var j = 0;j < 2;j++) {
 		hptext[j].style.textAlign = "center";
 		hptext[j].style.width = "100px";
@@ -161,8 +163,8 @@ function startMatch(game) {
 		marktext[j].style.transform = "translate(-50%,-50%)";
 		playerOverlay[j].width = 95;
 		playerOverlay[j].height = 80;
-		//handOverlay[j].position.set(j ? 9 : 774, j ? 99 : 300);
-		//sacrificeOverlay[j].position.set(j ? 800 : 0, j ? 7 : 502);
+		handOverlay[j].position.set(j ? 9 : 774, j ? 99 : 300);
+		sacrificeOverlay[j].position.set(j ? 800 : 0, j ? 7 : 502);
 		(function(_j) {
 			for (var i = 0;i < 8;i++) {
 				handsprite[j][i] = new PIXI.Sprite(gfx.nopic);
@@ -298,8 +300,8 @@ function startMatch(game) {
 		dom.push([markspritexy[j].x, markspritexy[j].y, marksprite[j]],
 			[marktextxy[j].x, marktextxy[j].y, marktext[j]],
 			[hpxy[j].x-50, playerOverlay[j].y - 24, hptext[j]]);
-		//gameui.addChild(handOverlay[j]);
-		//gameui.addChild(sacrificeOverlay[j]);
+		gameui.addChild(handOverlay[j]);
+		gameui.addChild(sacrificeOverlay[j]);
 		gameui.addChild(playerOverlay[j]);
 	}
 	var fgfx = new PIXI.Graphics();
@@ -481,7 +483,7 @@ function startMatch(game) {
 			fgfx.lineStyle(2, 0xff0000);
 			for (var j = 0;j < 2;j++) {
 				if (game.targeting.filter(game.players(j))) {
-					var spr = hptext[j];
+					var spr = playerOverlay[j];
 					fgfx.drawRect(spr.position.x - spr.width / 2, spr.position.y - spr.height / 2, spr.width, spr.height);
 				}
 				for (var i = 0;i < game.players(j).hand.length;i++) {
@@ -495,25 +497,10 @@ function startMatch(game) {
 		fgfx.lineStyle(0, 0, 0);
 		for (var j = 0;j < 2;j++) {
 			var pl = game.players(j);
-			if (pl.sosa) {
-				var spr = hptext[j];
-				fgfx.beginFill(ui.elecols[etg.Death], .5);
-				fgfx.drawRect(spr.position.x - spr.width / 2, spr.position.y - spr.height / 2, spr.width, spr.height);
-				fgfx.endFill();
-			}
-			var statuses = { silence: etg.Aether, sanctuary: etg.Light };
-			for(var status in statuses){
-				if (pl[status]) {
-					fgfx.beginFill(ui.elecols[statuses[status]], .3);
-					fgfx.drawRect(handsprite[j][0].position.x - 2, handsprite[j][0].position.y - 2, 124, 164);
-					fgfx.endFill();
-				}
-			}
-			if (pl.nova > 1 || pl.nova2){
-				fgfx.beginFill(ui.elecols[etg.Entropy], .3);
-				fgfx.drawRect(handsprite[j][0].position.x - 2, handsprite[j][0].position.y - 2, 124, 164);
-				fgfx.endFill();
-			}
+			sacrificeOverlay[j].visible = pl.sosa;
+			handOverlay[j].texture = (pl.silence? gfx.silence :
+				pl.sanctuary ? gfx.sanctuary :
+				pl.nova > 1 || pl.nova2 ? gfx.singularity : gfx.nopic);
 			for (var i = 0;i < 8;i++) {
 				handsprite[j][i].texture = gfx.getCardImage(pl.hand[i] ? (j == 0 || game.player1.precognition ? pl.hand[i].card.code : "0") : "1");
 			}
