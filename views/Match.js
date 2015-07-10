@@ -175,7 +175,7 @@ function startMatch(game) {
 						var cardinst = game.players(_j).hand[_i];
 						if (cardinst) {
 							if (!_j && discarding) {
-								endturn.click(null, _i);
+								endClick(_i);
 							} else if (game.targeting) {
 								if (game.targeting.filter(cardinst)) {
 									game.targeting.cb(cardinst);
