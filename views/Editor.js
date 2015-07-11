@@ -55,9 +55,11 @@ module.exports = function() {
 	var bai1 = px.domButton("Commoner", mkAi.mkAi(0));
 	var bai2 = px.domButton("Mage", mkAi.mkAi(1));
 	var bai3 = px.domButton("Champion", mkAi.mkAi(2));
-	dom.push([8, 120, bai1]);
-	dom.push([8, 160, bai2]);
-	dom.push([8, 200, bai3]);
+	var bai4 = px.domButton("False God", mkAi.mkPremade());
+	dom.push([8, 110, bai1]);
+	dom.push([8, 140, bai2]);
+	dom.push([8, 170, bai3]);
+	dom.push([8, 200, bai4]);
 	var bconvert = px.domButton("Convert Code", function() {
 		deckimport.value = etgutil.encodedeck(editordeck) + "01" + etg.toTrueMark(editormark);
 	});

@@ -3,6 +3,22 @@ var etg = require("./etg");
 var sock = require("./sock");
 var Cards = require("./Cards");
 var etgutil = require("../etgutil");
+var aiDecks = require("./Decks");
+exports.mkPremade = function() {
+	return function() {
+		var urdeck = sock.getDeck();
+		if (urdeck.length < 9) {
+			return;
+		}
+		var foedata = aiDecks.giveRandom();
+		var gameData = { deck: foedata[1], urdeck: urdeck, seed: Math.random() * etgutil.MAX_INT, foename: foedata[0] };
+		gameData.p2hp = 200;
+		gameData.p2markpower = 3;
+		gameData.p2drawpower = 2;
+		gameData.level = 3;
+		return require("./views/Match")(gameData, true);
+	}
+}
 exports.mkAi = function(level) {
 	return function() {
 		if (Cards.loaded){
