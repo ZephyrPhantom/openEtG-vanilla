@@ -29,6 +29,7 @@ exports.fg = [
 	["Scorpio", "718 718 718 718 718 71a 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gl 7gl 7gl 7gm 7gm 7gm 7gn 7gn 7gn 7go 7gp 7gp 7gq 7gr 7gr 7gs 7gt 7gu 7gu 7gu 7gu 7gu 7gu 7gv 7gv 808 808 808 80b 80b 8pk".split(" ")],
 	["Seism", "778 778 778 778 778 778 778 778 778 778 778 778 778 778 778 778 779 77a 77a 77b 77b 77c 77e 77e 77e 77f 77g 77g 77g 77g 77g 77g 77i 77i 77j 77j 77j 77j 77j 77j 77k 7q4 7q4 7q4 7q4 7q6 8ps".split(" ")],
 	["Serket", "710 710 710 710 710 710 710 713 713 713 713 713 71a 71a 71e 71e 71e 71e 71e 7ac 7ac 7ac 7ac 7ac 7ac 7ac 7ac 7ao 7ao 7ao 7ao 7ao 7b0 7b0 7ta 7ta 7ta 7ti 7ti 7ti 8pt".split(" ")]
+	["Taranis, 7mv 7n1 7n1 7n1 7n2 7n2 7n2 7n2 7n2 7n8 7n8 7n8 7n8 7n8 7n8 808 808 808 808 808 808 808 808 808 808 808 80a 80a 80e 80e 80e 80e 80e 80g 80g 80g 80g 80g 80g 8pr".split(" ")]
 ];
 
 exports.giveRandom = function() {
