@@ -19,7 +19,7 @@ exports.fg = [
 	["Incarnate", "712 712 712 712 717 717 717 717 717 71b 71b 71b 71b 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t7 7t7 7t7 7t7 7ta 7ta 7ta 7ta 7tb 7td 7td 7td 7td 7td 7td 8pk".split(" ")],
 	["Jezebel", "6qq 6qq 6qq 6qq 6qq 6qq 6qq 6qq 6qq 6qq 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gp 7h0 7h0 7h0 7h0 7h0 7h0 7t9 7t9 7t9 7t9 7tb 7tc 7tc 7ti 7ti 7ti 8pt".split(" ")],
 	["Lionheart", "6qq 6qq 6qq 7jo 7jo 7jo 7jo 7jo 7k5 7k5 7k5 7k5 7k5 7n2 7q0 7q0 7q0 7q0 7q0 7q0 7q0 7q0 7q3 7q3 7q5 7q5 7q5 7q5 7q5 7q7 7q7 7q7 7q8 7q8 7qc 80h 80h 81q 81q 81q 8ps".split(" ")],
-	["Midnight", "7mt 7mt 7mt 7mt 7mt 7mt 7n2 7n2 7n2 7n9 7n9 7n9 7n9 7n9 7n9 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7ta 7ta 7ta 7tb 7tb 7tb 7td 7td 7td 7td 7td 7td 8pr".split(" ")]
+	["Midnight", "7mt 7mt 7mt 7mt 7mt 7mt 7n2 7n2 7n2 7n9 7n9 7n9 7n9 7n9 7n9 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7ta 7ta 7ta 7tb 7tb 7tb 7td 7td 7td 7td 7td 7td 8pr".split(" ")],
 	["Miracle", "7ac 7ac 7ac 7ac 7ad 7af 7af 7ak 7al 7jo 7jo 7jo 7jo 7jo 7jo 7jo 7jo 7jo 7jq 7jq 7jq 7jr 7jr 7jt 7jv 7jv 7jv 7k1 7k2 7k2 7k2 7ms 7ms 7ms 7ms 7n3 7n3 7n3 8pq".split(" ")],
 	["Morte", "710 710 710 710 710 710 710 710 710 710 710 710 710 710 710 711 711 712 712 712 712 712 712 713 714 714 714 717 717 717 718 718 718 718 718 719 719 719 71a 71a 71b 71b 71b 7jp 7jp 7jp 7jp 7jp 7jp 7ju 7ju 7ju 7k2 8pk".split(" ")],
 	["Neptune", "7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gm 7gm 7gm 7gm 7gn 7gp 7gp 7gr 7gr 7gr 7gr 7gs 7gt 7gt 7h1 7h1 7h1 7h1 7n5 7n7 7n7 7n7 7n7 7n7 7n7 8pr".split(" ")],
@@ -30,7 +30,7 @@ exports.fg = [
 	["Rainbow", "6qq 6qq 6qq 6qq 6qq 6qq 6qq 6qq 6qq 6qq 6qq 6qq 6qq 6qq 6qq 6qq 6qq 6qq 6qq 6qq 6qq 6qq 6qq 6qq 6u1 6u1 6u1 6u1 74d 74d 74d 77g 77g 77g 77g 7ah 7ah 7ah 7ah 7dm 7dm 7dm 7dm 7gn 7gn 7gn 7k2 7k2 7n5 7n5 7q5 7q5 7q5 7q5 7q5 7t9 7t9 7t9 80a 80a 8ps".split(" ")],
 	["Scorpio", "718 718 718 718 718 71a 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gl 7gl 7gl 7gm 7gm 7gm 7gn 7gn 7gn 7go 7gp 7gp 7gq 7gr 7gr 7gs 7gt 7gu 7gu 7gu 7gu 7gu 7gu 7gv 7gv 808 808 808 80b 80b 8pk".split(" ")],
 	["Seism", "778 778 778 778 778 778 778 778 778 778 778 778 778 778 778 778 779 77a 77a 77b 77b 77c 77e 77e 77e 77f 77g 77g 77g 77g 77g 77g 77i 77i 77j 77j 77j 77j 77j 77j 77k 7q4 7q4 7q4 7q4 7q6 8ps".split(" ")],
-	["Serket", "710 710 710 710 710 710 710 713 713 713 713 713 71a 71a 71e 71e 71e 71e 71e 7ac 7ac 7ac 7ac 7ac 7ac 7ac 7ac 7ao 7ao 7ao 7ao 7ao 7b0 7b0 7ta 7ta 7ta 7ti 7ti 7ti 8pt".split(" ")],
+	["Serket", "710 710 710 710 710 710 710 713 713 713 713 713 71a 71a 71e 71e 71e 71e 71e 7ac 7ac 7ac 7ac 7ac 7ac 7ac 7ac 7ao 7ao 7ao 7ao 7ao 7b0 7b0 7ta 7ta 7ta 7ti 7ti 7ti 8pt".split(" ")]
 ];
 
 exports.giveRandom = function() {
