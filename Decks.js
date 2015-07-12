@@ -2,7 +2,7 @@
 exports.fg = [
 	["Akebono", "6rs 6s2 6s2 744 744 744 744 744 744 744 744 744 744 744 744 744 744 744 744 746 746 748 748 748 748 748 748 74a 74c 74g 74g 74i 74i 74i 74i 8pl".split(" ")],
 	["Chaos Lord", "6qq 6qq 6qq 6qq 6qq 6qq 6qq 6qq 6qq 6qq 6ts 6ts 6ts 6ts 6ts 6ts 6ts 6ts 6ts 6ts 6tt 6tv 6u0 6u0 6u1 6u1 6u2 6u2 6u2 6u3 6u3 6u3 6u3 6u3 6u3 6u4 6u4 6u4 6u5 6u6 6u6 6u6 6u6 74a 7dm 7gn 7jp 7jp 7jp 7jp 7jp 7jp 7t9 8pj".split(" ")],
-	["Cantarella", "710 710 710 710 710 710 718 718 718 718 718 718 719 719 71a 71a 71a 71a 72i 72i 72i 72i 7n2 7n2 7n2 7n2 7n2 809 809 809 809 809 809 80e 80k 80k 80k 80k 80k 80k 8pu".split(" ")],
+	["Cantarella", "710 710 710 710 710 710 710 710 710 710 718 718 718 718 718 718 719 719 71a 71a 71a 71b 71b 71b 809 809 809 809 809 80a 80a 80a 80a 80a 80k 80k 80k 80k 80k 80k 8pu".split(" ")],
 	["Dark Matter", "744 744 744 744 744 744 744 744 744 744 744 744 744 744 744 744 744 744 744 745 745 745 745 746 748 74a 74b 74b 74c 74d 74d 74d 74d 74f 74f 74f 74f 74f 74f 74o 74o 7ju 7ju 7ju 7ju 7jv 7k1 8pq".split(" ")],
 	["Decay", "7t6 7t6 7t6 7t6 7t6 7t6 7t8 7t9 7t9 7ta 7tc 7tc 7tc 7tc 7tc 7tc 808 808 808 808 808 808 808 80e 80i 80i 80i 80i 80i 80i 8pt".split(" ")],
 	["Destiny", "6ts 6ts 6ts 6ts 6ts 6ts 6ts 6ts 6ts 6ts 6ts 6ts 6ts 6tt 6tt 6u2 6u2 6u2 6u2 6u2 6u3 6u3 6u3 6u3 6u3 6u6 6u6 7q0 7q0 7q0 7q0 7q0 7q0 7q0 7q0 7q2 7q2 7q2 7q2 7q2 7q2 7q4 7q4 7q4 7q4 7q5 7q5 7q5 7q8 7q8 8ps".split(" ")],
