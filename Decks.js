@@ -16,7 +16,7 @@ exports.fg = [
 	["Graviton", "744 744 744 744 744 744 744 744 744 744 744 744 744 744 745 745 746 749 74a 74a 74a 74b 74b 74b 74c 74d 74e 74e 74e 74e 74e 74e 7dm 7dm 7do 8po".split(" ")],
 	["Hecate", "7dr 7dr 7dr 7dr 7dr 7dr 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t8 7t9 7t9 7ta 7ta 7tb 7te 7te 7te 7te 7tg 7tg 7tg 7tg 7tg 7tg 7th 8po".split(" ")],
 	["Hermes", "77d 77d 77d 77i 77i 7dg 7dg 7dg 7dg 7dg 7dg 7dg 7dg 7dg 7dg 7dg 7dg 7dg 7dg 7dg 7dg 7dg 7dg 7dg 7dg 7dh 7dh 7dh 7dh 7di 7dj 7dj 7dj 7dj 7dk 7dk 7dk 7dk 7dk 7dk 7dl 7dm 7dm 7dm 7dm 7dm 7dm 7dn 7do 7do 7dq 7dq 7dq 7dq 7dq 7dq 7dr 7dr 8pm".split(" ")],
-	["Imhotep", "717 717 717 717 718 718 718 718 719 719 719 719 719 71b 71b 71b 71d 71d 71d 71d 71d 71d 72i 72i 72i 72i 72i 72i 72i 72i 72i 72i 75m 75m 75m 75m 7q4 7q4 7q4 7q4 7q4 7q4 7q5 7q5 7q5 7q5 7q5 7q8 7q8 7q8 8ps".split(" ")]
+	["Imhotep", "717 717 717 717 718 718 718 718 719 719 719 719 719 71b 71b 71b 71d 71d 71d 71d 71d 71d 72i 72i 72i 72i 72i 72i 72i 72i 72i 72i 75m 75m 75m 75m 7q4 7q4 7q4 7q4 7q4 7q4 7q5 7q5 7q5 7q5 7q5 7q8 7q8 7q8 8ps".split(" ")],
 	["Incarnate", "712 712 712 712 717 717 717 717 717 71b 71b 71b 71b 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t4 7t7 7t7 7t7 7t7 7ta 7ta 7ta 7ta 7tb 7td 7td 7td 7td 7td 7td 8pk".split(" ")],
 	["Jezebel", "6qq 6qq 6qq 6qq 6qq 6qq 6qq 6qq 6qq 6qq 7gk 7gk 7gk 7gk 7gk 7gk 7gk 7gp 7h0 7h0 7h0 7h0 7h0 7h0 7t9 7t9 7t9 7t9 7tb 7tc 7tc 7ti 7ti 7ti 8pt".split(" ")],
 	["Lionheart", "6qq 6qq 6qq 7jo 7jo 7jo 7jo 7jo 7k5 7k5 7k5 7k5 7k5 7n2 7q0 7q0 7q0 7q0 7q0 7q0 7q0 7q0 7q3 7q3 7q5 7q5 7q5 7q5 7q5 7q7 7q7 7q7 7q8 7q8 7qc 80h 80h 81q 81q 81q 8ps".split(" ")],
