@@ -27,6 +27,7 @@
 	<label>	<input id="takingarms" type="checkbox" />Taking Up Arm</label><br>
 	<label><input id="master" type="checkbox" />Returning Master</label>
 <script>
+	"use strict";
 	var Cards = require("./Cards");
 	var etg = require("./etg");
 	require("./httpcards")();
@@ -60,7 +61,7 @@
 				legality.value = "Not a real deck code. " + (code[i] || "???");
 				return;
 			}
-		}		
+		}
 		legality.value = checkDeck();
 		function checkDeck() {
 			if (deck.length > 60) return "Your deck is too large";

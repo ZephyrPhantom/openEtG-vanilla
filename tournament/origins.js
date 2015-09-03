@@ -5,7 +5,7 @@ module.exports = function(deck) {
 	for (var i = 0;i < deck.length;i++) {
 		var card = deck[i];
 		if (card.upped) return "Upgraded cards are banned";
-		if (!~allowedCards.indexOf(card.code)) return card.name + " is not allowed";		
+		if (!~allowedCards.indexOf(card.code)) return card.name + " is not allowed";
 	}
-	return "Legal"
+	return "Legal";
 }
