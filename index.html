@@ -19,10 +19,11 @@
 </head>
 <body>
 	<div id="rightpane">
-		<a href="../artcredit.htm" target="_blank">Art credits</a>&emsp;&emsp;<a href="../forum/?board=2" target="_blank">Forum</a><br><br>
+		<div style="margin-bottom:8px"><a href="../artcredit.htm" target="_blank">Art credits</a>&emsp;&emsp;<a href="../forum/?board=2" target="_blank">Forum</a></div>
 		<input id="foename" type="text" placeholder="Challenge" onkeydown="maybeChallenge(event)"/> <input id="pvphp" class="numput" type="text" placeholder="HP"/><input id="pvpmark" class="numput" type="text" placeholder="Mark"/><input id="pvpdeck" class="numput" type="text" placeholder="Deck"/><input id="pvpdraw" class="numput" type="text" placeholder="Draw"/><br>
 		<input id="challenge" type="submit" value="PvP" onclick="challengeClick()"/>
 		<input id="username" type="text" placeholder="Name"/>
+		<div id="tabs"></div>
 		<div id="chatBox"></div>
 		<textarea id="chatinput" placeholder="Chat" onkeydown="maybeSendChat(event)"></textarea>
 	</div>
