@@ -1,4 +1,0 @@
-rule mkcjs
- command=mkcjs $out $in
-build etgify.js:mkcjs etg.js ../assets/atlas.js ../InteractionManager.js ../chat.js skillText.js px.js sock.js httpcards.js ../etgutil.js ui.js Actives.js ../MersenneTwister.js Effect.js Cards.js gfx.js views/Login.js views/Editor.js views/Match.js views/Result.js mkAi.js ai/deck.js ai/eval.js ai/lethal.js ai/search.js Decks.js
-default etgify.js
