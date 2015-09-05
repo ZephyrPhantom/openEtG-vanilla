@@ -4,7 +4,8 @@ var fs = require("fs"), urllib = require("urllib");
 function download(gid, writeStream, cb){
 	urllib.request("https://docs.google.com/spreadsheets/d/15G8h9S0Ph7UfzaZMyn35LpJY8gTgmTtru6K2QmdTUmw/export?format=csv&id=15G8h9S0Ph7UfzaZMyn35LpJY8gTgmTtru6K2QmdTUmw&gid="+gid, {
 		headers: { "GData-Version": "3.0" },
-		writeStream: writeStream
+		writeStream: writeStream,
+		gzip: true
 	}, cb);
 }
 var dbgid = [
