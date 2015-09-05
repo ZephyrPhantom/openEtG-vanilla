@@ -1,16 +1,17 @@
 {
-  "name": "openEtG",
-  "description": "openEtG",
+  "name": "openEtG-vanilla",
+  "description": "openEtG engine aiming to be as close to the original as possible",
   "readme": "readme.txt",
   "repository": {
     "type": "git",
     "url": "https://github.com/serprex/openEtG-vanilla.git"
   },
   "devDependencies": {
-    "urllib": "^2.3.3"
+    "urllib": "^2.4.0"
   },
   "scripts": {
     "test": "npm start;firefox 127.0.0.1:13602/test.htm"
   },
+  "license": "MIT",
   "dependencies": {}
 }
