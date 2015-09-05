@@ -71,6 +71,10 @@ bless:function(c,t){
 	t.atk += 3;
 	t.buffhp(3);
 },
+bounce:passive(function(c,t){
+	Skills.unsummon(c, c);
+	return true;
+}),
 boneyard:function(c,t){
 	if (!t.card.isOf(Cards.Skeleton)){
 		new etg.Creature(Cards.Skeleton.asUpped(c.card.upped), c.owner).place();
@@ -703,6 +707,12 @@ regenerate:function(c,t){
 		c.owner.dmg(-5);
 	}
 },
+ren:function(c,t){
+	if (!t.hasactive("predeath", "bounce")){
+		Effect.mkText("Ren", t);
+		t.addactive("predeath", Skills.bounce);
+	}
+},
 relic:function(c,t){
 	c.place();
 },
@@ -902,6 +912,13 @@ unburrow:function(c,t){
 	c.active.cast = Actives.burrow;
 	c.cast = 1;
 	c.atk *= 2;
+},
+unsummon:function(c,t){
+	if (t.owner.hand.length < 8){
+		new etg.CardInstance(t.card, t.owner).place();
+		t.remove();
+	}
+	//note: CIA Unsummon does nothing if hand is full.
 },
 upkeep:function(c,t){
 	if (!c.owner.spend(c.card.element, 1)){
