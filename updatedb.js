@@ -5,9 +5,9 @@ function download(gid, writeStream, cb){
 	http.get({
 		host:"docs.google.com",
 		path:"/spreadsheets/d/15G8h9S0Ph7UfzaZMyn35LpJY8gTgmTtru6K2QmdTUmw/export?format=csv&id=15G8h9S0Ph7UfzaZMyn35LpJY8gTgmTtru6K2QmdTUmw&gid="+gid,
-		headers: { "GData-Version": "3.0", "Accept-Encoding:gzip" },
+		headers: { "GData-Version": "3.0", "Accept-Encoding":"gzip" },
 	}, function(res){
-		if (res.headers["Content-Encoding"] == "gzip"){
+		if (res.headers["content-encoding"] == "gzip"){
 			res = res.pipe(zlib.createGunzip());
 		}
 		res.pipe(writeStream);
