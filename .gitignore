@@ -1,9 +1,8 @@
-__pycache__/*
 node_modules/*
-googleinfo.txt
 pushserver.sh
 etgify.js
 tournify.js
+cards.js
 .ninja_log
 .ninja_deps
 dump.rdb

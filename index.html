@@ -16,6 +16,17 @@
 	<script src="../pixi.min.js"></script>
 	<script>window.PIXI=require("./pixi")</script>
 	<script src="../vanilla/etgify.js"></script>
+	<script>
+(function(){
+	var newcards = new XMLHttpRequest();
+	newcards.addEventListener("load", function(){
+		var c = this.responseText;
+		require.f("Cards.json",function(m){m.exports=JSON.parse(c)});
+	});
+	newcards.open("GET","Cards.json",false);
+	newcards.send();
+})();
+	</script>
 </head>
 <body>
 	<div id="rightpane">
