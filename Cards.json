@@ -47,6 +47,7 @@
 	[["Catapult",5313,3,"2=catapult","",3],["Trebuchet",7313,3,"1=catapult","",17]],
 	[],
 	[["Empathic Bond",5510,5,"empathy","",3],["Feral Bond",7510,4,"empathy","",17],["Shard of Gratitude",5530,3,"gratitude","",6],["Shard of Gratitude",7530,2,"gratitude","",18]],
+	[],
 	[["Flooding",5713,3,"","flooding",3],["Flooding",7713,2,"","flooding",17],["Shard of Patience",5730,3,"0=die","patience",6],["Shard of Patience",7730,2,"0=die","patience",18]],
 	[["Sanctuary",5814,4,"sanctuary","",3],["Sanctuary",7814,3,"sanctuary","",17]],
 	[["Unstable Gas",5910,6,"1:6=ignite","",3],["Unstable Gas",7910,5,"1:6=ignite","",17],["Shard of Freedom",5930,2,"","freedom",6],["Shard of Freedom",7930,1,"","freedom",18]],
