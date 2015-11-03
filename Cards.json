@@ -95,7 +95,6 @@
 "cseed":"crea",
 "destroy":"perm",
 "devour":"devour",
-"dispersal":"crea",
 "downgrade":"notself:notplay",
 "drainlife":"crea+play",
 "drawpower":"own:pill",
@@ -126,7 +125,6 @@
 "meteorite":"crea",
 "mitosisspell":"creaonly",
 "momentum":"crea",
-"mutate":"crea",
 "mutation":"crea",
 "nightmare":"crea",
 "nymph":"pill",
@@ -150,7 +148,6 @@
 "upgrade":"notself:notplay",
 "virusinfect":"crea",
 "virusplague":"play",
-"vitality":"crea",
 "web":"crea",
 "wisdom":"wisdom"
 }]
