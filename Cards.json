@@ -23,7 +23,7 @@
 	[["Trident",5708,3,"3:4=earthquake",4,9,"",6],["Poseidon",7708,3,"2:4=earthquake",4,9,"",18]],
 	[["Morning Star",5809,5,"noluci",7,7,"immaterial",6],["Morning Glory",7809,5,"noluci",8,4,"immaterial",18]],
 	[["Owl's Eye",5909,5,"2=snipe",5,7,"ranged",6],["Eagle's Eye",7909,5,"2=snipe",7,7,"ranged",18]],
-	[["Eternity",6008,6,"3=rewind",4,8,"",6],["Eternity",8008,5,"3=rewind",4,8,"",18]],
+	[["Eternity",6008,6,"3=rewind",4,8,"",6],["Eternity",8008,5,"3=rewind",4,8,"",18],["Dreambreaker",6015,6,"hit=dreambreaker",1,8,"",6],["Dreamslayer",8015,5,"hit=dreambreaker",1,8,"",6]],
 	[["Vampire Stiletto",6107,1,"hit=vampire",4,4,"nocturnal",6],["Vampire Dagger",8107,2,"hit=vampire",6,4,"nocturnal",18]],
 	[["Lobotomizer",6206,3,"2=lobotomize",5,4,"",6],["Electrocutor",8206,3,"1=lobotomize",5,4,"",18]]],
 [["Name","Code","Cost","Active","Health","Status","Tier"],
