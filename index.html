@@ -1,24 +1,23 @@
 <!DOCTYPE html>
 <head>
 	<title>openEtG-cia</title>
-	<link href="http://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" type="text/css">
+	<link href="//fonts.googleapis.com/css?family=Dosis" rel="stylesheet" type="text/css">
 	<link href="../forum/Smileys/default/light.png" rel="shortcut icon">
 	<link href="../assets/atlas.css" rel="stylesheet">
 	<link href="../ui.css" rel="stylesheet">
-	<script src="../pixi.min.js"></script>
-	<script>window.PIXI=require("./pixi")</script>
-	<script src="../vanilla/etgify.js"></script>
-	<script>
-(function(){
-	var newcards = new XMLHttpRequest();
-	newcards.addEventListener("load", function(){
+	<script>"use strict";var TCALL=0;function tryInit(){if(++TCALL==3){
+	window.PIXI=require("./pixi");
+	var xhr = new XMLHttpRequest();
+	xhr.addEventListener("load", function(){
 		var c = this.responseText;
 		require.f("Cards.json",function(m){m.exports=JSON.parse(c)});
+		require("./ui.main");
 	});
-	newcards.open("GET","Cards.json",false);
-	newcards.send();
-})();
+	xhr.open("GET","Cards.json",true);
+	xhr.send();}}document.addEventListener("DOMContentLoaded",tryInit)
 	</script>
+	<script async src="../pixi.min.js" onload="tryInit()"></script>
+	<script async src="../vanilla/etgify.js" onload="tryInit()"></script>
 </head>
 <body>
 	<div id="rightpane">
@@ -32,5 +31,4 @@
 	</div>
 	<canvas id="leftpane" width=900 height=600></canvas>
 	<input id="deckimport" type="text" placeholder="Deck" style="left:0px;top:600px;width:900px;position:absolute;"/>
-    <script src="../vanilla/ui.main.js"></script>
 </body>
